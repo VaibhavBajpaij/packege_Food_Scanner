@@ -39,4 +39,4 @@ models/paddleocr/*.onnx
 # Temporary artifacts
 temp/
 scratch/
-outputs/*.tmp
+outputs/
