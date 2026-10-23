@@ -1,0 +1,42 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local Environment Variables and Secrets
+.env
+*.key
+*.pem
+FDC_API_KEY
+
+# Large raw datasets and images
+datasets/raw/
+*.tar.gz
+*.tar
+*.zip
+*.parquet
+*.sqlite3-journal
+
+# Checkpoints and large model weights (keep manifests and small config files)
+models/paddleocr/*.pdiparams
+models/paddleocr/*.pdmodel
+models/paddleocr/*.onnx
+*.pth
+*.pt
+*.bin
+*.ckpt
+
+# Temporary artifacts
+temp/
+scratch/
+outputs/*.tmp

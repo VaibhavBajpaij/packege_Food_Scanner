@@ -1,0 +1,20 @@
+Metadata-Version: 2.4
+Name: food-intelligence-engine
+Version: 0.1.0
+Summary: Standalone, offline-first food intelligence engine for packaged food label OCR, nutrition extraction, product matching, and allergen evaluation.
+License: Apache-2.0
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: pyyaml>=6.0.2
+Requires-Dist: pydantic>=2.10.0
+Requires-Dist: requests>=2.32.0
+Requires-Dist: pillow>=11.0.0
+Requires-Dist: numpy>=2.0.0
+Requires-Dist: pandas>=2.2.0
+Requires-Dist: jsonschema>=4.23.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.3.0; extra == "dev"
+Requires-Dist: pytest-cov>=6.0.0; extra == "dev"
+Provides-Extra: ocr
+Requires-Dist: paddlepaddle>=3.0.0; extra == "ocr"
+Requires-Dist: paddleocr>=2.9.0; extra == "ocr"

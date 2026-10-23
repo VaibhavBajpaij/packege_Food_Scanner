@@ -1,0 +1,40 @@
+sources:
+  paddleocr:
+    name: "PaddleOCR Pretrained Pipeline"
+    repository: "https://github.com/PaddlePaddle/PaddleOCR"
+    documentation: "https://www.paddleocr.ai/main/en/index.html"
+    pipeline_docs: "https://www.paddleocr.ai/main/en/version3.x/pipeline_usage/OCR.html"
+    structure_docs: "https://www.paddleocr.ai/main/en/version3.x/pipeline_usage/PP-StructureV3.html"
+    license: "Apache-2.0"
+    license_url: "https://github.com/PaddlePaddle/PaddleOCR/blob/main/LICENSE"
+    model_family: "PP-OCRv4 / PP-OCRv5 Mobile & Server"
+    commercial_status: "Verified Permitted (Apache-2.0 with standard attribution and notice requirements)"
+
+  open_food_facts:
+    name: "Open Food Facts"
+    data_download_url: "https://world.openfoodfacts.org/data"
+    api_docs: "https://openfoodfacts.github.io/openfoodfacts-server/api/"
+    api_v3_docs: "https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/ref-v3/"
+    license_guidance: "https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/tutorials/license-be-on-the-legal-side/"
+    image_download_docs: "https://openfoodfacts.github.io/openfoodfacts-server/api/how-to-download-images/"
+    database_license: "Open Database License (ODbL) 1.0"
+    contents_license: "Database Contents License (DbCL) 1.0"
+    images_license: "Creative Commons Attribution-ShareAlike (CC BY-SA) / fair use"
+    commercial_status: "Commercial use permitted under ODbL terms (Share-Alike obligation for derived databases; public attribution required; no DRM on derivative DB)"
+
+  usda_fooddata_central:
+    name: "USDA FoodData Central"
+    dataset_download_url: "https://fdc.nal.usda.gov/download-datasets/"
+    api_docs: "https://fdc.nal.usda.gov/api-guide/"
+    api_key_registration: "https://api.data.gov/signup/"
+    license: "U.S. Public Domain (CC0 equivalent)"
+    license_url: "https://www.usda.gov/policies-and-links"
+    commercial_status: "Verified Permitted (Public domain, unencumbered; source attribution retained as data provenance best practice)"
+
+  indian_food_composition_tables:
+    name: "Indian Food Composition Tables (IFCT 2017)"
+    official_publication: "https://www.nin.res.in/ebooks/IFCT2017.pdf"
+    reference_listing: "https://www.fao.org/food-composition/tables-and-databases/detail/%28country--date%29-title-9/en"
+    publisher: "National Institute of Nutrition (ICMR - Indian Council of Medical Research), Hyderabad, India"
+    license: "Government of India / ICMR Copyright; Reference Use"
+    commercial_status: "Commercial redistribution requires formal clarification; internal reference and nutrient matching permitted with explicit attribution"

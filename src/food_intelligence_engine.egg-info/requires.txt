@@ -1,0 +1,15 @@
+pyyaml>=6.0.2
+pydantic>=2.10.0
+requests>=2.32.0
+pillow>=11.0.0
+numpy>=2.0.0
+pandas>=2.2.0
+jsonschema>=4.23.0
+
+[dev]
+pytest>=8.3.0
+pytest-cov>=6.0.0
+
+[ocr]
+paddlepaddle>=3.0.0
+paddleocr>=2.9.0

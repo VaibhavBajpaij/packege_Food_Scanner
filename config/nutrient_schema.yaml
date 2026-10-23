@@ -1,0 +1,172 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+title: "FoodIntelligenceEngineOutput"
+description: "Strict schema for structured packaged food OCR, product matching, and nutrition extraction."
+type: "object"
+required:
+  - "input_image"
+  - "timestamp"
+  - "engine_version"
+  - "image_metadata"
+  - "ocr_result"
+  - "product_match"
+  - "ingredients"
+  - "nutrition"
+  - "calculated_package_totals"
+  - "evidence_based_alerts"
+  - "data_quality"
+
+properties:
+  input_image:
+    type: "string"
+  timestamp:
+    type: "string"
+    format: "date-time"
+  engine_version:
+    type: "string"
+  
+  image_metadata:
+    type: "object"
+    required: ["width", "height", "format"]
+    properties:
+      width: { type: "integer" }
+      height: { type: "integer" }
+      format: { type: "string" }
+      preprocessing_applied:
+        type: "array"
+        items: { type: "string" }
+
+  ocr_result:
+    type: "object"
+    required: ["engine", "model_version", "execution_time_sec", "line_count", "lines"]
+    properties:
+      engine: { type: "string" }
+      model_version: { type: "string" }
+      execution_time_sec: { type: "number" }
+      line_count: { type: "integer" }
+      lines:
+        type: "array"
+        items:
+          type: "object"
+          required: ["text", "confidence"]
+          properties:
+            text: { type: "string" }
+            confidence: { type: "number" }
+            bounding_box:
+              type: "array"
+              items: { type: "array" }
+
+  product_match:
+    type: "object"
+    required: ["status", "match_type", "product_name", "barcode", "brand", "source"]
+    properties:
+      status:
+        type: "string"
+        enum: ["exact_barcode_match", "fuzzy_name_match", "ocr_inferred", "unmatched"]
+      match_type: { type: "string" }
+      product_name: { type: ["string", "null"] }
+      barcode: { type: ["string", "null"] }
+      brand: { type: ["string", "null"] }
+      source: { type: "string" }
+      source_id: { type: ["string", "null"] }
+      source_dataset_version: { type: ["string", "null"] }
+      confidence: { type: ["number", "null"] }
+
+  ingredients:
+    type: "object"
+    required: ["original_text", "parsed_ingredients", "declared_allergens", "review_required"]
+    properties:
+      original_text: { type: ["string", "null"] }
+      parsed_ingredients:
+        type: "array"
+        items: { type: "string" }
+      declared_allergens:
+        type: "array"
+        items: { type: "string" }
+      potential_traces:
+        type: "array"
+        items: { type: "string" }
+      review_required: { type: "boolean" }
+
+  nutrition:
+    type: "object"
+    required: ["basis", "nutrients"]
+    properties:
+      basis:
+        type: "string"
+        enum: ["per_100_g", "per_100_ml", "per_serving", "per_piece", "per_package", "unspecified"]
+      serving_size_raw: { type: ["string", "null"] }
+      serving_size_g: { type: ["number", "null"] }
+      serving_size_ml: { type: ["number", "null"] }
+      nutrients:
+        type: "object"
+        properties:
+          energy_kcal: { "$ref": "#/definitions/NutrientValue" }
+          energy_kj: { "$ref": "#/definitions/NutrientValue" }
+          protein_g: { "$ref": "#/definitions/NutrientValue" }
+          carbohydrates_g: { "$ref": "#/definitions/NutrientValue" }
+          sugars_g: { "$ref": "#/definitions/NutrientValue" }
+          added_sugars_g: { "$ref": "#/definitions/NutrientValue" }
+          dietary_fibre_g: { "$ref": "#/definitions/NutrientValue" }
+          total_fat_g: { "$ref": "#/definitions/NutrientValue" }
+          saturated_fat_g: { "$ref": "#/definitions/NutrientValue" }
+          trans_fat_g: { "$ref": "#/definitions/NutrientValue" }
+          cholesterol_mg: { "$ref": "#/definitions/NutrientValue" }
+          sodium_mg: { "$ref": "#/definitions/NutrientValue" }
+          salt_g: { "$ref": "#/definitions/NutrientValue" }
+          iron_mg: { "$ref": "#/definitions/NutrientValue" }
+          calcium_mg: { "$ref": "#/definitions/NutrientValue" }
+          potassium_mg: { "$ref": "#/definitions/NutrientValue" }
+          zinc_mg: { "$ref": "#/definitions/NutrientValue" }
+          magnesium_mg: { "$ref": "#/definitions/NutrientValue" }
+          vitamin_c_mg: { "$ref": "#/definitions/NutrientValue" }
+          vitamin_d_mcg: { "$ref": "#/definitions/NutrientValue" }
+
+  calculated_package_totals:
+    type: "object"
+    required: ["package_weight_g", "calculated_nutrients"]
+    properties:
+      package_weight_g: { type: ["number", "null"] }
+      package_volume_ml: { type: ["number", "null"] }
+      calculation_method: { type: "string" }
+      calculated_nutrients: { type: "object" }
+
+  evidence_based_alerts:
+    type: "array"
+    items:
+      type: "object"
+      required: ["category", "severity", "title", "reason", "authority_source"]
+      properties:
+        category: { type: "string", enum: ["allergen", "high_nutrient", "additive_warning", "data_ambiguity"] }
+        severity: { type: "string", enum: ["critical", "warning", "info"] }
+        title: { type: "string" }
+        reason: { type: "string" }
+        authority_source: { type: "string" }
+        threshold_reference: { type: "string" }
+
+  data_quality:
+    type: "object"
+    required: ["missing_fields", "conflicting_fields", "source_verified", "manual_review_required"]
+    properties:
+      missing_fields:
+        type: "array"
+        items: { type: "string" }
+      conflicting_fields:
+        type: "array"
+        items: { type: "string" }
+      source_verified: { type: "boolean" }
+      manual_review_required: { type: "boolean" }
+      review_reasons:
+        type: "array"
+        items: { type: "string" }
+
+definitions:
+  NutrientValue:
+    type: "object"
+    required: ["value", "unit", "status"]
+    properties:
+      value: { type: ["number", "null"] }
+      unit: { type: "string" }
+      status:
+        type: "string"
+        enum: ["declared", "calculated", "reference_derived", "missing", "unclear"]
+      confidence: { type: ["number", "null"] }

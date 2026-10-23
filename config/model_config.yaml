@@ -1,0 +1,25 @@
+ocr_model:
+  engine: "paddleocr"
+  framework: "paddlepaddle"
+  fallback_engine: "lightweight_onnx_ocr"
+  version: "PP-OCRv4"
+  language: "en"
+  use_angle_cls: true
+  use_gpu: false  # Default to deterministic CPU baseline; can be toggled to true if VRAM/CUDA permits
+  det_model_dir: "models/paddleocr/en_PP-OCRv4_det_infer"
+  rec_model_dir: "models/paddleocr/en_PP-OCRv4_rec_infer"
+  cls_model_dir: "models/paddleocr/ch_ppocr_mobile_v2.0_cls_infer"
+  confidence_threshold: 0.55
+  max_image_side_len: 1280
+  drop_score: 0.5
+
+product_matching:
+  exact_barcode_priority: 1
+  fuzzy_name_threshold: 85
+  min_brand_token_overlap: 0.5
+  enable_ocr_fallback: true
+
+nutrition_calculation:
+  default_liquid_density_g_per_ml: 1.0  # Explicit assumption; flagged if non-standard
+  salt_to_sodium_ratio: 0.4             # sodium_mg = salt_g * 1000 * 0.4
+  sodium_to_salt_ratio: 2.5             # salt_g = (sodium_mg / 1000) * 2.5

@@ -1,0 +1,16 @@
+pyproject.toml
+src/food_engine/__init__.py
+src/food_engine/data_ingestion/__init__.py
+src/food_engine/data_ingestion/download_manager.py
+src/food_engine/ingredient_parser/__init__.py
+src/food_engine/nutrition_calculation/__init__.py
+src/food_engine/nutrition_extraction/__init__.py
+src/food_engine/ocr/__init__.py
+src/food_engine/product_matching/__init__.py
+src/food_engine/reporting/__init__.py
+src/food_engine/validation/__init__.py
+src/food_intelligence_engine.egg-info/PKG-INFO
+src/food_intelligence_engine.egg-info/SOURCES.txt
+src/food_intelligence_engine.egg-info/dependency_links.txt
+src/food_intelligence_engine.egg-info/requires.txt
+src/food_intelligence_engine.egg-info/top_level.txt
