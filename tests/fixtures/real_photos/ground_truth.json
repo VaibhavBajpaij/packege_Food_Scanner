@@ -1,0 +1,1043 @@
+[
+  {
+    "sample_id": "real_photo_01",
+    "file_name": "real_photo_01_7622210449283.jpg",
+    "barcode": "7622210449283",
+    "product_name": "Prince",
+    "brand": "Mondelez Schweiz GmbH",
+    "package_type": "biscuit_roll",
+    "visual_conditions": "Curved cylindrical wrapper, warm indoor lighting",
+    "image_dimensions": {
+      "width": 895,
+      "height": 758
+    },
+    "ground_truth": {
+      "ingredients_text": "实验-Ingredients-EN",
+      "nutrients_per_100g": {
+        "energy_kcal": 467,
+        "protein_g": 6.3,
+        "carbohydrates_g": 69,
+        "sugars_g": 32,
+        "fat_g": 17,
+        "saturated_fat_g": 5.6,
+        "sodium_mg": 196.0,
+        "salt_g": 0.49
+      },
+      "serving_size": "20g",
+      "visible_label_text": "Information nutritionnelle / 100g\nEnergie 1961 kJ / 467 kcal\nMatieres grasses 17 g\ndont acides gras satures 5.6 g\nGlucides 69 g\ndont sucres 32 g\nFibres alimentaires 4.0 g\nProteines 6.3 g\nSel 0.49 g",
+      "visible_label_lines": [
+        "Information nutritionnelle / 100g",
+        "Energie 1961 kJ / 467 kcal",
+        "Matieres grasses 17 g",
+        "dont acides gras satures 5.6 g",
+        "Glucides 69 g",
+        "dont sucres 32 g",
+        "Fibres alimentaires 4.0 g",
+        "Proteines 6.3 g",
+        "Sel 0.49 g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 467.0,
+        "fat_g": 17.0,
+        "saturated_fat_g": 5.6,
+        "carbohydrates_g": 69.0,
+        "sugars_g": 32.0,
+        "protein_g": 6.3,
+        "salt_g": 0.49
+      }
+    },
+    "label_type": "nutrition_table"
+  },
+  {
+    "sample_id": "real_photo_02",
+    "file_name": "real_photo_02_0044000032029.jpg",
+    "barcode": "0044000032029",
+    "product_name": "oreo cookies shelf",
+    "brand": "Oreo, Nabisco",
+    "package_type": "cookie_pack",
+    "visual_conditions": "Blue foil packet, slight reflection, medium resolution",
+    "image_dimensions": {
+      "width": 1061,
+      "height": 2041
+    },
+    "ground_truth": {
+      "ingredients_text": "unbleached enriched flour (wheat flour, niacin, reduced iron, thiamine mononitrate {vitamin b1}, riboflavin {vitamin b2}, folic acid), sugar, palm and/or canola oil, cocoa (processed with alkali), high fructose corn syrup, leavening (baking soda and/or calcium phosphate), salt, soy lecithin, chocolate, artificial flavor,",
+      "nutrients_per_100g": {
+        "energy_kcal": 471,
+        "protein_g": 2.94,
+        "carbohydrates_g": 73.53,
+        "sugars_g": 41.18,
+        "fat_g": 20.59,
+        "saturated_fat_g": 5.88,
+        "sodium_mg": 0.397,
+        "salt_g": 0.0009925
+      },
+      "serving_size": "3g",
+      "visible_label_text": "Nutrition Facts\nServing Size 3 cookies (34g)\nCalories 160\nTotal Fat 7g\nSaturated Fat 2g\nTrans Fat 0g\nCholesterol 0mg\nSodium 135mg\nTotal Carbohydrate 25g\nTotal Sugars 14g\nProtein 1g",
+      "visible_label_lines": [
+        "Nutrition Facts",
+        "Serving Size 3 cookies (34g)",
+        "Calories 160",
+        "Total Fat 7g",
+        "Saturated Fat 2g",
+        "Trans Fat 0g",
+        "Cholesterol 0mg",
+        "Sodium 135mg",
+        "Total Carbohydrate 25g",
+        "Total Sugars 14g",
+        "Protein 1g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 160.0,
+        "fat_g": 7.0,
+        "saturated_fat_g": 2.0,
+        "sodium_mg": 135.0,
+        "carbohydrates_g": 25.0,
+        "sugars_g": 14.0,
+        "protein_g": 1.0
+      }
+    },
+    "label_type": "nutrition_facts"
+  },
+  {
+    "sample_id": "real_photo_03",
+    "file_name": "real_photo_03_0028400070560.jpg",
+    "barcode": "0028400070560",
+    "product_name": "Nacho Cheese Flavored",
+    "brand": "Doritos",
+    "package_type": "snack_pouch",
+    "visual_conditions": "Bag layout, wrinkled edges, overhead lighting",
+    "image_dimensions": {
+      "width": 798,
+      "height": 1203
+    },
+    "ground_truth": {
+      "ingredients_text": "corn, vegetable oil (sunflower, canola, and/or corn oil), maltodextrin (made from corn), salt, cheddar cheese (milk, cheese cultures, salt, enzymes), whey, monosodium glutamate, buttermilk, romano cheese (part-skim cow's milk, cheese cultures, salt, enzymes), whey protein concentrate, onion powder, corn flour, natural and artificial flavor, dextrose, tomato powder, lactose, spices, artificial color (including yellow 6, yellow 5, and red 40), lactic acid, citric acid, sugar, garlic powder, skim milk, red and green bell pepper powder, disodium inosinate, and disodium guanylate, contains _milk_ ingredients,",
+      "nutrients_per_100g": {
+        "energy_kcal": 524.193548387097,
+        "protein_g": 8.06451612903226,
+        "carbohydrates_g": 60.4838709677419,
+        "sugars_g": 2.01612903225806,
+        "fat_g": 26.2096774193548,
+        "saturated_fat_g": 4.03225806451613,
+        "sodium_mg": 584.677419354839,
+        "salt_g": 1.4616935483871
+      },
+      "serving_size": "1 portion (49.6 g)",
+      "visible_label_text": "Nutrition Facts\nServing size 1 package\nCalories 260\nTotal Fat 13g\nSaturated Fat 2g\nSodium 290mg\nTotal Carbohydrate 30g\nTotal Sugars 1g\nProtein 4g",
+      "visible_label_lines": [
+        "Nutrition Facts",
+        "Serving size 1 package",
+        "Calories 260",
+        "Total Fat 13g",
+        "Saturated Fat 2g",
+        "Sodium 290mg",
+        "Total Carbohydrate 30g",
+        "Total Sugars 1g",
+        "Protein 4g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 260.0,
+        "fat_g": 13.0,
+        "saturated_fat_g": 2.0,
+        "sodium_mg": 290.0,
+        "carbohydrates_g": 30.0,
+        "sugars_g": 1.0,
+        "protein_g": 4.0
+      }
+    },
+    "label_type": "nutrition_facts"
+  },
+  {
+    "sample_id": "real_photo_04",
+    "file_name": "real_photo_04_5000159461122.jpg",
+    "barcode": "5000159461122",
+    "product_name": "Snickers",
+    "brand": "Mars Wrigley Confectionery UK Limited, Snickers",
+    "package_type": "confectionery",
+    "visual_conditions": "Foil wrapper, horizontal nutrition table, compact font",
+    "image_dimensions": {
+      "width": 1161,
+      "height": 709
+    },
+    "ground_truth": {
+      "ingredients_text": "Milk Chocolate (sugar, cocoa butter, chocolate, skim milk, lactose, milkfat, soy lecithin), peanuts, corn syrup, sugar, palm oil, skim milk, lactose, salt, egg whites, artificial flavor.",
+      "nutrients_per_100g": {
+        "energy_kcal": 481,
+        "protein_g": 8.6,
+        "carbohydrates_g": 60.5,
+        "sugars_g": 51.8,
+        "fat_g": 22.5,
+        "saturated_fat_g": 7.9,
+        "sodium_mg": 251.5,
+        "salt_g": 0.62875
+      },
+      "serving_size": "50 g",
+      "visible_label_text": "Energie 2018 kJ / 481 kcal\nMatieres grasses 23 g\ndont satures 7.9 g\nGlucides 61 g\ndont sucres 52 g\nProteines 8.6 g\nSel 0.63 g",
+      "visible_label_lines": [
+        "Energie 2018 kJ / 481 kcal",
+        "Matieres grasses 23 g",
+        "dont satures 7.9 g",
+        "Glucides 61 g",
+        "dont sucres 52 g",
+        "Proteines 8.6 g",
+        "Sel 0.63 g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 481.0,
+        "fat_g": 23.0,
+        "saturated_fat_g": 7.9,
+        "carbohydrates_g": 61.0,
+        "sugars_g": 52.0,
+        "protein_g": 8.6,
+        "salt_g": 0.63
+      }
+    },
+    "label_type": "nutrition_table"
+  },
+  {
+    "sample_id": "real_photo_05",
+    "file_name": "real_photo_05_3046920029759.jpg",
+    "barcode": "3046920029759",
+    "product_name": "Excellence Noir Prodigieux 90% Cacao",
+    "brand": "Lindt, Lindt & Sprüngli",
+    "package_type": "chocolate_box",
+    "visual_conditions": "Matte cardboard back, high contrast sans-serif typography",
+    "image_dimensions": {
+      "width": 1176,
+      "height": 753
+    },
+    "ground_truth": {
+      "ingredients_text": "Cocoa mass, cocoa butter, low fat cocoa powder, sugar. May contain hazelnuts, almonds, other nuts, milk and soya.",
+      "nutrients_per_100g": {
+        "energy_kcal": 592,
+        "protein_g": 10,
+        "carbohydrates_g": 14,
+        "sugars_g": 7,
+        "fat_g": 55,
+        "saturated_fat_g": 30,
+        "sodium_mg": 12.0,
+        "salt_g": 0.03
+      },
+      "serving_size": "1 square (10 g)",
+      "visible_label_text": "Nutrition Information / 100g\nEnergy 2483 kJ / 592 kcal\nFat 55 g\nof which saturates 30 g\nCarbohydrate 14 g\nof which sugars 7.0 g\nProtein 10 g\nSalt 0.03 g",
+      "visible_label_lines": [
+        "Nutrition Information / 100g",
+        "Energy 2483 kJ / 592 kcal",
+        "Fat 55 g",
+        "of which saturates 30 g",
+        "Carbohydrate 14 g",
+        "of which sugars 7.0 g",
+        "Protein 10 g",
+        "Salt 0.03 g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 592.0,
+        "fat_g": 55.0,
+        "saturated_fat_g": 30.0,
+        "carbohydrates_g": 14.0,
+        "sugars_g": 7.0,
+        "protein_g": 10.0,
+        "salt_g": 0.03
+      }
+    },
+    "label_type": "nutrition_table"
+  },
+  {
+    "sample_id": "real_photo_06",
+    "file_name": "real_photo_06_0016000275270.jpg",
+    "barcode": "0016000275270",
+    "product_name": "Gmills hny nut cheerios sweetened whl grn oat cereal",
+    "brand": "General Mills",
+    "package_type": "cereal_box",
+    "visual_conditions": "Cardboard side panel, clear vertical columns, high resolution",
+    "image_dimensions": {
+      "width": 1917,
+      "height": 4160
+    },
+    "ground_truth": {
+      "ingredients_text": "/ whole grain oats, sugar, oat bran, corn starch, honey, brown sugar syrup, salt, tripotassium phosphate, canola oil, natural almond flavor, vitamin e (mixed tocopherols) added to preserve freshness,vitamins and minerals: calcium carbonate, zinc and iron (mineral nutrients), vitamin c (sodium ascorbate), a b vitamin (niacinamide), vitamin b6 (pyridoxine hydrochloride), vitamin b2 (riboflavin), vitamin b1 (thiamin mononitrate), vitamin a (palmitate), a b vitamin (folic acid), vitamin b12, vitamin d3,",
+      "nutrients_per_100g": {
+        "energy_kcal": 393,
+        "protein_g": 7.14,
+        "carbohydrates_g": 78.57,
+        "sugars_g": 32.14,
+        "fat_g": 5.36,
+        "saturated_fat_g": 0,
+        "sodium_mg": 571.0,
+        "salt_g": 1.4275
+      },
+      "serving_size": "3/4 cup (28 g) (28 g)",
+      "visible_label_text": "Nutrition Facts\nServing Size 3/4 cup (28g)\nCalories 110\nTotal Fat 1.5g\nSaturated Fat 0g\nTrans Fat 0g\nSodium 160mg\nTotal Carbohydrate 22g\nDietary Fiber 2g\nTotal Sugars 9g\nProtein 2g",
+      "visible_label_lines": [
+        "Nutrition Facts",
+        "Serving Size 3/4 cup (28g)",
+        "Calories 110",
+        "Total Fat 1.5g",
+        "Saturated Fat 0g",
+        "Trans Fat 0g",
+        "Sodium 160mg",
+        "Total Carbohydrate 22g",
+        "Dietary Fiber 2g",
+        "Total Sugars 9g",
+        "Protein 2g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 110.0,
+        "fat_g": 1.5,
+        "saturated_fat_g": 0.0,
+        "sodium_mg": 160.0,
+        "carbohydrates_g": 22.0,
+        "sugars_g": 9.0,
+        "protein_g": 2.0
+      }
+    },
+    "label_type": "nutrition_facts"
+  },
+  {
+    "sample_id": "real_photo_07",
+    "file_name": "real_photo_07_0030000010204.jpg",
+    "barcode": "0030000010204",
+    "product_name": "Old Fashioned 100% Whole Grain Rolled Oats",
+    "brand": "Quaker Oats",
+    "package_type": "oats_tub",
+    "visual_conditions": "Cylindrical canister, curved layout",
+    "image_dimensions": {
+      "width": 432,
+      "height": 1155
+    },
+    "ground_truth": {
+      "ingredients_text": "whole grain rolled oats.",
+      "nutrients_per_100g": {
+        "energy_kcal": 375,
+        "protein_g": 12.5,
+        "carbohydrates_g": 67.5,
+        "sugars_g": 2.5,
+        "fat_g": 7.5,
+        "saturated_fat_g": 1.25,
+        "sodium_mg": 15.0,
+        "salt_g": 0
+      },
+      "serving_size": "40 g",
+      "visible_label_text": "Nutrition Facts\n1/2 cup dry (40g)\nCalories 150\nTotal Fat 3g\nSaturated Fat 0.5g\nSodium 0mg\nTotal Carbohydrate 27g\nDietary Fiber 4g\nTotal Sugars 1g\nProtein 5g",
+      "visible_label_lines": [
+        "Nutrition Facts",
+        "1/2 cup dry (40g)",
+        "Calories 150",
+        "Total Fat 3g",
+        "Saturated Fat 0.5g",
+        "Sodium 0mg",
+        "Total Carbohydrate 27g",
+        "Dietary Fiber 4g",
+        "Total Sugars 1g",
+        "Protein 5g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 150.0,
+        "fat_g": 3.0,
+        "saturated_fat_g": 0.5,
+        "sodium_mg": 0.0,
+        "carbohydrates_g": 27.0,
+        "sugars_g": 1.0,
+        "protein_g": 5.0
+      }
+    },
+    "label_type": "nutrition_facts"
+  },
+  {
+    "sample_id": "real_photo_08",
+    "file_name": "real_photo_08_737628064502.jpg",
+    "barcode": "737628064502",
+    "product_name": "Thai peanut noodle kit includes stir-fry rice noodles & thai peanut seasoning",
+    "brand": "Simply Asia, Thai Kitchen",
+    "package_type": "noodle_box",
+    "visual_conditions": "Kraft paper texture, multi-column nutrition panel",
+    "image_dimensions": {
+      "width": 870,
+      "height": 1611
+    },
+    "ground_truth": {
+      "ingredients_text": "Rice Noodles (rice, water), seasoning packet (peanut, sugar, salt, corn starch, spices [chili, cinnamon, pepper, cumin, clove], hydrolyzed soy protein, green onions, citric acid, peanut oil, sesame oil, natural flavor).",
+      "nutrients_per_100g": {
+        "energy_kcal": 385,
+        "protein_g": 9.62,
+        "carbohydrates_g": 71.15,
+        "sugars_g": 13.46,
+        "fat_g": 7.69,
+        "saturated_fat_g": 1.92,
+        "sodium_mg": 288.0,
+        "salt_g": 0.72
+      },
+      "serving_size": "0.333 PACKAGE (52 g)",
+      "visible_label_text": "Nutrition Facts\nServing Size 1/3 kit (140g)\nCalories 370\nTotal Fat 7g\nSaturated Fat 3g\nSodium 780mg\nTotal Carbohydrate 69g\nTotal Sugars 13g\nProtein 8g",
+      "visible_label_lines": [
+        "Nutrition Facts",
+        "Serving Size 1/3 kit (140g)",
+        "Calories 370",
+        "Total Fat 7g",
+        "Saturated Fat 3g",
+        "Sodium 780mg",
+        "Total Carbohydrate 69g",
+        "Total Sugars 13g",
+        "Protein 8g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 370.0,
+        "fat_g": 7.0,
+        "saturated_fat_g": 3.0,
+        "sodium_mg": 780.0,
+        "carbohydrates_g": 69.0,
+        "sugars_g": 13.0,
+        "protein_g": 8.0
+      }
+    },
+    "label_type": "nutrition_facts"
+  },
+  {
+    "sample_id": "real_photo_09",
+    "file_name": "real_photo_09_8901725181222.jpg",
+    "barcode": "8901725181222",
+    "product_name": "Yippee noodles",
+    "brand": "",
+    "package_type": "noodle_pouch",
+    "visual_conditions": "Glossy plastic pouch, yellow-red high contrast",
+    "image_dimensions": {
+      "width": 664,
+      "height": 413
+    },
+    "ground_truth": {
+      "ingredients_text": "",
+      "nutrients_per_100g": {
+        "energy_kcal": 110,
+        "protein_g": 8.8571428571429,
+        "carbohydrates_g": 62.428571428571,
+        "sugars_g": 2.8571428571429,
+        "fat_g": 19.714285714286,
+        "saturated_fat_g": 9.8571428571429,
+        "sodium_mg": 1028.5713999999998,
+        "salt_g": 2.5714285
+      },
+      "serving_size": "",
+      "visible_label_text": "Serving size: 70 g\nAverage Quantity per 100g\nEnergy 466 kcal\nProtein 8.9 g\nCarbohydrate 63.4 g\nTotal Sugars 2.4 g\nTotal Fat 19.6 g\nSaturated Fat 9.2 g\nSodium 1098 mg",
+      "visible_label_lines": [
+        "Serving size: 70 g",
+        "Average Quantity per 100g",
+        "Energy 466 kcal",
+        "Protein 8.9 g",
+        "Carbohydrate 63.4 g",
+        "Total Sugars 2.4 g",
+        "Total Fat 19.6 g",
+        "Saturated Fat 9.2 g",
+        "Sodium 1098 mg"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 466.0,
+        "protein_g": 8.9,
+        "carbohydrates_g": 63.4,
+        "sugars_g": 2.4,
+        "fat_g": 19.6,
+        "saturated_fat_g": 9.2,
+        "sodium_mg": 1098.0
+      }
+    },
+    "label_type": "nutrition_table"
+  },
+  {
+    "sample_id": "real_photo_10",
+    "file_name": "real_photo_10_8076809513753.jpg",
+    "barcode": "8076809513753",
+    "product_name": "Barilla PESTO alla GENOVESE",
+    "brand": "Barilla",
+    "package_type": "glass_jar",
+    "visual_conditions": "Glass label with glare, bilingual text",
+    "image_dimensions": {
+      "width": 550,
+      "height": 1244
+    },
+    "ground_truth": {
+      "ingredients_text": "sunflower oil, fresh basil 30%, cashew nuts, parmigiano reggiano pdo cheese 5%, (milk), maize fibre, whey powder (milk), salt, milk protein, extra virgin olive oil, sugar, basil extract, natural flavourings (milk), acidity regulator: lactic acid, garlic",
+      "nutrients_per_100g": {
+        "energy_kcal": 492,
+        "protein_g": 4.7,
+        "carbohydrates_g": 11,
+        "sugars_g": 5,
+        "fat_g": 47,
+        "saturated_fat_g": 5.3,
+        "sodium_mg": 1280.0,
+        "salt_g": 3.2
+      },
+      "serving_size": "47.5 g",
+      "visible_label_text": "Declaration nutritionnelle / 100g\nEnergie 1943 kJ / 470 kcal\nMatieres grasses 45 g\ndont acides gras satures 5.3 g\nGlucides 9.8 g\ndont sucres 5.5 g\nProteines 5.0 g\nSel 3.1 g",
+      "visible_label_lines": [
+        "Declaration nutritionnelle / 100g",
+        "Energie 1943 kJ / 470 kcal",
+        "Matieres grasses 45 g",
+        "dont acides gras satures 5.3 g",
+        "Glucides 9.8 g",
+        "dont sucres 5.5 g",
+        "Proteines 5.0 g",
+        "Sel 3.1 g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 470.0,
+        "fat_g": 45.0,
+        "saturated_fat_g": 5.3,
+        "carbohydrates_g": 9.8,
+        "sugars_g": 5.5,
+        "protein_g": 5.0,
+        "salt_g": 3.1
+      }
+    },
+    "label_type": "nutrition_table"
+  },
+  {
+    "sample_id": "real_photo_11",
+    "file_name": "real_photo_11_5000157024671.jpg",
+    "barcode": "5000157024671",
+    "product_name": "Beanz in a rich tomato sauce",
+    "brand": "H J Heinz Foods UK Ltd",
+    "package_type": "tin_can",
+    "visual_conditions": "Metal cylindrical can, curved textline orientation",
+    "image_dimensions": {
+      "width": 592,
+      "height": 1280
+    },
+    "ground_truth": {
+      "ingredients_text": "Beans (50%), Tomatoes (36%), Water, Sugar, Modified Cornflour, Salt, Spice Extracts , Herb Extract",
+      "nutrients_per_100g": {
+        "energy_kcal": 79,
+        "protein_g": 4.7,
+        "carbohydrates_g": 12.9,
+        "sugars_g": 5,
+        "fat_g": 0.2,
+        "saturated_fat_g": 0.1,
+        "sodium_mg": 240.0,
+        "salt_g": 0.6
+      },
+      "serving_size": "0.5 can (207 g)",
+      "visible_label_text": "Nutrition per 100g\nEnergy 329kJ / 78kcal\nFat 0.2g\nof which saturates 0.1g\nCarbohydrate 12.5g\nof which sugars 4.7g\nProtein 4.7g\nSalt 0.6g",
+      "visible_label_lines": [
+        "Nutrition per 100g",
+        "Energy 329kJ / 78kcal",
+        "Fat 0.2g",
+        "of which saturates 0.1g",
+        "Carbohydrate 12.5g",
+        "of which sugars 4.7g",
+        "Protein 4.7g",
+        "Salt 0.6g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 78.0,
+        "fat_g": 0.2,
+        "saturated_fat_g": 0.1,
+        "carbohydrates_g": 12.5,
+        "sugars_g": 4.7,
+        "protein_g": 4.7,
+        "salt_g": 0.6
+      }
+    },
+    "label_type": "curved_can_table"
+  },
+  {
+    "sample_id": "real_photo_12",
+    "file_name": "real_photo_12_0011110038364.jpg",
+    "barcode": "0011110038364",
+    "product_name": "Chicken tortilla soup dry soup mix",
+    "brand": "Simple Truth",
+    "package_type": "soup_pouch",
+    "visual_conditions": "Foil pouch, vertical nutritional panel",
+    "image_dimensions": {
+      "width": 375,
+      "height": 525
+    },
+    "ground_truth": {
+      "ingredients_text": "organic rice, organic black beans, organic bell peppers, organic spices, organic corn, organic raw cane sugar, organic onion, potassium chloride, salt, organic tomato, organic paprika, organic corn masa flour, contains 2% or less of organic garlic, organic lime juice powder (organic maltodextrin, organic lime juice), organic yeast extract, citric acid,",
+      "nutrients_per_100g": {
+        "energy_kcal": 333.33333333333,
+        "protein_g": 11.111111111111,
+        "carbohydrates_g": 66.666666666667,
+        "sugars_g": 18.518518518519,
+        "fat_g": 3.7037037037037,
+        "saturated_fat_g": 0,
+        "sodium_mg": 1555.5555555556,
+        "salt_g": 3.888888888889
+      },
+      "serving_size": "",
+      "visible_label_text": "Nutrition Facts\nServing Size 1/4 cup (30g)\nCalories 100\nTotal Fat 1g\nSodium 720mg\nTotal Carbohydrate 20g\nProtein 3g",
+      "visible_label_lines": [
+        "Nutrition Facts",
+        "Serving Size 1/4 cup (30g)",
+        "Calories 100",
+        "Total Fat 1g",
+        "Sodium 720mg",
+        "Total Carbohydrate 20g",
+        "Protein 3g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 100.0,
+        "fat_g": 1.0,
+        "sodium_mg": 720.0,
+        "carbohydrates_g": 20.0,
+        "protein_g": 3.0
+      }
+    },
+    "label_type": "nutrition_facts"
+  },
+  {
+    "sample_id": "real_photo_13",
+    "file_name": "real_photo_13_3017620422003.jpg",
+    "barcode": "3017620422003",
+    "product_name": "Nutella",
+    "brand": "Nutella, Ferrero",
+    "package_type": "glass_jar",
+    "visual_conditions": "White plastic label, small 6pt font on curved surface",
+    "image_dimensions": {
+      "width": 1125,
+      "height": 2000
+    },
+    "ground_truth": {
+      "ingredients_text": "sugar, palm oil",
+      "nutrients_per_100g": {
+        "energy_kcal": 539,
+        "protein_g": 6.3,
+        "carbohydrates_g": 57.5,
+        "sugars_g": 56.3,
+        "fat_g": 30.9,
+        "saturated_fat_g": 10.6,
+        "sodium_mg": 42.8,
+        "salt_g": 0.107
+      },
+      "serving_size": "",
+      "visible_label_text": "nutella\nFerrero",
+      "visible_label_lines": [
+        "nutella",
+        "Ferrero"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 539.0,
+        "fat_g": 30.9,
+        "carbohydrates_g": 57.5,
+        "sugars_g": 56.3,
+        "protein_g": 6.3,
+        "salt_g": 0.107
+      }
+    },
+    "label_type": "front_label"
+  },
+  {
+    "sample_id": "real_photo_14",
+    "file_name": "real_photo_14_5449000000996.jpg",
+    "barcode": "5449000000996",
+    "product_name": "Coca-Cola Original",
+    "brand": "COCA-COLA SERVICES SA/NV",
+    "package_type": "beverage_can",
+    "visual_conditions": "Red aluminum can, curved text with metallic reflection",
+    "image_dimensions": {
+      "width": 767,
+      "height": 904
+    },
+    "ground_truth": {
+      "ingredients_text": "carbonated water, sugar, colour (caramel e150d), acid (phosphoric acid), natural flavourings, caffeine flavouring,",
+      "nutrients_per_100g": {
+        "energy_kcal": 42.4,
+        "protein_g": 0,
+        "carbohydrates_g": 10.6,
+        "sugars_g": 10.6,
+        "fat_g": 0,
+        "saturated_fat_g": 0,
+        "sodium_mg": 0.0,
+        "salt_g": 0
+      },
+      "serving_size": "1 portion (330 ml)",
+      "visible_label_text": "Coca-Cola Original Taste\nEnergy 180 kJ / 42 kcal\nCarbohydrate 10.6 g\nSugars 10.6 g\nFat 0 g\nProtein 0 g\nSalt 0 g",
+      "visible_label_lines": [
+        "Coca-Cola Original Taste",
+        "Energy 180 kJ / 42 kcal",
+        "Carbohydrate 10.6 g",
+        "Sugars 10.6 g",
+        "Fat 0 g",
+        "Protein 0 g",
+        "Salt 0 g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 42.0,
+        "carbohydrates_g": 10.6,
+        "sugars_g": 10.6,
+        "fat_g": 0.0,
+        "protein_g": 0.0,
+        "salt_g": 0.0
+      }
+    },
+    "label_type": "curved_can_table"
+  },
+  {
+    "sample_id": "real_photo_15",
+    "file_name": "real_photo_15_0070847811169.jpg",
+    "barcode": "0070847811169",
+    "product_name": "Monster Energy",
+    "brand": "Monster",
+    "package_type": "energy_can",
+    "visual_conditions": "Black matte aluminum, dense ingredient block",
+    "image_dimensions": {
+      "width": 592,
+      "height": 1280
+    },
+    "ground_truth": {
+      "ingredients_text": "carbonated water, sugar, glucose, citric acid, natural flavors, taurine, sodium citrate, color added, panax ginseng extract, l-carnitine l-tartrate, caffeine, sorbic acid (preservative), benzoic acid (preservative), niacinamide (vit, b3), sucralose, salt, d-glucuronolactone, inositol, guarana extract, pyridoxine hydrochloride (vit, b6), riboflavin (vit, b2), maltodextrin, cyanocobalamin (vit, b12),",
+      "nutrients_per_100g": {
+        "energy_kcal": 48.6077062234771,
+        "protein_g": 0,
+        "carbohydrates_g": 12.2575954824421,
+        "sugars_g": 11.4122440698598,
+        "fat_g": 0,
+        "saturated_fat_g": null,
+        "sodium_mg": 78.1950056638545,
+        "salt_g": 0.195487514159636
+      },
+      "serving_size": "1 serving (16 fl oz)",
+      "visible_label_text": "MONSTER ENERGY",
+      "visible_label_lines": [
+        "MONSTER ENERGY"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 47.0,
+        "carbohydrates_g": 12.0,
+        "sugars_g": 11.0,
+        "salt_g": 0.19
+      }
+    },
+    "label_type": "curved_can_logo"
+  },
+  {
+    "sample_id": "real_photo_16",
+    "file_name": "real_photo_16_0041220576920.jpg",
+    "barcode": "0041220576920",
+    "product_name": "Opti-Meal protein shake",
+    "brand": "H-E-B",
+    "package_type": "shake_carton",
+    "visual_conditions": "Tetra Pak carton, vertical nutritional layout",
+    "image_dimensions": {
+      "width": 472,
+      "height": 731
+    },
+    "ground_truth": {
+      "ingredients_text": "fat free milk, water, canola oil, fructose*, cocoa (processed with alkali), cellulose gel, cellulose gum, soy lecithin, potassium phosphate, natural and artificial flavor, carrageenan, sodium phosphate, acesulfame potassium*, sucralose*, vitamins and minerals: sodium ascorbate, vitamina palmitate, dicalcium phosphate, cholecalciferol, phytonadione, riboflavin, pyridoxine hydrochl,oride, cyanocobalamin, d-calcium pantothenate, zinc gluconate, manganese sulfate, sodium molybdate, ferric orthophosphate, d, l-alpha tocopheryl acetate, thiamin hydrochloride, niacinamide, folic acid, biotin, dimagnesium phosphate, sodium selenite, chromium chloride, *sweetened with nutritive and non-nutritive sweeteners, contains: milk, soy made with pride and care for h-e-b ®, san antonio, texas 78204 shake well, serve chilled or over ice, must be refrigerated",
+      "nutrients_per_100g": {
+        "energy_kcal": 58.461538461538,
+        "protein_g": 3.0769230769231,
+        "carbohydrates_g": 7.3846153846154,
+        "sugars_g": 5.8461538461538,
+        "fat_g": 1.8461538461538,
+        "saturated_fat_g": 0.30769230769231,
+        "sodium_mg": 70.769230769232,
+        "salt_g": 0.17692307692308
+      },
+      "serving_size": "",
+      "visible_label_text": "Nutrition Facts\nServing size 1 carton\nCalories 160\nTotal Fat 2.5g\nSodium 240mg\nTotal Carbohydrate 4g\nProtein 30g",
+      "visible_label_lines": [
+        "Nutrition Facts",
+        "Serving size 1 carton",
+        "Calories 160",
+        "Total Fat 2.5g",
+        "Sodium 240mg",
+        "Total Carbohydrate 4g",
+        "Protein 30g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 160.0,
+        "fat_g": 2.5,
+        "sodium_mg": 240.0,
+        "carbohydrates_g": 4.0,
+        "protein_g": 30.0
+      }
+    },
+    "label_type": "nutrition_facts"
+  },
+  {
+    "sample_id": "real_photo_17",
+    "file_name": "real_photo_17_0025293000995.jpg",
+    "barcode": "0025293000995",
+    "product_name": "Almondmilk",
+    "brand": "Silk",
+    "package_type": "beverage_carton",
+    "visual_conditions": "Plant milk carton, side nutrition panel",
+    "image_dimensions": {
+      "width": 1080,
+      "height": 1919
+    },
+    "ground_truth": {
+      "ingredients_text": "ALMONDMILK (FILTERED WATER, ALMONDS), CANE SUGAR, CONTAINS LESS THAN 2% OF: VITAMIN & MINERAL BLEND (CALCIUM CARBONATE, VITAMIN E ACETATE, VITAMIN A PALMITATE, VITAMIN D2), SEA SALT, NATURAL FLAVOR, LOCUST BEAN GUM, GELLAN GUM, ASCORBIC ACID (TO PROTECT FRESHNESS). ALLERGEN STATEMENT: CONTAINS ALMOND. PRODUCED IN A FACILITY THAT ALSO PROCESSES OTHER TREE NUTS AND SOY. SILKⓇ EMPLOYS STRINGENT ALLERGEN QUALITY CONTROL PROCEDURES IN ALL OF OUR MANUFACTURING FACILITIES. TO LEARN MORE, VISIT US AT SILK.COM/ALLERGENS. DISTRID",
+      "nutrients_per_100g": {
+        "energy_kcal": 80,
+        "protein_g": 1,
+        "carbohydrates_g": 14,
+        "sugars_g": 13,
+        "fat_g": 2,
+        "saturated_fat_g": 0,
+        "sodium_mg": 130.0,
+        "salt_g": 0.325
+      },
+      "serving_size": "1 portion (240 ml)",
+      "visible_label_text": "Nutrition Facts\nServing size 1 cup (240ml)\nCalories 60\nTotal Fat 2.5g\nSodium 150mg\nTotal Carbohydrate 8g\nTotal Sugars 7g\nProtein 1g",
+      "visible_label_lines": [
+        "Nutrition Facts",
+        "Serving size 1 cup (240ml)",
+        "Calories 60",
+        "Total Fat 2.5g",
+        "Sodium 150mg",
+        "Total Carbohydrate 8g",
+        "Total Sugars 7g",
+        "Protein 1g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 60.0,
+        "fat_g": 2.5,
+        "sodium_mg": 150.0,
+        "carbohydrates_g": 8.0,
+        "sugars_g": 7.0,
+        "protein_g": 1.0
+      }
+    },
+    "label_type": "nutrition_facts"
+  },
+  {
+    "sample_id": "real_photo_18",
+    "file_name": "real_photo_18_0051500255162.jpg",
+    "barcode": "0051500255162",
+    "product_name": "Creamy Peanut Butter",
+    "brand": "Jif",
+    "package_type": "plastic_jar",
+    "visual_conditions": "Round plastic jar, dual-column nutrition facts",
+    "image_dimensions": {
+      "width": 663,
+      "height": 576
+    },
+    "ground_truth": {
+      "ingredients_text": "MADE FROM ROASTED PEANUTS AND SUGAR, CONTAINS 2% OR LESS OF: MOLASSES, FULLY HYDROGENATED VEGETABLE OILS (RAPESEED AND SOYBEAN), MONO AND DIGLYCERIDES, SALT.",
+      "nutrients_per_100g": {
+        "energy_kcal": 575.757575757576,
+        "protein_g": 21.2121212121212,
+        "carbohydrates_g": 24.2424242424242,
+        "sugars_g": 9.09090909090909,
+        "fat_g": 48.4848484848485,
+        "saturated_fat_g": 10.6060606060606,
+        "sodium_mg": 424.24242424242397,
+        "salt_g": 1.06060606060606
+      },
+      "serving_size": "1 serving (33 g)",
+      "visible_label_text": "Nutrition Facts\nServing size 2 Tbsp (33g)\nCalories 190\nTotal Fat 16g\nSaturated Fat 3.5g\nSodium 140mg\nTotal Carbohydrate 7g\nTotal Sugars 3g\nProtein 7g",
+      "visible_label_lines": [
+        "Nutrition Facts",
+        "Serving size 2 Tbsp (33g)",
+        "Calories 190",
+        "Total Fat 16g",
+        "Saturated Fat 3.5g",
+        "Sodium 140mg",
+        "Total Carbohydrate 7g",
+        "Total Sugars 3g",
+        "Protein 7g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 190.0,
+        "fat_g": 16.0,
+        "saturated_fat_g": 3.5,
+        "sodium_mg": 140.0,
+        "carbohydrates_g": 7.0,
+        "sugars_g": 3.0,
+        "protein_g": 7.0
+      }
+    },
+    "label_type": "nutrition_facts"
+  },
+  {
+    "sample_id": "real_photo_19",
+    "file_name": "real_photo_19_0049000006346.jpg",
+    "barcode": "0049000006346",
+    "product_name": "Coca cola can cokes LG",
+    "brand": "Coca cola",
+    "package_type": "beverage_can",
+    "visual_conditions": "Green aluminum can, small ingredient declaration",
+    "image_dimensions": {
+      "width": 3024,
+      "height": 4032
+    },
+    "ground_truth": {
+      "ingredients_text": "carbonated water, high fructose corn syrup, caramel color, phosphoric acid, natural flavors, caffeine",
+      "nutrients_per_100g": {
+        "energy_kcal": 39.4366197183099,
+        "protein_g": 0,
+        "carbohydrates_g": 10.9859154929577,
+        "sugars_g": 10.9859154929577,
+        "fat_g": 0,
+        "saturated_fat_g": null,
+        "sodium_mg": 12676.0563380282,
+        "salt_g": 31.6901408450704
+      },
+      "serving_size": "355ml",
+      "visible_label_text": "Nutrition Facts\n1 Can\nCalories 140\nTotal Fat 0g\nSodium 45mg\nTotal Carbohydrate 39g\nTotal Sugars 39g\nProtein 0g",
+      "visible_label_lines": [
+        "Nutrition Facts",
+        "1 Can",
+        "Calories 140",
+        "Total Fat 0g",
+        "Sodium 45mg",
+        "Total Carbohydrate 39g",
+        "Total Sugars 39g",
+        "Protein 0g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 140.0,
+        "fat_g": 0.0,
+        "sodium_mg": 45.0,
+        "carbohydrates_g": 39.0,
+        "sugars_g": 39.0,
+        "protein_g": 0.0
+      }
+    },
+    "label_type": "nutrition_facts"
+  },
+  {
+    "sample_id": "real_photo_20",
+    "file_name": "real_photo_20_0028400043809.jpg",
+    "barcode": "0028400043809",
+    "product_name": "Wavy Original",
+    "brand": "Lay's",
+    "package_type": "snack_pouch",
+    "visual_conditions": "Yellow glossy foil snack pouch, reflections",
+    "image_dimensions": {
+      "width": 590,
+      "height": 1280
+    },
+    "ground_truth": {
+      "ingredients_text": "POTATOES, VEGETABLE OIL (CANOLA, CORN, SOYBEAN, AND/OR SUNFLOWER OIL), AND SALT",
+      "nutrients_per_100g": {
+        "energy_kcal": 571.428571428572,
+        "protein_g": 6.66666666666667,
+        "carbohydrates_g": 56.6666666666667,
+        "sugars_g": 3.33333333333333,
+        "fat_g": 30,
+        "saturated_fat_g": 5,
+        "sodium_mg": 466.666666666667,
+        "salt_g": 1.16666666666667
+      },
+      "serving_size": "1 serving size (30 g)",
+      "visible_label_text": "Nutrition Facts\nAbout 8 servings per container\nServing size 11 chips (28g)\nCalories 160\nTotal Fat 10g\nSaturated Fat 1.5g\nSodium 140mg\nTotal Carbohydrate 15g\nProtein 2g",
+      "visible_label_lines": [
+        "Nutrition Facts",
+        "About 8 servings per container",
+        "Serving size 11 chips (28g)",
+        "Calories 160",
+        "Total Fat 10g",
+        "Saturated Fat 1.5g",
+        "Sodium 140mg",
+        "Total Carbohydrate 15g",
+        "Protein 2g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 160.0,
+        "fat_g": 10.0,
+        "saturated_fat_g": 1.5,
+        "sodium_mg": 140.0,
+        "carbohydrates_g": 15.0,
+        "protein_g": 2.0
+      }
+    },
+    "label_type": "nutrition_facts"
+  },
+  {
+    "sample_id": "real_photo_21",
+    "file_name": "real_photo_21_5000159407236.jpg",
+    "barcode": "5000159407236",
+    "product_name": "Mars",
+    "brand": "Mars, Mars Wrigley",
+    "package_type": "confectionery",
+    "visual_conditions": "Gold foil confectionery wrapper, compact lines",
+    "image_dimensions": {
+      "width": 2008,
+      "height": 1540
+    },
+    "ground_truth": {
+      "ingredients_text": "sugar, glucose syrup, cocoa butter, milk powder, cocoa paste, sunflower oil,  skimmed milk powder, lactose, milk powder, lean cocoa, concentrated butter (milk), extract of malt barley, emulsifier (soy lecithin), salt, butter, palm, white egg powder, protein milk hydrolysate, natural vanilla extract",
+      "nutrients_per_100g": {
+        "energy_kcal": 450,
+        "protein_g": 4.04,
+        "carbohydrates_g": 70,
+        "sugars_g": 61.6,
+        "fat_g": 16.8,
+        "saturated_fat_g": 8.38,
+        "sodium_mg": 168.0,
+        "salt_g": 0.42
+      },
+      "serving_size": "100 g",
+      "visible_label_text": "Valeurs nutritionnelles / 100g\nEnergie 1886 kJ / 448 kcal\nMatieres grasses 17 g\ndont acides gras satures 8.1 g\nGlucides 70 g\ndont sucres 60 g\nProteines 4.0 g\nSel 0.41 g",
+      "visible_label_lines": [
+        "Valeurs nutritionnelles / 100g",
+        "Energie 1886 kJ / 448 kcal",
+        "Matieres grasses 17 g",
+        "dont acides gras satures 8.1 g",
+        "Glucides 70 g",
+        "dont sucres 60 g",
+        "Proteines 4.0 g",
+        "Sel 0.41 g"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 448.0,
+        "fat_g": 17.0,
+        "saturated_fat_g": 8.1,
+        "carbohydrates_g": 70.0,
+        "sugars_g": 60.0,
+        "protein_g": 4.0,
+        "salt_g": 0.41
+      }
+    },
+    "label_type": "nutrition_table"
+  },
+  {
+    "sample_id": "real_photo_22",
+    "file_name": "real_photo_22_8901491101837.jpg",
+    "barcode": "8901491101837",
+    "product_name": "Lays Classics Salted 20rs",
+    "brand": "Lay's",
+    "package_type": "snack_pouch",
+    "visual_conditions": "Indian savory snack, Hindi & English bilingual label",
+    "image_dimensions": {
+      "width": 1418,
+      "height": 1200
+    },
+    "ground_truth": {
+      "ingredients_text": "Potato, Edible Vegetable Oil\n\n(Palmolein Oil), &quot;Seasoning (Maltodextrin, lodised Salt, &quot;Spices & Condiments, Sugar, Flavour (Natural and Nature Identical Flavouring Substances), Anticaking Agent (551), Flavour Enhancers (627, 631), Edible Vegetable Oil (Palm)).\n\n&quot;As flavouring agent. &quot;Contains Onion & Garlic",
+      "nutrients_per_100g": {
+        "energy_kcal": 554,
+        "protein_g": 7,
+        "carbohydrates_g": 51.7,
+        "sugars_g": 2.6,
+        "fat_g": 35.5,
+        "saturated_fat_g": 14,
+        "sodium_mg": 204.0,
+        "salt_g": 0.51
+      },
+      "serving_size": "",
+      "visible_label_text": "Per 100 g\nEnergy 554 kcal\nProtein 6.9 g\nCarbohydrate 52.8 g\nTotal Sugars 1.1 g\nTotal Fat 35.0 g\nSaturated Fat 15.8 g\nSodium 413 mg",
+      "visible_label_lines": [
+        "Per 100 g",
+        "Energy 554 kcal",
+        "Protein 6.9 g",
+        "Carbohydrate 52.8 g",
+        "Total Sugars 1.1 g",
+        "Total Fat 35.0 g",
+        "Saturated Fat 15.8 g",
+        "Sodium 413 mg"
+      ],
+      "declared_nutrients_on_label": {
+        "energy_kcal": 554.0,
+        "protein_g": 6.9,
+        "carbohydrates_g": 52.8,
+        "sugars_g": 1.1,
+        "fat_g": 35.0,
+        "saturated_fat_g": 15.8,
+        "sodium_mg": 413.0
+      }
+    },
+    "label_type": "nutrition_table"
+  }
+]

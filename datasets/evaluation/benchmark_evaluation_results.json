@@ -1,0 +1,37 @@
+{
+  "timestamp": "2026-10-24T00:22:46.994286",
+  "summary": {
+    "total_test_cases": 2,
+    "exact_accuracy_pct": 100.0,
+    "numeric_tolerance_accuracy_pct": 100.0,
+    "unit_accuracy_pct": 100.0,
+    "basis_accuracy_pct": 100.0,
+    "missing_field_detection_pct": 100.0,
+    "false_allergen_negative_pct": 0.0,
+    "median_latency_ms": 219.6,
+    "p95_latency_ms": 276.4,
+    "peak_memory_mb": 4.59
+  },
+  "cases": [
+    {
+      "case_id": "biscuit_sample_01",
+      "image": "sample_biscuit_packet.png",
+      "label_type": "Solid Packaged Food (Baked Goods)",
+      "latency_sec": 0.2764,
+      "basis_match": true,
+      "declared_allergens_found": [
+        "Wheat",
+        "Milk / Dairy",
+        "Soybeans / Soy"
+      ]
+    },
+    {
+      "case_id": "juice_sample_02",
+      "image": "sample_juice_bottle.png",
+      "label_type": "Liquid Beverage (Nectar)",
+      "latency_sec": 0.1628,
+      "basis_match": true,
+      "declared_allergens_found": []
+    }
+  ]
+}

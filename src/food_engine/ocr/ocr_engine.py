@@ -1,22 +1,48 @@
-"""Stage 2: OCR Pipeline using PaddleOCR Pretrained Models.
+"""Stage 2: Real Food-Label OCR Pipeline using PaddleOCR Pretrained Models.
 
-Integrates with:
-- PP-OCRv4 text detection (models/paddleocr/ch_PP-OCRv4_det_infer)
-- PP-OCRv4 English text recognition (models/paddleocr/en_PP-OCRv4_rec_infer)
-- PP-OCR direction classifier (models/paddleocr/ch_ppocr_mobile_v2.0_cls_infer)
+Integrates with genuine PaddleOCR PP-OCRv4:
+- Text detection (PP-OCRv4 mobile detection)
+- Direction classifier (textline orientation / angle classification)
+- Text recognition (en_PP-OCRv4 mobile English recognition)
 
-Provides structured output:
-- lines: [{text, confidence, bounding_box}]
-- execution_time_sec
-- engine_metadata
+Features:
+- Operates strictly on image pixels (no PNG metadata or synthetic fallbacks)
+- Reliable CPU inference on Windows with MKLDNN PIR compatibility patch
+- Extracts recognized text, confidence scores, and bounding polygon boxes
+- Reports explicit errors when OCR fails or cannot run
 """
 
+import os
+import sys
 import time
+import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 import numpy as np
 from PIL import Image
+
 from food_engine.ocr.image_ingestion import ImageIngestion
+
+logger = logging.getLogger(__name__)
+
+
+def _apply_windows_mkldnn_compatibility() -> None:
+    """Configures PaddleX MKLDNN blocklist on Windows to avoid the OneDnn PIR double-attribute bug."""
+    try:
+        import paddlex.inference.models.runners.paddle_static.config as pdx_cfg
+        target_models = [
+            "PP-OCRv4_mobile_det",
+            "PP-OCRv6_medium_det",
+            "PP-LCNet_x1_0_textline_ori",
+            "en_PP-OCRv4_mobile_rec",
+            "ch_PP-OCRv4_det",
+            "en_PP-OCRv4_rec",
+        ]
+        for m in target_models:
+            if m not in pdx_cfg.MKLDNN_BLOCKLIST:
+                pdx_cfg.MKLDNN_BLOCKLIST.append(m)
+    except Exception as exc:
+        logger.debug("PaddleX static config MKLDNN patch skipped: %s", exc)
 
 
 class OCREngine:
@@ -27,6 +53,7 @@ class OCREngine:
         repo_root: Optional[Path] = None,
         use_gpu: bool = False,
         confidence_threshold: float = 0.50,
+        require_real_ocr: bool = True,
     ):
         if repo_root is None:
             self.repo_root = Path(__file__).resolve().parent.parent.parent.parent
@@ -35,84 +62,156 @@ class OCREngine:
 
         self.use_gpu = use_gpu
         self.confidence_threshold = confidence_threshold
-        self.det_dir = self.repo_root / "models" / "paddleocr" / "ch_PP-OCRv4_det_infer"
-        self.rec_dir = self.repo_root / "models" / "paddleocr" / "en_PP-OCRv4_rec_infer"
-        self.cls_dir = self.repo_root / "models" / "paddleocr" / "ch_ppocr_mobile_v2.0_cls_infer"
+        self.require_real_ocr = require_real_ocr
 
         self._ocr_instance = None
-        self._engine_type = "paddleocr_offline"
+        self._engine_type = "uninitialized"
+        self._init_error: Optional[str] = None
+        self._init_time_sec: float = 0.0
+
+        # Pre-configure environment flags
+        os.environ.setdefault("PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK", "True")
+        _apply_windows_mkldnn_compatibility()
+
         self._init_ocr()
 
     def _init_ocr(self) -> None:
-        """Attempts to initialize PaddleOCR with local model paths."""
+        """Initializes genuine PaddleOCR PP-OCRv4 on CPU/GPU."""
+        t0 = time.time()
         try:
             from paddleocr import PaddleOCR
+            device_str = "gpu" if self.use_gpu else "cpu"
+
+            # PaddleOCR 3.x API initialization
             self._ocr_instance = PaddleOCR(
-                use_angle_cls=True,
+                ocr_version="PP-OCRv4",
                 lang="en",
-                use_gpu=self.use_gpu,
-                det_model_dir=str(self.det_dir) if self.det_dir.exists() else None,
-                rec_model_dir=str(self.rec_dir) if self.rec_dir.exists() else None,
-                cls_model_dir=str(self.cls_dir) if self.cls_dir.exists() else None,
-                show_log=False,
+                use_doc_orientation_classify=False,
+                use_doc_unwarping=False,
+                use_textline_orientation=True,
+                device=device_str,
             )
-            self._engine_type = "paddleocr_native"
-        except (ImportError, Exception):
-            # Fallback to pure-python rule-based pattern extractor for tests and environments without paddle binaries
+            self._engine_type = f"paddleocr_ppocrv4_{device_str}"
+            self._init_time_sec = round(time.time() - t0, 4)
+            self._init_error = None
+            logger.info("PaddleOCR PP-OCRv4 initialized successfully in %.2fs on %s", self._init_time_sec, device_str)
+
+        except Exception as exc:
             self._ocr_instance = None
-            self._engine_type = "food_label_pattern_ocr"
+            self._init_error = f"{type(exc).__name__}: {str(exc)}"
+            self._engine_type = "ocr_unavailable"
+            self._init_time_sec = round(time.time() - t0, 4)
+            logger.error("Genuine PaddleOCR initialization failed: %s", self._init_error)
+            if self.require_real_ocr:
+                raise RuntimeError(
+                    f"Genuine PaddleOCR initialization failed: {self._init_error}. "
+                    "Ensure paddlepaddle and paddleocr are installed and compatible."
+                ) from exc
+
+    @property
+    def is_ready(self) -> bool:
+        """Returns True if genuine OCR engine is loaded and ready for inference."""
+        return self._ocr_instance is not None
 
     def run_ocr(self, img_input: Any) -> Dict[str, Any]:
-        """Runs OCR on the given image and returns standardized structured lines."""
-        img, meta = ImageIngestion.load_image(img_input)
-        np_img, scale = ImageIngestion.prepare_for_ocr(img)
+        """Runs genuine OCR on image pixels and returns structured detected lines.
 
+        Never reads PNG metadata, filenames, or embedded fixture text.
+        """
         start_time = time.time()
+
+        if self._ocr_instance is None:
+            return {
+                "status": "ocr_failed",
+                "error": f"OCR Engine not available: {self._init_error}",
+                "engine": self._engine_type,
+                "model_version": "PP-OCRv4-mobile",
+                "execution_time_sec": 0.0,
+                "line_count": 0,
+                "lines": [],
+                "image_metadata": {},
+            }
+
+        try:
+            img, meta = ImageIngestion.load_image(img_input)
+        except Exception as exc:
+            return {
+                "status": "invalid_image",
+                "error": f"Image ingestion failed: {type(exc).__name__}: {str(exc)}",
+                "engine": self._engine_type,
+                "model_version": "PP-OCRv4-mobile",
+                "execution_time_sec": round(time.time() - start_time, 4),
+                "line_count": 0,
+                "lines": [],
+                "image_metadata": {},
+            }
+
+        # Check for empty / zero-dimension image
+        if img.width == 0 or img.height == 0:
+            return {
+                "status": "empty_image",
+                "error": "Image has zero dimensions",
+                "engine": self._engine_type,
+                "model_version": "PP-OCRv4-mobile",
+                "execution_time_sec": round(time.time() - start_time, 4),
+                "line_count": 0,
+                "lines": [],
+                "image_metadata": meta,
+            }
+
+        # Convert strictly to RGB numpy array for genuine pixel-based inference
+        np_img = np.array(img.convert("RGB"))
+
         lines: List[Dict[str, Any]] = []
+        ocr_error: Optional[str] = None
 
-        if self._engine_type == "paddleocr_native" and self._ocr_instance is not None:
-            try:
-                results = self._ocr_instance.ocr(np_img, cls=True)
-                if results and results[0]:
-                    for item in results[0]:
-                        bbox = item[0]
-                        text, conf = item[1]
-                        if conf >= self.confidence_threshold:
-                            lines.append({
-                                "text": str(text).strip(),
-                                "confidence": round(float(conf), 4),
-                                "bounding_box": bbox,
-                            })
-            except Exception as e:
-                # Log error and fallback
-                pass
+        try:
+            # Execute genuine model inference
+            preds = self._ocr_instance.predict(np_img)
 
-        # If native paddle returned no lines or is running in test/fallback mode:
-        if not lines:
-            lines = self._fallback_image_read(img)
+            if preds and len(preds) > 0:
+                first_page = preds[0]
+                rec_texts = first_page.get("rec_texts", [])
+                rec_scores = first_page.get("rec_scores", [])
+                rec_polys = first_page.get("rec_polys", [])
+
+                for i, (text, score) in enumerate(zip(rec_texts, rec_scores)):
+                    score_val = float(score)
+                    if score_val >= self.confidence_threshold:
+                        # Convert polygon coordinates to standard Python lists
+                        bbox = []
+                        if i < len(rec_polys) and rec_polys[i] is not None:
+                            poly_arr = rec_polys[i]
+                            if hasattr(poly_arr, "tolist"):
+                                bbox = poly_arr.tolist()
+                            else:
+                                bbox = [list(pt) for pt in poly_arr]
+
+                        lines.append({
+                            "text": str(text).strip(),
+                            "confidence": round(score_val, 4),
+                            "bounding_box": bbox,
+                        })
+
+        except Exception as exc:
+            ocr_error = f"OCR inference error: {type(exc).__name__}: {str(exc)}"
+            logger.error("PaddleOCR inference exception: %s", ocr_error)
 
         elapsed = time.time() - start_time
 
+        status = "success"
+        if ocr_error:
+            status = "ocr_failed"
+        elif len(lines) == 0:
+            status = "no_text_detected"
+
         return {
+            "status": status,
             "engine": self._engine_type,
             "model_version": "PP-OCRv4-mobile",
             "execution_time_sec": round(elapsed, 4),
             "line_count": len(lines),
             "lines": lines,
             "image_metadata": meta,
+            "error": ocr_error,
         }
-
-    def _fallback_image_read(self, img: Image.Image) -> List[Dict[str, Any]]:
-        """Fallback for environments without C++ Paddle runtimes. Checks image info or generates clean lines."""
-        lines = []
-        custom_text = getattr(img, "custom_ocr_text", None) or img.info.get("ocr_text")
-        if custom_text:
-            for i, line in enumerate(custom_text.splitlines()):
-                line = line.strip()
-                if line:
-                    lines.append({
-                        "text": line,
-                        "confidence": 0.95,
-                        "bounding_box": [[10, i * 25], [300, i * 25], [300, (i + 1) * 25], [10, (i + 1) * 25]],
-                    })
-        return lines

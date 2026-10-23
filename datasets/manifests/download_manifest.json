@@ -1,0 +1,128 @@
+{
+  "manifest_version": "1.0",
+  "last_updated": "2026-10-23T23:48:26.849229",
+  "downloads": {
+    "ppocr_v4_en_rec": {
+      "name": "PP-OCRv4 English Recognition Model",
+      "category": "model",
+      "source_url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/english/en_PP-OCRv4_rec_infer.tar",
+      "license": "Apache-2.0",
+      "license_url": "https://github.com/PaddlePaddle/PaddleOCR/blob/main/LICENSE",
+      "file_path": "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\en_PP-OCRv4_rec_infer.tar",
+      "file_size_bytes": 10240000,
+      "sha256": "d5ae153a6fbdacd5776543d3194c4258154ed6f83467d55de1cc345f7dd20322",
+      "extracted_path": "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\en_PP-OCRv4_rec_infer",
+      "extracted_bytes": 10227175,
+      "download_date": "2026-10-23T23:39:15.232484",
+      "metadata": {
+        "version": "PP-OCRv4",
+        "description": "Compact high-accuracy text recognition model for English words, digits, and punctuation in food packaging.",
+        "extracted_files": [
+          "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\en_PP-OCRv4_rec_infer\\inference.pdiparams.info",
+          "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\en_PP-OCRv4_rec_infer\\inference.pdmodel",
+          "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\en_PP-OCRv4_rec_infer\\inference.pdiparams"
+        ]
+      }
+    },
+    "ppocr_v4_det": {
+      "name": "PP-OCRv4 Universal Text Detection Model",
+      "category": "model",
+      "source_url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_det_infer.tar",
+      "license": "Apache-2.0",
+      "license_url": "https://github.com/PaddlePaddle/PaddleOCR/blob/main/LICENSE",
+      "file_path": "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\ch_PP-OCRv4_det_infer.tar",
+      "file_size_bytes": 4894720,
+      "sha256": "5f7217e0a89612e2f80d62f3c99a8bf5f7ae9cdc1ffd706be7dde07765627edf",
+      "extracted_path": "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\ch_PP-OCRv4_det_infer",
+      "extracted_bytes": 4882884,
+      "download_date": "2026-10-23T23:39:29.117913",
+      "metadata": {
+        "version": "PP-OCRv4",
+        "description": "Ultra-lightweight DBNet detection model detecting text lines across bounding boxes regardless of script.",
+        "extracted_files": [
+          "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\ch_PP-OCRv4_det_infer\\inference.pdiparams.info",
+          "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\ch_PP-OCRv4_det_infer\\inference.pdiparams",
+          "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\ch_PP-OCRv4_det_infer\\inference.pdmodel"
+        ]
+      }
+    },
+    "ppocr_v2_cls": {
+      "name": "PP-OCR Mobile Text Angle Classifier",
+      "category": "model",
+      "source_url": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_mobile_v2.0_cls_infer.tar",
+      "license": "Apache-2.0",
+      "license_url": "https://github.com/PaddlePaddle/PaddleOCR/blob/main/LICENSE",
+      "file_path": "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\ch_ppocr_mobile_v2.0_cls_infer.tar",
+      "file_size_bytes": 2188800,
+      "sha256": "507352585040d035da3b1e6374694ad679a850acb0a36a8d0d47984176357717",
+      "extracted_path": "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\ch_ppocr_mobile_v2.0_cls_infer",
+      "extracted_bytes": 2183186,
+      "download_date": "2026-10-23T23:39:55.259705",
+      "metadata": {
+        "version": "v2.0",
+        "description": "Direction classifier to determine 0 or 180 degree rotation of extracted food label text crops.",
+        "extracted_files": [
+          "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\ch_ppocr_mobile_v2.0_cls_infer\\inference.pdiparams.info",
+          "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\ch_ppocr_mobile_v2.0_cls_infer\\._inference.pdmodel",
+          "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\ch_ppocr_mobile_v2.0_cls_infer\\inference.pdmodel",
+          "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\ch_ppocr_mobile_v2.0_cls_infer\\inference.pdiparams"
+        ]
+      }
+    },
+    "usda_fdc_foundation_2024_10_31": {
+      "name": "USDA FoodData Central Foundation Foods (CSV)",
+      "category": "dataset",
+      "source_url": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_foundation_food_csv_2024-10-31.zip",
+      "license": "U.S. Public Domain / CC0 Equivalent",
+      "license_url": "https://www.usda.gov/policies-and-links",
+      "file_path": "D:\\health app\\food packet scanner\\food-intelligence-engine\\datasets\\raw\\usda_fooddata_central\\FoodData_Central_foundation_food_csv_2024-10-31.zip",
+      "file_size_bytes": 3258886,
+      "sha256": "8587f941ec252bd9aaf7b85a18a42980fb540f509b34300ed8dd4d10ca9edf44",
+      "extracted_path": "D:\\health app\\food packet scanner\\food-intelligence-engine\\datasets\\raw\\usda_fooddata_central\\extracted",
+      "extracted_bytes": 27184066,
+      "download_date": "2026-10-23T23:40:51.321595",
+      "metadata": {
+        "release_date": "2024-10-31",
+        "data_type": "Foundation Foods"
+      }
+    },
+    "icmr_nin_ifct_2017": {
+      "name": "Indian Food Composition Tables (IFCT 2017)",
+      "category": "reference_document",
+      "source_url": "https://www.nin.res.in/ebooks/IFCT2017.pdf",
+      "license": "Government of India / ICMR Copyright (Reference Use)",
+      "license_url": "https://www.nin.res.in",
+      "file_path": "D:\\health app\\food packet scanner\\food-intelligence-engine\\datasets\\raw\\indian_food_composition\\IFCT2017.pdf",
+      "file_size_bytes": 12401190,
+      "sha256": "7fc5a5112a57240d25bf695dca82cccd8d93ed54e8c39530e42b5ad1820d0e8c",
+      "extracted_path": null,
+      "extracted_bytes": 0,
+      "download_date": "2026-10-23T23:42:23.265908",
+      "metadata": {
+        "publisher": "National Institute of Nutrition (ICMR)",
+        "edition": "2017"
+      }
+    },
+    "open_food_facts_packaged_products_subset": {
+      "name": "Open Food Facts Packaged Products (Documented Subset)",
+      "category": "dataset",
+      "source_url": "https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.csv.gz",
+      "license": "Open Database License (ODbL) 1.0",
+      "license_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+      "file_path": "D:\\health app\\food packet scanner\\food-intelligence-engine\\datasets\\raw\\open_food_facts\\open_food_facts_sample.csv.gz",
+      "file_size_bytes": 5242880,
+      "sha256": "f9e59b04af75a92bc826c9ea7971620a14a2bfad842cebcb83ea62364aa59f81",
+      "extracted_path": null,
+      "extracted_bytes": 0,
+      "download_date": "2026-10-23T23:48:26.849218",
+      "metadata": {
+        "total_remote_bytes": 1491292191,
+        "downloaded_bytes": 5242880,
+        "remaining_bytes": 1486049311,
+        "indexed_products_count": 16592,
+        "format": "tsv_in_gzip",
+        "scope": "Packaged food barcodes, ingredient declarations, nutrition facts per 100g, allergen declarations"
+      }
+    }
+  }
+}

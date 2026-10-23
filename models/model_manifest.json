@@ -1,0 +1,61 @@
+{
+  "manifest_version": "1.0",
+  "last_updated": "2026-10-23T23:38:29.880022",
+  "models": {
+    "ppocr_v4_en_rec": {
+      "name": "PP-OCRv4 English Recognition Model",
+      "version": "PP-OCRv4",
+      "url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/english/en_PP-OCRv4_rec_infer.tar",
+      "license": "Apache-2.0",
+      "license_url": "https://github.com/PaddlePaddle/PaddleOCR/blob/main/LICENSE",
+      "archive_sha256": "d5ae153a6fbdacd5776543d3194c4258154ed6f83467d55de1cc345f7dd20322",
+      "archive_size_bytes": 10240000,
+      "extracted_directory": "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\en_PP-OCRv4_rec_infer",
+      "extracted_files": [
+        "inference.pdiparams.info",
+        "inference.pdmodel",
+        "inference.pdiparams"
+      ],
+      "extracted_bytes": 10227175,
+      "status": "ready_for_inference",
+      "commercial_use": "Permitted (Apache-2.0)"
+    },
+    "ppocr_v4_det": {
+      "name": "PP-OCRv4 Universal Text Detection Model",
+      "version": "PP-OCRv4",
+      "url": "https://paddleocr.bj.bcebos.com/PP-OCRv4/chinese/ch_PP-OCRv4_det_infer.tar",
+      "license": "Apache-2.0",
+      "license_url": "https://github.com/PaddlePaddle/PaddleOCR/blob/main/LICENSE",
+      "archive_sha256": "5f7217e0a89612e2f80d62f3c99a8bf5f7ae9cdc1ffd706be7dde07765627edf",
+      "archive_size_bytes": 4894720,
+      "extracted_directory": "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\ch_PP-OCRv4_det_infer",
+      "extracted_files": [
+        "inference.pdiparams.info",
+        "inference.pdiparams",
+        "inference.pdmodel"
+      ],
+      "extracted_bytes": 4882884,
+      "status": "ready_for_inference",
+      "commercial_use": "Permitted (Apache-2.0)"
+    },
+    "ppocr_v2_cls": {
+      "name": "PP-OCR Mobile Text Angle Classifier",
+      "version": "v2.0",
+      "url": "https://paddleocr.bj.bcebos.com/dygraph_v2.0/ch/ch_ppocr_mobile_v2.0_cls_infer.tar",
+      "license": "Apache-2.0",
+      "license_url": "https://github.com/PaddlePaddle/PaddleOCR/blob/main/LICENSE",
+      "archive_sha256": "507352585040d035da3b1e6374694ad679a850acb0a36a8d0d47984176357717",
+      "archive_size_bytes": 2188800,
+      "extracted_directory": "D:\\health app\\food packet scanner\\food-intelligence-engine\\models\\paddleocr\\ch_ppocr_mobile_v2.0_cls_infer",
+      "extracted_files": [
+        "inference.pdiparams.info",
+        "._inference.pdmodel",
+        "inference.pdmodel",
+        "inference.pdiparams"
+      ],
+      "extracted_bytes": 2183186,
+      "status": "ready_for_inference",
+      "commercial_use": "Permitted (Apache-2.0)"
+    }
+  }
+}

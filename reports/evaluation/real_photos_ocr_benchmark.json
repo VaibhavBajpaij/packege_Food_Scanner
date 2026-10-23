@@ -1,0 +1,1259 @@
+{
+  "benchmark_timestamp": "2026-10-24T01:40:36",
+  "engine_type": "paddleocr_ppocrv4_cpu",
+  "model_version": "PP-OCRv4-mobile",
+  "device": "cpu",
+  "sample_count": 22,
+  "performance": {
+    "model_init_time_sec": 11.7914,
+    "per_image_latency_sec": {
+      "mean": 31.9301,
+      "median": 26.6549,
+      "min": 4.7605,
+      "max": 82.3286,
+      "std": 19.2699
+    },
+    "memory_usage_mb": {
+      "initial_working_set": 32.61,
+      "post_init_working_set": 305.31,
+      "post_inference_working_set": 176.31,
+      "peak_working_set": 3596.06
+    }
+  },
+  "accuracy_metrics": {
+    "evaluated_samples_with_text": 22,
+    "character_error_rate": {
+      "mean": 2.0508,
+      "median": 1.6467
+    },
+    "word_error_rate": {
+      "mean": 2.117,
+      "median": 1.3888
+    },
+    "nutrition_field_extraction": {
+      "total_ground_truth_fields": 142,
+      "true_positives": 45,
+      "false_positives": 29,
+      "false_negatives": 68,
+      "precision": 0.6081,
+      "recall": 0.3982,
+      "field_accuracy": 0.3169
+    }
+  },
+  "detailed_results": [
+    {
+      "sample_id": "real_photo_01",
+      "filename": "real_photo_01_7622210449283.jpg",
+      "product_name": "Prince",
+      "package_type": "biscuit_roll",
+      "visual_conditions": "Curved cylindrical wrapper, warm indoor lighting",
+      "dimensions": {
+        "width": 895,
+        "height": 758
+      },
+      "line_count": 41,
+      "inference_time_sec": 21.5401,
+      "mean_confidence": 0.9648,
+      "cer": 0.6802,
+      "wer": 1.0541,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "match",
+          "gt": 467.0,
+          "ocr": 467.0
+        },
+        "fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 17.0,
+          "ocr": null
+        },
+        "saturated_fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 5.6,
+          "ocr": null
+        },
+        "carbohydrates_g": {
+          "status": "missing_in_ocr",
+          "gt": 69.0,
+          "ocr": null
+        },
+        "sugars_g": {
+          "status": "match",
+          "gt": 32.0,
+          "ocr": 32.0
+        },
+        "protein_g": {
+          "status": "match",
+          "gt": 6.3,
+          "ocr": 6.3
+        },
+        "salt_g": {
+          "status": "missing_in_ocr",
+          "gt": 0.49,
+          "ocr": null
+        }
+      },
+      "first_3_lines": [
+        "100g",
+        "Information",
+        "%/"
+      ]
+    },
+    {
+      "sample_id": "real_photo_02",
+      "filename": "real_photo_02_0044000032029.jpg",
+      "product_name": "oreo cookies shelf",
+      "package_type": "cookie_pack",
+      "visual_conditions": "Blue foil packet, slight reflection, medium resolution",
+      "dimensions": {
+        "width": 1061,
+        "height": 2041
+      },
+      "line_count": 64,
+      "inference_time_sec": 44.2318,
+      "mean_confidence": 0.9739,
+      "cer": 3.0667,
+      "wer": 3.3667,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "mismatch",
+          "gt": 160.0,
+          "ocr": 60.0
+        },
+        "fat_g": {
+          "status": "mismatch",
+          "gt": 7.0,
+          "ocr": 60.0
+        },
+        "saturated_fat_g": {
+          "status": "match",
+          "gt": 2.0,
+          "ocr": 2.0
+        },
+        "sodium_mg": {
+          "status": "match",
+          "gt": 135.0,
+          "ocr": 135.0
+        },
+        "carbohydrates_g": {
+          "status": "match",
+          "gt": 25.0,
+          "ocr": 25.0
+        },
+        "sugars_g": {
+          "status": "match",
+          "gt": 14.0,
+          "ocr": 14.0
+        },
+        "protein_g": {
+          "status": "match",
+          "gt": 1.0,
+          "ocr": 1.0
+        }
+      },
+      "first_3_lines": [
+        "Facts",
+        "Nutrition",
+        "Serving Size 3 cookies (34g)"
+      ]
+    },
+    {
+      "sample_id": "real_photo_03",
+      "filename": "real_photo_03_0028400070560.jpg",
+      "product_name": "Nacho Cheese Flavored",
+      "package_type": "snack_pouch",
+      "visual_conditions": "Bag layout, wrinkled edges, overhead lighting",
+      "dimensions": {
+        "width": 798,
+        "height": 1203
+      },
+      "line_count": 30,
+      "inference_time_sec": 17.9187,
+      "mean_confidence": 0.9661,
+      "cer": 1.0966,
+      "wer": 1.3333,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "match",
+          "gt": 260.0,
+          "ocr": 260.0
+        },
+        "fat_g": {
+          "status": "match",
+          "gt": 13.0,
+          "ocr": 13.0
+        },
+        "saturated_fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 2.0,
+          "ocr": null
+        },
+        "sodium_mg": {
+          "status": "match",
+          "gt": 290.0,
+          "ocr": 290.0
+        },
+        "carbohydrates_g": {
+          "status": "match",
+          "gt": 30.0,
+          "ocr": 30.0
+        },
+        "sugars_g": {
+          "status": "match",
+          "gt": 1.0,
+          "ocr": 1.0
+        },
+        "protein_g": {
+          "status": "match",
+          "gt": 4.0,
+          "ocr": 4.0
+        }
+      },
+      "first_3_lines": [
+        "Nutrition Facts",
+        "Serving size",
+        "1package"
+      ]
+    },
+    {
+      "sample_id": "real_photo_04",
+      "filename": "real_photo_04_5000159461122.jpg",
+      "product_name": "Snickers",
+      "package_type": "confectionery",
+      "visual_conditions": "Foil wrapper, horizontal nutrition table, compact font",
+      "dimensions": {
+        "width": 1161,
+        "height": 709
+      },
+      "line_count": 20,
+      "inference_time_sec": 13.2677,
+      "mean_confidence": 0.9328,
+      "cer": 0.984,
+      "wer": 1.0,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "match",
+          "gt": 481.0,
+          "ocr": 481.0
+        },
+        "fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 23.0,
+          "ocr": null
+        },
+        "saturated_fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 7.9,
+          "ocr": null
+        },
+        "carbohydrates_g": {
+          "status": "missing_in_ocr",
+          "gt": 61.0,
+          "ocr": null
+        },
+        "sugars_g": {
+          "status": "missing_in_ocr",
+          "gt": 52.0,
+          "ocr": null
+        },
+        "protein_g": {
+          "status": "missing_in_ocr",
+          "gt": 8.6,
+          "ocr": null
+        },
+        "salt_g": {
+          "status": "missing_in_ocr",
+          "gt": 0.63,
+          "ocr": null
+        }
+      },
+      "first_3_lines": [
+        "nergie/Valeur energetique",
+        "a",
+        "50"
+      ]
+    },
+    {
+      "sample_id": "real_photo_05",
+      "filename": "real_photo_05_3046920029759.jpg",
+      "product_name": "Excellence Noir Prodigieux 90% Cacao",
+      "package_type": "chocolate_box",
+      "visual_conditions": "Matte cardboard back, high contrast sans-serif typography",
+      "dimensions": {
+        "width": 1176,
+        "height": 753
+      },
+      "line_count": 21,
+      "inference_time_sec": 42.7701,
+      "mean_confidence": 0.9574,
+      "cer": 2.7303,
+      "wer": 1.25,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "missing_in_ocr",
+          "gt": 592.0,
+          "ocr": null
+        },
+        "fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 55.0,
+          "ocr": null
+        },
+        "saturated_fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 30.0,
+          "ocr": null
+        },
+        "carbohydrates_g": {
+          "status": "missing_in_ocr",
+          "gt": 14.0,
+          "ocr": null
+        },
+        "sugars_g": {
+          "status": "missing_in_ocr",
+          "gt": 7.0,
+          "ocr": null
+        },
+        "protein_g": {
+          "status": "missing_in_ocr",
+          "gt": 10.0,
+          "ocr": null
+        },
+        "salt_g": {
+          "status": "missing_in_ocr",
+          "gt": 0.03,
+          "ocr": null
+        }
+      },
+      "first_3_lines": [
+        "Energi/Energiaa/Energi/Energi/Wartosc",
+        "2483 kJ/592 kca",
+        "energetyczna"
+      ]
+    },
+    {
+      "sample_id": "real_photo_06",
+      "filename": "real_photo_06_0016000275270.jpg",
+      "product_name": "Gmills hny nut cheerios sweetened whl grn oat cereal",
+      "package_type": "cereal_box",
+      "visual_conditions": "Cardboard side panel, clear vertical columns, high resolution",
+      "dimensions": {
+        "width": 1917,
+        "height": 4160
+      },
+      "line_count": 58,
+      "inference_time_sec": 72.6243,
+      "mean_confidence": 0.9754,
+      "cer": 2.05,
+      "wer": 2.2903,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "match",
+          "gt": 110.0,
+          "ocr": 110.0
+        },
+        "fat_g": {
+          "status": "match",
+          "gt": 1.5,
+          "ocr": 1.5
+        },
+        "saturated_fat_g": {
+          "status": "match",
+          "gt": 0.0,
+          "ocr": 0.0
+        },
+        "sodium_mg": {
+          "status": "match",
+          "gt": 160.0,
+          "ocr": 160.0
+        },
+        "carbohydrates_g": {
+          "status": "match",
+          "gt": 22.0,
+          "ocr": 22.0
+        },
+        "sugars_g": {
+          "status": "match",
+          "gt": 9.0,
+          "ocr": 9.0
+        },
+        "protein_g": {
+          "status": "match",
+          "gt": 2.0,
+          "ocr": 2.0
+        }
+      },
+      "first_3_lines": [
+        "Nutrition",
+        "Facts",
+        "Serving Size /4 cup (28g)"
+      ]
+    },
+    {
+      "sample_id": "real_photo_07",
+      "filename": "real_photo_07_0030000010204.jpg",
+      "product_name": "Old Fashioned 100% Whole Grain Rolled Oats",
+      "package_type": "oats_tub",
+      "visual_conditions": "Cylindrical canister, curved layout",
+      "dimensions": {
+        "width": 432,
+        "height": 1155
+      },
+      "line_count": 31,
+      "inference_time_sec": 28.2499,
+      "mean_confidence": 0.9479,
+      "cer": 1.7179,
+      "wer": 1.7407,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "mismatch",
+          "gt": 150.0,
+          "ocr": 4.0
+        },
+        "fat_g": {
+          "status": "match",
+          "gt": 3.0,
+          "ocr": 3.0
+        },
+        "saturated_fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 0.5,
+          "ocr": null
+        },
+        "sodium_mg": {
+          "status": "missing_in_ocr",
+          "gt": 0.0,
+          "ocr": null
+        },
+        "carbohydrates_g": {
+          "status": "match",
+          "gt": 27.0,
+          "ocr": 27.0
+        },
+        "sugars_g": {
+          "status": "match",
+          "gt": 1.0,
+          "ocr": 1.0
+        },
+        "protein_g": {
+          "status": "match",
+          "gt": 5.0,
+          "ocr": 5.0
+        }
+      },
+      "first_3_lines": [
+        "Nutrition Facts",
+        "About 13 servings per containe.",
+        "1/2 cup dry 40g"
+      ]
+    },
+    {
+      "sample_id": "real_photo_08",
+      "filename": "real_photo_08_737628064502.jpg",
+      "product_name": "Thai peanut noodle kit includes stir-fry rice noodles & thai peanut seasoning",
+      "package_type": "noodle_box",
+      "visual_conditions": "Kraft paper texture, multi-column nutrition panel",
+      "dimensions": {
+        "width": 870,
+        "height": 1611
+      },
+      "line_count": 29,
+      "inference_time_sec": 26.3118,
+      "mean_confidence": 0.9572,
+      "cer": 1.7333,
+      "wer": 2.08,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "match",
+          "gt": 370.0,
+          "ocr": 310.0
+        },
+        "fat_g": {
+          "status": "mismatch",
+          "gt": 7.0,
+          "ocr": 60.0
+        },
+        "saturated_fat_g": {
+          "status": "mismatch",
+          "gt": 3.0,
+          "ocr": 1.0
+        },
+        "sodium_mg": {
+          "status": "match",
+          "gt": 780.0,
+          "ocr": 629.0
+        },
+        "carbohydrates_g": {
+          "status": "mismatch",
+          "gt": 69.0,
+          "ocr": 55.0
+        },
+        "sugars_g": {
+          "status": "mismatch",
+          "gt": 13.0,
+          "ocr": 10.0
+        },
+        "protein_g": {
+          "status": "match",
+          "gt": 8.0,
+          "ocr": 7.0
+        }
+      },
+      "first_3_lines": [
+        "THA!",
+        "E",
+        "Nutritiond"
+      ]
+    },
+    {
+      "sample_id": "real_photo_09",
+      "filename": "real_photo_09_8901725181222.jpg",
+      "product_name": "Yippee noodles",
+      "package_type": "noodle_pouch",
+      "visual_conditions": "Glossy plastic pouch, yellow-red high contrast",
+      "dimensions": {
+        "width": 664,
+        "height": 413
+      },
+      "line_count": 33,
+      "inference_time_sec": 20.8219,
+      "mean_confidence": 0.9421,
+      "cer": 1.0424,
+      "wer": 1.125,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "mismatch",
+          "gt": 466.0,
+          "ocr": 77.0
+        },
+        "protein_g": {
+          "status": "mismatch",
+          "gt": 8.9,
+          "ocr": 6.2
+        },
+        "carbohydrates_g": {
+          "status": "missing_in_ocr",
+          "gt": 63.4,
+          "ocr": null
+        },
+        "sugars_g": {
+          "status": "missing_in_ocr",
+          "gt": 2.4,
+          "ocr": null
+        },
+        "fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 19.6,
+          "ocr": null
+        },
+        "saturated_fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 9.2,
+          "ocr": null
+        },
+        "sodium_mg": {
+          "status": "mismatch",
+          "gt": 1098.0,
+          "ocr": 713.0
+        }
+      },
+      "first_3_lines": [
+        "Serving size:70 g",
+        "Average Quantity Average Quanti",
+        "per Serving"
+      ]
+    },
+    {
+      "sample_id": "real_photo_10",
+      "filename": "real_photo_10_8076809513753.jpg",
+      "product_name": "Barilla PESTO alla GENOVESE",
+      "package_type": "glass_jar",
+      "visual_conditions": "Glass label with glare, bilingual text",
+      "dimensions": {
+        "width": 550,
+        "height": 1244
+      },
+      "line_count": 26,
+      "inference_time_sec": 29.9674,
+      "mean_confidence": 0.9457,
+      "cer": 1.5756,
+      "wer": 1.0303,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "mismatch",
+          "gt": 470.0,
+          "ocr": 2030.0
+        },
+        "fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 45.0,
+          "ocr": null
+        },
+        "saturated_fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 5.3,
+          "ocr": null
+        },
+        "carbohydrates_g": {
+          "status": "missing_in_ocr",
+          "gt": 9.8,
+          "ocr": null
+        },
+        "sugars_g": {
+          "status": "match",
+          "gt": 5.5,
+          "ocr": 5.0
+        },
+        "protein_g": {
+          "status": "missing_in_ocr",
+          "gt": 5.0,
+          "ocr": null
+        },
+        "salt_g": {
+          "status": "missing_in_ocr",
+          "gt": 3.1,
+          "ocr": null
+        }
+      },
+      "first_3_lines": [
+        "Declaration nutritionnelle",
+        "Nahrwertdeklaration",
+        "Voedingswaarden"
+      ]
+    },
+    {
+      "sample_id": "real_photo_11",
+      "filename": "real_photo_11_5000157024671.jpg",
+      "product_name": "Beanz in a rich tomato sauce",
+      "package_type": "tin_can",
+      "visual_conditions": "Metal cylindrical can, curved textline orientation",
+      "dimensions": {
+        "width": 592,
+        "height": 1280
+      },
+      "line_count": 15,
+      "inference_time_sec": 22.191,
+      "mean_confidence": 0.7588,
+      "cer": 0.8529,
+      "wer": 1.0,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "missing_in_ocr",
+          "gt": 78.0,
+          "ocr": null
+        },
+        "fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 0.2,
+          "ocr": null
+        },
+        "saturated_fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 0.1,
+          "ocr": null
+        },
+        "carbohydrates_g": {
+          "status": "missing_in_ocr",
+          "gt": 12.5,
+          "ocr": null
+        },
+        "sugars_g": {
+          "status": "missing_in_ocr",
+          "gt": 4.7,
+          "ocr": null
+        },
+        "protein_g": {
+          "status": "missing_in_ocr",
+          "gt": 4.7,
+          "ocr": null
+        },
+        "salt_g": {
+          "status": "missing_in_ocr",
+          "gt": 0.6,
+          "ocr": null
+        }
+      },
+      "first_3_lines": [
+        "SK",
+        "ory.mo",
+        "t loen i"
+      ]
+    },
+    {
+      "sample_id": "real_photo_12",
+      "filename": "real_photo_12_0011110038364.jpg",
+      "product_name": "Chicken tortilla soup dry soup mix",
+      "package_type": "soup_pouch",
+      "visual_conditions": "Foil pouch, vertical nutritional panel",
+      "dimensions": {
+        "width": 375,
+        "height": 525
+      },
+      "line_count": 50,
+      "inference_time_sec": 37.166,
+      "mean_confidence": 0.8986,
+      "cer": 2.5913,
+      "wer": 3.5789,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "mismatch",
+          "gt": 100.0,
+          "ocr": 1.0
+        },
+        "fat_g": {
+          "status": "match",
+          "gt": 1.0,
+          "ocr": 1.0
+        },
+        "sodium_mg": {
+          "status": "missing_in_ocr",
+          "gt": 720.0,
+          "ocr": null
+        },
+        "carbohydrates_g": {
+          "status": "missing_in_ocr",
+          "gt": 20.0,
+          "ocr": null
+        },
+        "protein_g": {
+          "status": "match",
+          "gt": 3.0,
+          "ocr": 3.0
+        }
+      },
+      "first_3_lines": [
+        "Nres urns",
+        "INGRR",
+        "PEEPE"
+      ]
+    },
+    {
+      "sample_id": "real_photo_13",
+      "filename": "real_photo_13_3017620422003.jpg",
+      "product_name": "Nutella",
+      "package_type": "glass_jar",
+      "visual_conditions": "White plastic label, small 6pt font on curved surface",
+      "dimensions": {
+        "width": 1125,
+        "height": 2000
+      },
+      "line_count": 3,
+      "inference_time_sec": 9.0422,
+      "mean_confidence": 0.9368,
+      "cer": 0.4667,
+      "wer": 1.0,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "missing_in_ocr",
+          "gt": 539.0,
+          "ocr": null
+        },
+        "fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 30.9,
+          "ocr": null
+        },
+        "carbohydrates_g": {
+          "status": "missing_in_ocr",
+          "gt": 57.5,
+          "ocr": null
+        },
+        "sugars_g": {
+          "status": "missing_in_ocr",
+          "gt": 56.3,
+          "ocr": null
+        },
+        "protein_g": {
+          "status": "missing_in_ocr",
+          "gt": 6.3,
+          "ocr": null
+        },
+        "salt_g": {
+          "status": "missing_in_ocr",
+          "gt": 0.107,
+          "ocr": null
+        }
+      },
+      "first_3_lines": [
+        "nutella",
+        "R",
+        "150"
+      ]
+    },
+    {
+      "sample_id": "real_photo_14",
+      "filename": "real_photo_14_5449000000996.jpg",
+      "product_name": "Coca-Cola Original",
+      "package_type": "beverage_can",
+      "visual_conditions": "Red aluminum can, curved text with metallic reflection",
+      "dimensions": {
+        "width": 767,
+        "height": 904
+      },
+      "line_count": 32,
+      "inference_time_sec": 31.477,
+      "mean_confidence": 0.8964,
+      "cer": 2.8559,
+      "wer": 2.0833,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "match",
+          "gt": 42.0,
+          "ocr": 42.0
+        },
+        "carbohydrates_g": {
+          "status": "missing_in_ocr",
+          "gt": 10.6,
+          "ocr": null
+        },
+        "sugars_g": {
+          "status": "missing_in_ocr",
+          "gt": 10.6,
+          "ocr": null
+        },
+        "fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 0.0,
+          "ocr": null
+        },
+        "protein_g": {
+          "status": "missing_in_ocr",
+          "gt": 0.0,
+          "ocr": null
+        },
+        "salt_g": {
+          "status": "missing_in_ocr",
+          "gt": 0.0,
+          "ocr": null
+        }
+      },
+      "first_3_lines": [
+        "ORIGINAL",
+        "Coke",
+        "R"
+      ]
+    },
+    {
+      "sample_id": "real_photo_15",
+      "filename": "real_photo_15_0070847811169.jpg",
+      "product_name": "Monster Energy",
+      "package_type": "energy_can",
+      "visual_conditions": "Black matte aluminum, dense ingredient block",
+      "dimensions": {
+        "width": 592,
+        "height": 1280
+      },
+      "line_count": 1,
+      "inference_time_sec": 4.7605,
+      "mean_confidence": 0.6734,
+      "cer": 0.7143,
+      "wer": 1.0,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "missing_in_ocr",
+          "gt": 47.0,
+          "ocr": null
+        },
+        "carbohydrates_g": {
+          "status": "missing_in_ocr",
+          "gt": 12.0,
+          "ocr": null
+        },
+        "sugars_g": {
+          "status": "missing_in_ocr",
+          "gt": 11.0,
+          "ocr": null
+        },
+        "salt_g": {
+          "status": "missing_in_ocr",
+          "gt": 0.19,
+          "ocr": null
+        }
+      },
+      "first_3_lines": [
+        "ENNGY"
+      ]
+    },
+    {
+      "sample_id": "real_photo_16",
+      "filename": "real_photo_16_0041220576920.jpg",
+      "product_name": "Opti-Meal protein shake",
+      "package_type": "shake_carton",
+      "visual_conditions": "Tetra Pak carton, vertical nutritional layout",
+      "dimensions": {
+        "width": 472,
+        "height": 731
+      },
+      "line_count": 33,
+      "inference_time_sec": 26.998,
+      "mean_confidence": 0.9409,
+      "cer": 2.5268,
+      "wer": 3.1111,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "mismatch",
+          "gt": 160.0,
+          "ocr": 6.0
+        },
+        "fat_g": {
+          "status": "mismatch",
+          "gt": 2.5,
+          "ocr": 6.0
+        },
+        "sodium_mg": {
+          "status": "match",
+          "gt": 240.0,
+          "ocr": 230.0
+        },
+        "carbohydrates_g": {
+          "status": "mismatch",
+          "gt": 4.0,
+          "ocr": 24.0
+        },
+        "protein_g": {
+          "status": "mismatch",
+          "gt": 30.0,
+          "ocr": 10.0
+        }
+      },
+      "first_3_lines": [
+        "Nutrition Facts",
+        "servings per container",
+        "Serving size 1 bottle (325mL"
+      ]
+    },
+    {
+      "sample_id": "real_photo_17",
+      "filename": "real_photo_17_0025293000995.jpg",
+      "product_name": "Almondmilk",
+      "package_type": "beverage_carton",
+      "visual_conditions": "Plant milk carton, side nutrition panel",
+      "dimensions": {
+        "width": 1080,
+        "height": 1919
+      },
+      "line_count": 85,
+      "inference_time_sec": 82.3286,
+      "mean_confidence": 0.9419,
+      "cer": 11.9466,
+      "wer": 10.9091,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "mismatch",
+          "gt": 60.0,
+          "ocr": 3.0
+        },
+        "fat_g": {
+          "status": "match",
+          "gt": 2.5,
+          "ocr": 2.0
+        },
+        "sodium_mg": {
+          "status": "match",
+          "gt": 150.0,
+          "ocr": 130.0
+        },
+        "carbohydrates_g": {
+          "status": "mismatch",
+          "gt": 8.0,
+          "ocr": 14.0
+        },
+        "sugars_g": {
+          "status": "mismatch",
+          "gt": 7.0,
+          "ocr": 13.0
+        },
+        "protein_g": {
+          "status": "match",
+          "gt": 1.0,
+          "ocr": 1.0
+        }
+      },
+      "first_3_lines": [
+        "Free",
+        "dairygluten carrageenan cholesterof",
+        "from"
+      ]
+    },
+    {
+      "sample_id": "real_photo_18",
+      "filename": "real_photo_18_0051500255162.jpg",
+      "product_name": "Creamy Peanut Butter",
+      "package_type": "plastic_jar",
+      "visual_conditions": "Round plastic jar, dual-column nutrition facts",
+      "dimensions": {
+        "width": 663,
+        "height": 576
+      },
+      "line_count": 39,
+      "inference_time_sec": 30.2312,
+      "mean_confidence": 0.906,
+      "cer": 2.1141,
+      "wer": 2.28,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "missing_in_ocr",
+          "gt": 190.0,
+          "ocr": null
+        },
+        "fat_g": {
+          "status": "match",
+          "gt": 16.0,
+          "ocr": 16.0
+        },
+        "saturated_fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 3.5,
+          "ocr": null
+        },
+        "sodium_mg": {
+          "status": "match",
+          "gt": 140.0,
+          "ocr": 140.0
+        },
+        "carbohydrates_g": {
+          "status": "missing_in_ocr",
+          "gt": 7.0,
+          "ocr": null
+        },
+        "sugars_g": {
+          "status": "match",
+          "gt": 3.0,
+          "ocr": 3.0
+        },
+        "protein_g": {
+          "status": "match",
+          "gt": 7.0,
+          "ocr": 7.0
+        }
+      },
+      "first_3_lines": [
+        "%DV*",
+        "Amount/Serving",
+        "%DV"
+      ]
+    },
+    {
+      "sample_id": "real_photo_19",
+      "filename": "real_photo_19_0049000006346.jpg",
+      "product_name": "Coca cola can cokes LG",
+      "package_type": "beverage_can",
+      "visual_conditions": "Green aluminum can, small ingredient declaration",
+      "dimensions": {
+        "width": 3024,
+        "height": 4032
+      },
+      "line_count": 42,
+      "inference_time_sec": 67.8009,
+      "mean_confidence": 0.8893,
+      "cer": 1.8909,
+      "wer": 2.1053,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "mismatch",
+          "gt": 140.0,
+          "ocr": 0.0
+        },
+        "fat_g": {
+          "status": "match",
+          "gt": 0.0,
+          "ocr": 0.0
+        },
+        "sodium_mg": {
+          "status": "missing_in_ocr",
+          "gt": 45.0,
+          "ocr": null
+        },
+        "carbohydrates_g": {
+          "status": "mismatch",
+          "gt": 39.0,
+          "ocr": 140.0
+        },
+        "sugars_g": {
+          "status": "missing_in_ocr",
+          "gt": 39.0,
+          "ocr": null
+        },
+        "protein_g": {
+          "status": "missing_in_ocr",
+          "gt": 0.0,
+          "ocr": null
+        }
+      },
+      "first_3_lines": [
+        "Nutrition",
+        "Facts",
+        "1 Can"
+      ]
+    },
+    {
+      "sample_id": "real_photo_20",
+      "filename": "real_photo_20_0028400043809.jpg",
+      "product_name": "Wavy Original",
+      "package_type": "snack_pouch",
+      "visual_conditions": "Yellow glossy foil snack pouch, reflections",
+      "dimensions": {
+        "width": 590,
+        "height": 1280
+      },
+      "line_count": 28,
+      "inference_time_sec": 25.9387,
+      "mean_confidence": 0.918,
+      "cer": 1.0958,
+      "wer": 1.4444,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "mismatch",
+          "gt": 160.0,
+          "ocr": 0.0
+        },
+        "fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 10.0,
+          "ocr": null
+        },
+        "saturated_fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 1.5,
+          "ocr": null
+        },
+        "sodium_mg": {
+          "status": "match",
+          "gt": 140.0,
+          "ocr": 140.0
+        },
+        "carbohydrates_g": {
+          "status": "missing_in_ocr",
+          "gt": 15.0,
+          "ocr": null
+        },
+        "protein_g": {
+          "status": "match",
+          "gt": 2.0,
+          "ocr": 2.0
+        }
+      },
+      "first_3_lines": [
+        "Fact",
+        "About 8 servings per",
+        "160"
+      ]
+    },
+    {
+      "sample_id": "real_photo_21",
+      "filename": "real_photo_21_5000159407236.jpg",
+      "product_name": "Mars",
+      "package_type": "confectionery",
+      "visual_conditions": "Gold foil confectionery wrapper, compact lines",
+      "dimensions": {
+        "width": 2008,
+        "height": 1540
+      },
+      "line_count": 22,
+      "inference_time_sec": 23.5108,
+      "mean_confidence": 0.9518,
+      "cer": 0.8929,
+      "wer": 0.9394,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "mismatch",
+          "gt": 448.0,
+          "ocr": 229.0
+        },
+        "fat_g": {
+          "status": "missing_in_ocr",
+          "gt": 17.0,
+          "ocr": null
+        },
+        "saturated_fat_g": {
+          "status": "mismatch",
+          "gt": 8.1,
+          "ocr": 35.8
+        },
+        "carbohydrates_g": {
+          "status": "missing_in_ocr",
+          "gt": 70.0,
+          "ocr": null
+        },
+        "sugars_g": {
+          "status": "missing_in_ocr",
+          "gt": 60.0,
+          "ocr": null
+        },
+        "protein_g": {
+          "status": "mismatch",
+          "gt": 4.0,
+          "ocr": 0.21
+        },
+        "salt_g": {
+          "status": "missing_in_ocr",
+          "gt": 0.41,
+          "ocr": null
+        }
+      },
+      "first_3_lines": [
+        "par",
+        "/51g(%)",
+        "/100g"
+      ]
+    },
+    {
+      "sample_id": "real_photo_22",
+      "filename": "real_photo_22_8901491101837.jpg",
+      "product_name": "Lays Classics Salted 20rs",
+      "package_type": "snack_pouch",
+      "visual_conditions": "Indian savory snack, Hindi & English bilingual label",
+      "dimensions": {
+        "width": 1418,
+        "height": 1200
+      },
+      "line_count": 22,
+      "inference_time_sec": 23.3142,
+      "mean_confidence": 0.9097,
+      "cer": 0.4923,
+      "wer": 0.8519,
+      "matched_nutrient_fields": {
+        "energy_kcal": {
+          "status": "mismatch",
+          "gt": 554.0,
+          "ocr": 7.0
+        },
+        "protein_g": {
+          "status": "missing_in_ocr",
+          "gt": 6.9,
+          "ocr": null
+        },
+        "carbohydrates_g": {
+          "status": "mismatch",
+          "gt": 52.8,
+          "ocr": 9.0
+        },
+        "sugars_g": {
+          "status": "mismatch",
+          "gt": 1.1,
+          "ocr": 9.0
+        },
+        "fat_g": {
+          "status": "match",
+          "gt": 35.0,
+          "ocr": 35.5
+        },
+        "saturated_fat_g": {
+          "status": "mismatch",
+          "gt": 15.8,
+          "ocr": 9.0
+        },
+        "sodium_mg": {
+          "status": "missing_in_ocr",
+          "gt": 413.0,
+          "ocr": null
+        }
+      },
+      "first_3_lines": [
+        "Per 100",
+        "554",
+        "Energy"
+      ]
+    }
+  ]
+}

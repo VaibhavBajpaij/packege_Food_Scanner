@@ -16,66 +16,66 @@ from typing import Any, Dict, List, Optional, Tuple
 
 NUTRIENT_REGEX_MAP = {
     "energy_kcal": [
-        r"(?:energy|calories|calorie|energetic\s*value)\s*(?:[^\d\n]*?)(\d+(?:\.\d+)?)\s*(?:kcal|calories)?",
-        r"(\d+(?:\.\d+)?)\s*kcal",
+        r"(?:energy|calories|calorie|energetic\s*value|energie)\s*(?:[^\d\n]*?)(\d+(?:[.,]\d+)?)\s*(?:kcal|calories)?",
+        r"(\d+(?:[.,]\d+)?)\s*kcal",
     ],
     "energy_kj": [
-        r"(?:energy|energetic\s*value)\s*(?:[^\d\n]*?)(\d+(?:\.\d+)?)\s*kj",
-        r"(\d+(?:\.\d+)?)\s*kj",
+        r"(?:energy|energetic\s*value|energie)\s*(?:[^\d\n]*?)(\d+(?:[.,]\d+)?)\s*kj",
+        r"(\d+(?:[.,]\d+)?)\s*kj",
     ],
     "protein_g": [
-        r"(?:protein|proteins)\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*g?",
+        r"(?:protein|proteins|prot[ée]ines?|eiwei[ßs])\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "carbohydrates_g": [
-        r"(?:total\s*carbohydrate|carbohydrates?|carbs?)\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*g?",
+        r"(?:total\s*carbohydrate|carbohydrates?|carbs?|glucides|kohlenhydrate)\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "sugars_g": [
-        r"(?:total\s*sugars?|sugars?)\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*g?",
+        r"(?:total\s*sugars?|sugars?|dont\s*sucres|davon\s*zucker|sucres)\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "added_sugars_g": [
-        r"(?:added\s*sugars?|of\s*which\s*added\s*sugars?)\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*g?",
+        r"(?:added\s*sugars?|of\s*which\s*added\s*sugars?)\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "dietary_fibre_g": [
-        r"(?:dietary\s*fib(?:re|er)|fib(?:re|er))\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*g?",
+        r"(?:dietary\s*fib(?:re|er)|fib(?:re|er)|fibres?\s*alimentaires?|ballaststoffe)\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "total_fat_g": [
-        r"(?:total\s*fat|fat)\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*g?",
+        r"(?:total\s*fat|fat|mati[èe]res?\s*grasses?|fett|graisses?)\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "saturated_fat_g": [
-        r"(?:saturated\s*fat(?:ty\s*acids?)?|saturates?)\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*g?",
+        r"(?:saturated\s*fat(?:ty\s*acids?)?|saturates?|dont\s*(?:acides\s*gras\s*)?satur[ée]s?|davon\s*ges[äa]ttigte)\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "trans_fat_g": [
-        r"(?:trans\s*fat(?:ty\s*acids?)?|trans\s*fat)\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*g?",
+        r"(?:trans\s*fat(?:ty\s*acids?)?|trans\s*fat)\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "cholesterol_mg": [
-        r"cholesterol\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*mg?",
+        r"cholesterol\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*mg?",
     ],
     "sodium_mg": [
-        r"sodium\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*mg?",
+        r"(?:sodium|natrium)\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*mg?",
     ],
     "salt_g": [
-        r"salt\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*g?",
+        r"(?:salt|sel|salz)\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "iron_mg": [
-        r"iron\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*mg?",
+        r"iron\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*mg?",
     ],
     "calcium_mg": [
-        r"calcium\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*mg?",
+        r"calcium\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*mg?",
     ],
     "potassium_mg": [
-        r"potassium\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*mg?",
+        r"potassium\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*mg?",
     ],
     "zinc_mg": [
-        r"zinc\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*mg?",
+        r"zinc\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*mg?",
     ],
     "magnesium_mg": [
-        r"magnesium\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*mg?",
+        r"magnesium\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*mg?",
     ],
     "vitamin_c_mg": [
-        r"vitamin\s*c\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*mg?",
+        r"vitamin\s*c\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*mg?",
     ],
     "vitamin_d_mcg": [
-        r"vitamin\s*d\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*(?:mcg|µg|ug)?",
+        r"vitamin\s*d\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*(?:mcg|µg|ug)?",
     ],
 }
 
@@ -212,16 +212,41 @@ class NutritionExtractor:
 
     @classmethod
     def _search_patterns(cls, lines: List[str], patterns: List[str]) -> Tuple[Optional[float], Optional[float]]:
+        # 1. Search line by line
         for line in lines:
             clean_l = line.strip().lower()
             for pat in patterns:
                 m = re.search(pat, clean_l, re.IGNORECASE)
                 if m:
                     try:
-                        val = float(m.group(1))
-                        # Basic confidence heuristic
+                        val = float(m.group(1).replace(",", "."))
                         conf = 0.90 if len(lines) > 0 else 0.70
                         return val, conf
                     except (ValueError, IndexError):
                         continue
+
+        # 2. Search adjacent lines joined together (e.g. label on line 1, number on line 2)
+        for i in range(len(lines) - 1):
+            pair = f"{lines[i].strip()} {lines[i+1].strip()}".lower()
+            for pat in patterns:
+                m = re.search(pat, pair, re.IGNORECASE)
+                if m:
+                    try:
+                        val = float(m.group(1).replace(",", "."))
+                        return val, 0.85
+                    except (ValueError, IndexError):
+                        continue
+
+        # 3. Search full text
+        full = " ".join(lines).lower()
+        for pat in patterns:
+            m = re.search(pat, full, re.IGNORECASE)
+            if m:
+                try:
+                    val = float(m.group(1).replace(",", "."))
+                    return val, 0.80
+                except (ValueError, IndexError):
+                    continue
+
         return None, None
+
