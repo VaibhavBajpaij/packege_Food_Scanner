@@ -16,6 +16,7 @@ from typing import Any, Dict, List, Optional, Union
 from PIL import Image
 
 from food_engine.ocr.image_ingestion import ImageIngestion
+from food_engine.ocr.layout_assembly import row_group_lines
 from food_engine.ocr.ocr_engine import OCREngine
 from food_engine.product_matching.matcher import ProductMatcher
 from food_engine.product_matching.nutrient_fusion import NutrientFusion
@@ -69,7 +70,11 @@ class FoodIntelligenceEngine:
             ]
             ocr_res["line_count"] = len(override_ocr_lines)
 
-        ocr_text_lines = [item["text"] for item in ocr_res["lines"]]
+        # Merge OCR fragments sharing a print row (recovered from bounding
+        # boxes) so nutrition-table rows arrive whole rather than split.
+        assembled_lines = row_group_lines(ocr_res["lines"])
+        ocr_res["assembled_lines"] = assembled_lines
+        ocr_text_lines = [item["text"] for item in assembled_lines]
 
         # Stage 3: Product Matching
         matched_product = self.product_matcher.match(

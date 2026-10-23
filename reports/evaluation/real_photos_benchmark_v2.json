@@ -1,0 +1,724 @@
+{
+  "generated_by": "scripts/run_benchmark_v2_metrics.py",
+  "inference_source": "reports/evaluation/audit_rerun_v1.json (single fresh inference pass, no thresholds)",
+  "metrics_module": "src/food_engine/evaluate/text_metrics.py (independent, unit-tested)",
+  "tolerance": 0.05,
+  "dev": {
+    "n_samples": 15,
+    "cer": {
+      "weighted": 1.3997509339975094,
+      "macro": 1.3702781832018187,
+      "empty_prediction_excluded": 0
+    },
+    "wer": {
+      "weighted": 1.3786078098471986,
+      "macro": 1.367678555145991,
+      "empty_prediction_excluded": 0
+    },
+    "coverage_cer": {
+      "weighted": 0.2671232876712329,
+      "macro": 0.3188462779840995,
+      "empty_prediction_excluded": 0
+    },
+    "coverage_wer": {
+      "weighted": 0.5365025466893039,
+      "macro": 0.6005166858563488,
+      "empty_prediction_excluded": 0
+    },
+    "empty_prediction_count": 0,
+    "per_field_precision": {
+      "energy_kcal": 0.38461538461538464,
+      "energy_kj": null,
+      "protein_g": 0.6153846153846154,
+      "carbohydrates_g": 0.38461538461538464,
+      "sugars_g": 0.6666666666666666,
+      "fat_g": 0.46153846153846156,
+      "saturated_fat_g": 0.2727272727272727,
+      "fibre_g": null,
+      "sodium_mg": 0.7777777777777778,
+      "salt_g": 0.0
+    },
+    "per_field_recall": {
+      "energy_kcal": 0.38461538461538464,
+      "energy_kj": null,
+      "protein_g": 0.6153846153846154,
+      "carbohydrates_g": 0.38461538461538464,
+      "sugars_g": 0.6666666666666666,
+      "fat_g": 0.46153846153846156,
+      "saturated_fat_g": 0.2727272727272727,
+      "fibre_g": null,
+      "sodium_mg": 0.7777777777777778,
+      "salt_g": 0.0
+    },
+    "per_field_f1": {
+      "energy_kcal": 0.38461538461538464,
+      "energy_kj": null,
+      "protein_g": 0.6153846153846154,
+      "carbohydrates_g": 0.38461538461538464,
+      "sugars_g": 0.6666666666666666,
+      "fat_g": 0.46153846153846156,
+      "saturated_fat_g": 0.2727272727272727,
+      "fibre_g": null,
+      "sodium_mg": 0.7777777777777778,
+      "salt_g": null
+    },
+    "macro_precision": 0.4454156954156954,
+    "macro_recall": 0.4454156954156954,
+    "macro_f1": 0.509046509046509,
+    "samples_with_all_declared_fields_correct": 2,
+    "basis_accuracy": 0.5333333333333333,
+    "latency_sec": {
+      "median": 29.475,
+      "p95": 90.4045
+    },
+    "per_sample_field_errors": {
+      "real_photo_02": {
+        "energy_kcal": {
+          "expected": 160.0,
+          "got": 2000.0,
+          "via": "energy_kcal",
+          "kind": "wrong_value"
+        },
+        "fat_g": {
+          "expected": 7.0,
+          "got": 60.0,
+          "via": "total_fat_g",
+          "kind": "wrong_value"
+        },
+        "__basis__": {
+          "expected": "per_serving",
+          "got": "per_100_g"
+        }
+      },
+      "real_photo_03": {
+        "saturated_fat_g": {
+          "expected": 2.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        }
+      },
+      "real_photo_04": {
+        "protein_g": {
+          "expected": 8.6,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "carbohydrates_g": {
+          "expected": 60.5,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "sugars_g": {
+          "expected": 51.8,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "fat_g": {
+          "expected": 22.5,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "saturated_fat_g": {
+          "expected": 7.9,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "salt_g": {
+          "expected": 0.63,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "__basis__": {
+          "expected": "per_100g",
+          "got": "per_100_g"
+        }
+      },
+      "real_photo_05": {
+        "energy_kcal": {
+          "expected": 592.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "protein_g": {
+          "expected": 10.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "carbohydrates_g": {
+          "expected": 14.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "sugars_g": {
+          "expected": 7.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "fat_g": {
+          "expected": 55.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "saturated_fat_g": {
+          "expected": 30.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "salt_g": {
+          "expected": 0.03,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "__basis__": {
+          "expected": "per_100g",
+          "got": "per_100_g"
+        }
+      },
+      "real_photo_08": {
+        "fat_g": {
+          "expected": 7.0,
+          "got": 60.0,
+          "via": "total_fat_g",
+          "kind": "wrong_value"
+        }
+      },
+      "real_photo_10": {
+        "energy_kcal": {
+          "expected": 492.0,
+          "got": 2030.0,
+          "via": "energy_kcal",
+          "kind": "wrong_value"
+        },
+        "protein_g": {
+          "expected": 4.7,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "carbohydrates_g": {
+          "expected": 11.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "fat_g": {
+          "expected": 47.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "saturated_fat_g": {
+          "expected": 5.3,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "salt_g": {
+          "expected": 3.2,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "__basis__": {
+          "expected": "per_100g",
+          "got": "per_100_g"
+        }
+      },
+      "real_photo_12": {
+        "energy_kcal": {
+          "expected": 90.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "carbohydrates_g": {
+          "expected": 18.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "saturated_fat_g": {
+          "expected": 0.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "sodium_mg": {
+          "expected": 420.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        }
+      },
+      "real_photo_13": {
+        "__basis__": {
+          "expected": "front_only",
+          "got": "per_100_g"
+        }
+      },
+      "real_photo_14": {
+        "protein_g": {
+          "expected": 0.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "carbohydrates_g": {
+          "expected": 10.6,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "sugars_g": {
+          "expected": 10.6,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "fat_g": {
+          "expected": 0.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "salt_g": {
+          "expected": 0.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "__basis__": {
+          "expected": "per_100ml",
+          "got": "per_100_g"
+        }
+      },
+      "real_photo_15": {
+        "__basis__": {
+          "expected": "front_only",
+          "got": "per_100_g"
+        }
+      },
+      "real_photo_17": {
+        "energy_kcal": {
+          "expected": 80.0,
+          "got": 3.0,
+          "via": "energy_kcal",
+          "kind": "wrong_value"
+        },
+        "saturated_fat_g": {
+          "expected": 0.0,
+          "got": 0.5,
+          "via": "saturated_fat_g",
+          "kind": "wrong_value"
+        }
+      },
+      "real_photo_18": {
+        "energy_kcal": {
+          "expected": 190.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "carbohydrates_g": {
+          "expected": 8.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "saturated_fat_g": {
+          "expected": 3.5,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        }
+      },
+      "real_photo_19": {
+        "energy_kcal": {
+          "expected": 140.0,
+          "got": 0.0,
+          "via": "energy_kcal",
+          "kind": "wrong_value"
+        },
+        "protein_g": {
+          "expected": 0.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "carbohydrates_g": {
+          "expected": 39.0,
+          "got": 140.0,
+          "via": "carbohydrates_g",
+          "kind": "wrong_value"
+        },
+        "sugars_g": {
+          "expected": 39.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "sodium_mg": {
+          "expected": 45.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        }
+      },
+      "real_photo_20": {
+        "energy_kcal": {
+          "expected": 160.0,
+          "got": 0.0,
+          "via": "energy_kcal",
+          "kind": "wrong_value"
+        },
+        "carbohydrates_g": {
+          "expected": 15.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "fat_g": {
+          "expected": 10.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "saturated_fat_g": {
+          "expected": 1.5,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        }
+      }
+    }
+  },
+  "held_out": {
+    "n_samples": 7,
+    "cer": {
+      "weighted": 0.4774560987185572,
+      "macro": 0.49760086269714593,
+      "empty_prediction_excluded": 0
+    },
+    "wer": {
+      "weighted": 0.7186046511627907,
+      "macro": 0.7282117211618749,
+      "empty_prediction_excluded": 0
+    },
+    "coverage_cer": {
+      "weighted": 0.34219269102990035,
+      "macro": 0.33142023452969777,
+      "empty_prediction_excluded": 0
+    },
+    "coverage_wer": {
+      "weighted": 0.6255813953488372,
+      "macro": 0.6146996888350671,
+      "empty_prediction_excluded": 0
+    },
+    "empty_prediction_count": 0,
+    "per_field_precision": {
+      "energy_kcal": 0.14285714285714285,
+      "energy_kj": null,
+      "protein_g": 0.42857142857142855,
+      "carbohydrates_g": 0.2857142857142857,
+      "sugars_g": 0.42857142857142855,
+      "fat_g": 0.42857142857142855,
+      "saturated_fat_g": 0.14285714285714285,
+      "fibre_g": null,
+      "sodium_mg": 0.2,
+      "salt_g": 0.0
+    },
+    "per_field_recall": {
+      "energy_kcal": 0.14285714285714285,
+      "energy_kj": null,
+      "protein_g": 0.42857142857142855,
+      "carbohydrates_g": 0.2857142857142857,
+      "sugars_g": 0.42857142857142855,
+      "fat_g": 0.42857142857142855,
+      "saturated_fat_g": 0.14285714285714285,
+      "fibre_g": null,
+      "sodium_mg": 0.2,
+      "salt_g": 0.0
+    },
+    "per_field_f1": {
+      "energy_kcal": 0.14285714285714285,
+      "energy_kj": null,
+      "protein_g": 0.42857142857142855,
+      "carbohydrates_g": 0.2857142857142857,
+      "sugars_g": 0.42857142857142855,
+      "fat_g": 0.42857142857142855,
+      "saturated_fat_g": 0.14285714285714285,
+      "fibre_g": null,
+      "sodium_mg": 0.20000000000000004,
+      "salt_g": null
+    },
+    "macro_precision": 0.2571428571428571,
+    "macro_recall": 0.2571428571428571,
+    "macro_f1": 0.29387755102040813,
+    "samples_with_all_declared_fields_correct": 0,
+    "basis_accuracy": 0.2857142857142857,
+    "latency_sec": {
+      "median": 22.3092,
+      "p95": 30.1095
+    },
+    "per_sample_field_errors": {
+      "real_photo_01": {
+        "carbohydrates_g": {
+          "expected": 69.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "fat_g": {
+          "expected": 17.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "saturated_fat_g": {
+          "expected": 5.6,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "salt_g": {
+          "expected": 0.49,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "__basis__": {
+          "expected": "per_100g",
+          "got": "per_100_g"
+        }
+      },
+      "real_photo_07": {
+        "energy_kcal": {
+          "expected": 150.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "saturated_fat_g": {
+          "expected": 0.5,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "sodium_mg": {
+          "expected": 0.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        }
+      },
+      "real_photo_09": {
+        "energy_kcal": {
+          "expected": 111.0,
+          "got": 77.0,
+          "via": "energy_kcal",
+          "kind": "wrong_value"
+        },
+        "protein_g": {
+          "expected": 8.9,
+          "got": 6.2,
+          "via": "protein_g",
+          "kind": "wrong_value"
+        },
+        "carbohydrates_g": {
+          "expected": 62.5,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "sugars_g": {
+          "expected": 2.8,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "fat_g": {
+          "expected": 19.8,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "saturated_fat_g": {
+          "expected": 9.9,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "sodium_mg": {
+          "expected": 1018.0,
+          "got": 713.0,
+          "via": "sodium_mg",
+          "kind": "wrong_value"
+        },
+        "__basis__": {
+          "expected": "per_100g",
+          "got": "per_100_g"
+        }
+      },
+      "real_photo_11": {
+        "energy_kcal": {
+          "expected": 81.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "protein_g": {
+          "expected": 3.9,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "carbohydrates_g": {
+          "expected": 15.5,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "sugars_g": {
+          "expected": 4.1,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "fat_g": {
+          "expected": 0.4,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "saturated_fat_g": {
+          "expected": null,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "sodium_mg": {
+          "expected": null,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "__basis__": {
+          "expected": "per_100g",
+          "got": "per_100_g"
+        }
+      },
+      "real_photo_16": {
+        "energy_kcal": {
+          "expected": 190.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        }
+      },
+      "real_photo_21": {
+        "energy_kcal": {
+          "expected": 449.0,
+          "got": 229.0,
+          "via": "energy_kcal",
+          "kind": "wrong_value"
+        },
+        "protein_g": {
+          "expected": 4.1,
+          "got": 0.21,
+          "via": "protein_g",
+          "kind": "wrong_value"
+        },
+        "carbohydrates_g": {
+          "expected": 70.2,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "sugars_g": {
+          "expected": 61.7,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "fat_g": {
+          "expected": 16.6,
+          "got": 8.3,
+          "via": "total_fat_g",
+          "kind": "wrong_value"
+        },
+        "saturated_fat_g": {
+          "expected": 8.3,
+          "got": 35.8,
+          "via": "saturated_fat_g",
+          "kind": "wrong_value"
+        },
+        "salt_g": {
+          "expected": 0.42,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "__basis__": {
+          "expected": "per_100g",
+          "got": "per_100_g"
+        }
+      },
+      "real_photo_22": {
+        "energy_kcal": {
+          "expected": 554.0,
+          "got": 7.0,
+          "via": "energy_kcal",
+          "kind": "wrong_value"
+        },
+        "protein_g": {
+          "expected": 7.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "carbohydrates_g": {
+          "expected": 51.7,
+          "got": 9.0,
+          "via": "carbohydrates_g",
+          "kind": "wrong_value"
+        },
+        "sugars_g": {
+          "expected": 2.6,
+          "got": 9.0,
+          "via": "sugars_g",
+          "kind": "wrong_value"
+        },
+        "saturated_fat_g": {
+          "expected": 14.0,
+          "got": 9.0,
+          "via": "saturated_fat_g",
+          "kind": "wrong_value"
+        },
+        "sodium_mg": {
+          "expected": 510.0,
+          "got": null,
+          "via": null,
+          "kind": "missing"
+        },
+        "__basis__": {
+          "expected": "per_100g",
+          "got": "per_100_g"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "generated_at": "2026-10-24T02:45:58",
+  "repeats": 2,
+  "device": "cpu",
+  "init_sec": 5.1823,
+  "rss_after_init_mb": 304.89,
+  "cold_first_infer_sec": 25.0455,
+  "warm_sec_same_image": [
+    30.5987,
+    31.4939
+  ],
+  "stage_medians_dev": {
+    "decode_sec": 0.0006,
+    "convert_sec": 0.013,
+    "predict_sec": 30.7836,
+    "extract_sec": 0.0095,
+    "line_count": 43.5
+  },
+  "stage_records_dev": [
+    {
+      "image": "real_photo_02_0044000032029.jpg",
+      "rep": 0,
+      "decode_sec": 0.0004,
+      "convert_sec": 0.0214,
+      "predict_sec": 36.4369,
+      "extract_sec": 0.02042,
+      "line_count": 64
+    },
+    {
+      "image": "real_photo_02_0044000032029.jpg",
+      "rep": 1,
+      "decode_sec": 0.0004,
+      "convert_sec": 0.0277,
+      "predict_sec": 46.6581,
+      "extract_sec": 0.01334,
+      "line_count": 64
+    },
+    {
+      "image": "real_photo_03_0028400070560.jpg",
+      "rep": 0,
+      "decode_sec": 0.0279,
+      "convert_sec": 0.0179,
+      "predict_sec": 24.2081,
+      "extract_sec": 0.00852,
+      "line_count": 30
+    },
+    {
+      "image": "real_photo_03_0028400070560.jpg",
+      "rep": 1,
+      "decode_sec": 0.0007,
+      "convert_sec": 0.0138,
+      "predict_sec": 25.1303,
+      "extract_sec": 0.00521,
+      "line_count": 30
+    },
+    {
+      "image": "real_photo_12_0011110038364.jpg",
+      "rep": 0,
+      "decode_sec": 0.0006,
+      "convert_sec": 0.0031,
+      "predict_sec": 39.1082,
+      "extract_sec": 0.01044,
+      "line_count": 55
+    },
+    {
+      "image": "real_photo_12_0011110038364.jpg",
+      "rep": 1,
+      "decode_sec": 0.0009,
+      "convert_sec": 0.003,
+      "predict_sec": 39.9903,
+      "extract_sec": 0.01252,
+      "line_count": 55
+    },
+    {
+      "image": "real_photo_20_0028400043809.jpg",
+      "rep": 0,
+      "decode_sec": 0.0007,
+      "convert_sec": 0.0122,
+      "predict_sec": 18.6231,
+      "extract_sec": 0.006,
+      "line_count": 32
+    },
+    {
+      "image": "real_photo_20_0028400043809.jpg",
+      "rep": 1,
+      "decode_sec": 0.0005,
+      "convert_sec": 0.0078,
+      "predict_sec": 21.1651,
+      "extract_sec": 0.00791,
+      "line_count": 32
+    }
+  ],
+  "rss_end_mb": 361.11,
+  "peak_wset_mb": 976.54
+}
