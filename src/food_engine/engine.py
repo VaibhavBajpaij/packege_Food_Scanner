@@ -27,6 +27,22 @@ from food_engine.reporting.health_rules import EvidenceBasedHealthRules
 from food_engine.reporting.output_builder import OutputBuilder
 
 
+CORE_FIELDS = (
+    "energy_kcal", "total_fat_g", "carbohydrates_g", "protein_g",
+)
+
+
+def _core_score(nutrition: Dict[str, Any]) -> int:
+    nuts = nutrition.get("nutrients", {})
+    score = sum(1 for field in CORE_FIELDS if nuts.get(field, {}).get("value") is not None)
+    if (
+        nuts.get("sodium_mg", {}).get("value") is not None
+        or nuts.get("salt_g", {}).get("value") is not None
+    ):
+        score += 1
+    return score
+
+
 class FoodIntelligenceEngine:
     """Complete, standalone, offline food intelligence engine."""
 
@@ -76,6 +92,28 @@ class FoodIntelligenceEngine:
         ocr_res["assembled_lines"] = assembled_lines
         ocr_text_lines = [item["text"] for item in assembled_lines]
 
+        # Pre-check nutrition extraction so OCR can be rescued before stages 3-5.
+        extracted_nutrition = NutritionExtractor.extract_from_ocr(ocr_res["lines"])
+
+        # Small print and high-resolution panels are frequently under-detected
+        # at native scale. If core nutrients are missing, retry once upscaled
+        # and keep the result only when it recovers more core fields.
+        if override_ocr_lines is None and _core_score(extracted_nutrition) <= 3:
+            upscaled = self.ocr_engine.run_ocr(image_input, scale=1.5)
+            if upscaled.get("lines"):
+                alt_nutrition = NutritionExtractor.extract_from_ocr(upscaled["lines"])
+                if _core_score(alt_nutrition) > _core_score(extracted_nutrition):
+                    # Keep fields that only the native-scale pass recovered.
+                    for field_name, native in extracted_nutrition["nutrients"].items():
+                        alt = alt_nutrition["nutrients"].get(field_name, {})
+                        if alt.get("value") is None and native.get("value") is not None:
+                            alt_nutrition["nutrients"][field_name] = native
+                    ocr_res = upscaled
+                    assembled_lines = row_group_lines(ocr_res["lines"])
+                    ocr_res["assembled_lines"] = assembled_lines
+                    ocr_text_lines = [item["text"] for item in assembled_lines]
+                    extracted_nutrition = alt_nutrition
+
         # Stage 3: Product Matching
         matched_product = self.product_matcher.match(
             barcode=barcode,
@@ -87,8 +125,7 @@ class FoodIntelligenceEngine:
         # Stage 4: Ingredient and Allergen Parsing
         ingredients = IngredientParser.parse_from_ocr_lines(ocr_text_lines)
 
-        # Stage 5: Nutrition Table Extraction
-        extracted_nutrition = NutritionExtractor.extract(ocr_text_lines)
+        # Stage 5: Nutrition Table Extraction result selected above.
 
         # Stage 6: Nutrient Fusion & Provenance Tracking
         fused_nutrients, missing_fields, conflicting_fields = NutrientFusion.fuse_nutrients(

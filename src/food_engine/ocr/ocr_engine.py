@@ -12,12 +12,14 @@ Features:
 - Reports explicit errors when OCR fails or cannot run
 """
 
+import math
 import os
+import statistics
 import sys
 import time
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Sequence, Union
 import numpy as np
 from PIL import Image
 
@@ -43,6 +45,30 @@ def _apply_windows_mkldnn_compatibility() -> None:
                 pdx_cfg.MKLDNN_BLOCKLIST.append(m)
     except Exception as exc:
         logger.debug("PaddleX static config MKLDNN patch skipped: %s", exc)
+
+
+def _estimate_text_skew(lines: Sequence[Dict[str, Any]]) -> float:
+    """Estimates page skew from the top edges of recognized text boxes."""
+    angles: List[float] = []
+    for line in lines:
+        box = line.get("bounding_box") or []
+        if len(box) < 2:
+            continue
+        try:
+            (x0, y0), (x1, y1) = box[0], box[1]
+            dx, dy = float(x1) - float(x0), float(y1) - float(y0)
+        except (TypeError, ValueError):
+            continue
+        if abs(dx) < 1.0:
+            continue
+        angle = math.degrees(math.atan2(dy, dx))
+        while angle <= -90.0:
+            angle += 180.0
+        while angle > 90.0:
+            angle -= 180.0
+        if abs(angle) <= 30.0 and len(str(line.get("text", "")).strip()) >= 3:
+            angles.append(angle)
+    return statistics.median(angles) if angles else 0.0
 
 
 class OCREngine:
@@ -113,7 +139,34 @@ class OCREngine:
         """Returns True if genuine OCR engine is loaded and ready for inference."""
         return self._ocr_instance is not None
 
-    def run_ocr(self, img_input: Any) -> Dict[str, Any]:
+    def _predict_lines(self, np_img: np.ndarray) -> List[Dict[str, Any]]:
+        lines: List[Dict[str, Any]] = []
+        preds = self._ocr_instance.predict(np_img)
+        if not preds:
+            return lines
+        first_page = preds[0]
+        rec_texts = first_page.get("rec_texts", [])
+        rec_scores = first_page.get("rec_scores", [])
+        rec_polys = first_page.get("rec_polys", [])
+        for i, (text, score) in enumerate(zip(rec_texts, rec_scores)):
+            score_val = float(score)
+            if score_val < self.confidence_threshold:
+                continue
+            bbox = []
+            if i < len(rec_polys) and rec_polys[i] is not None:
+                poly_arr = rec_polys[i]
+                if hasattr(poly_arr, "tolist"):
+                    bbox = poly_arr.tolist()
+                else:
+                    bbox = [list(pt) for pt in poly_arr]
+            lines.append({
+                "text": str(text).strip(),
+                "confidence": round(score_val, 4),
+                "bounding_box": bbox,
+            })
+        return lines
+
+    def run_ocr(self, img_input: Any, scale: float = 1.0) -> Dict[str, Any]:
         """Runs genuine OCR on image pixels and returns structured detected lines.
 
         Never reads PNG metadata, filenames, or embedded fixture text.
@@ -159,39 +212,33 @@ class OCREngine:
                 "image_metadata": meta,
             }
 
+        if scale != 1.0:
+            resample = getattr(Image, "Resampling", Image).LANCZOS
+            img = img.resize(
+                (max(1, round(img.width * scale)), max(1, round(img.height * scale))),
+                resample,
+            )
+
         # Convert strictly to RGB numpy array for genuine pixel-based inference
         np_img = np.array(img.convert("RGB"))
 
         lines: List[Dict[str, Any]] = []
         ocr_error: Optional[str] = None
+        deskew_angle = 0.0
 
         try:
-            # Execute genuine model inference
-            preds = self._ocr_instance.predict(np_img)
+            lines = self._predict_lines(np_img)
 
-            if preds and len(preds) > 0:
-                first_page = preds[0]
-                rec_texts = first_page.get("rec_texts", [])
-                rec_scores = first_page.get("rec_scores", [])
-                rec_polys = first_page.get("rec_polys", [])
-
-                for i, (text, score) in enumerate(zip(rec_texts, rec_scores)):
-                    score_val = float(score)
-                    if score_val >= self.confidence_threshold:
-                        # Convert polygon coordinates to standard Python lists
-                        bbox = []
-                        if i < len(rec_polys) and rec_polys[i] is not None:
-                            poly_arr = rec_polys[i]
-                            if hasattr(poly_arr, "tolist"):
-                                bbox = poly_arr.tolist()
-                            else:
-                                bbox = [list(pt) for pt in poly_arr]
-
-                        lines.append({
-                            "text": str(text).strip(),
-                            "confidence": round(score_val, 4),
-                            "bounding_box": bbox,
-                        })
+            # Correct page-level skew before recognition. The line orientation
+            # classifier handles upside-down runs, but it does not level a
+            # diagonally photographed panel, which loses many row labels.
+            angle = _estimate_text_skew(lines)
+            if 8.0 <= abs(angle) <= 25.0:
+                rotated = img.rotate(angle, expand=True, fillcolor=(255, 255, 255))
+                deskewed = self._predict_lines(np.array(rotated.convert("RGB")))
+                if len(deskewed) >= int(len(lines) * 0.8):
+                    lines = deskewed
+                    deskew_angle = round(angle, 2)
 
         except Exception as exc:
             ocr_error = f"OCR inference error: {type(exc).__name__}: {str(exc)}"
@@ -213,5 +260,7 @@ class OCREngine:
             "line_count": len(lines),
             "lines": lines,
             "image_metadata": meta,
+            "deskew_angle": deskew_angle,
+            "ocr_scale": scale,
             "error": ocr_error,
         }

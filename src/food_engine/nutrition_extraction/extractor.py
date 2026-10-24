@@ -171,6 +171,21 @@ class NutritionExtractor:
     """Extracts nutrition facts from OCR lines with explicit basis and missing field audit."""
 
     @classmethod
+    def extract_from_ocr(cls, ocr_records: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Geometry-aware extraction from OCR records with bounding boxes.
+
+        Falls back to the string-only extractor when no record carries a
+        bounding box (for example explicit-test overrides).
+        """
+        has_boxes = any(
+            (r.get("bounding_box") or r.get("box")) for r in ocr_records
+        )
+        if not has_boxes:
+            return cls.extract([str(r.get("text", "")) for r in ocr_records])
+        from food_engine.nutrition_extraction.structured import extract_structured
+        return extract_structured(ocr_records)
+
+    @classmethod
     def extract(cls, ocr_lines: List[str]) -> Dict[str, Any]:
         full_text = "\n".join(ocr_lines)
         basis, serving_raw, serving_g, serving_ml = cls._detect_basis_and_serving(full_text)
@@ -419,12 +434,17 @@ class NutritionExtractor:
             if mml:
                 serving_ml = float(mml.group(1))
 
-        # Check basis
-        if "per 100 ml" in lower or "per 100ml" in lower or "/100 ml" in lower or "/100ml" in lower:
+        # Check basis.  OCR often drops the space or misreads the trailing
+        # unit ("100mlL"), so the 100 g / 100 ml checks are deliberately loose.
+        if re.search(r"(?:\bper\b|/|\bna\b|\bpour\b|\bpar\b|\bpro\b)?\s*100\s*ml+", lower):
             basis = "per_100_ml"
-        elif "per 100 g" in lower or "per 100g" in lower or "/100 g" in lower or "/100g" in lower:
+        elif re.search(r"(?:\bper\b|/|\bna\b|\bpour\b|\bpar\b|\bpro\b)?\s*100\s*g", lower):
             basis = "per_100_g"
         elif "per serving" in lower or "/serving" in lower:
+            basis = "per_serving"
+        elif "serving size" in lower or "servings per container" in lower:
+            basis = "per_serving"
+        elif "amount" in lower and "serving" in lower:
             basis = "per_serving"
         elif "per piece" in lower or "per biscuit" in lower:
             basis = "per_piece"
