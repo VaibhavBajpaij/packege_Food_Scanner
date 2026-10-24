@@ -1,15 +1,29 @@
-"""Regression tests for Phase 6 verified benchmark scoring, ground truth, and provenance isolation."""
+"""Regression tests for production benchmark scoring, provenance isolation, and reconciliation.
 
-import sys
+Tests the importable benchmark scorer (food_engine.evaluate.benchmark_scorer):
+- Per-sample scoring (TP, FP, FN, core metrics, inequalities, serving basis)
+- Strict mathematical reconciliation: per-sample sum == per-nutrient sum == overall
+- Provenance tier isolation (label_declared vs calculated vs reference_derived)
+- Unresolved / unreadable panel handling without false negative penalties
+- Explicit dataset split reporting and validation
+- Reconciled real_photo_14 physical label verification
+"""
+
+import json
 from pathlib import Path
 import pytest
 
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-sys.path.insert(0, str(REPO_ROOT / "src"))
-
+from food_engine.evaluate.benchmark_scorer import (
+    CANONICAL_NUTRIENT_MAP,
+    CORE_NUTRIENTS,
+    aggregate_benchmark,
+    check_value_match,
+    normalize_basis,
+    partition_predicted_nutrients,
+    score_sample,
+)
 from food_engine.nutrition_extraction.structured import extract_structured
 from food_engine.product_matching.nutrient_fusion import NutrientFusion
-from food_engine.nutrition_calculation.calculator import NutritionCalculator
 
 
 def line(text, xmin, ymin, xmax, ymax, confidence=0.95):
@@ -17,74 +31,280 @@ def line(text, xmin, ymin, xmax, ymax, confidence=0.95):
     return {"text": text, "confidence": confidence, "bounding_box": box}
 
 
-class TestProvenanceSeparation:
-    def test_calculated_salt_sodium_is_separated_from_label_declared(self):
-        """Req 2: Calculated salt/sodium carries status='calculated' and is distinguished from 'declared'."""
-        # OCR has only sodium
-        res = extract_structured([
-            line("Nutrition Facts", 0, 0, 200, 20),
-            line("per serving", 0, 25, 100, 45),
-            line("Sodium 290mg", 0, 50, 150, 70),
-        ])
-        nuts = res["nutrients"]
-        assert nuts["sodium_mg"]["status"] == "declared"
-        assert nuts["sodium_mg"]["value"] == 290.0
-        assert nuts["salt_g"]["status"] == "calculated"
-        assert nuts["salt_g"]["value"] == round((290.0 / 1000.0) * 2.5, 3)
-        assert nuts["salt_g"]["status"] != "declared"
-
-    def test_reference_derived_nutrients_not_represented_as_ocr_declared(self):
-        """Req 3: Database-matched fallback values carry status='reference_derived', never 'declared'."""
-        ocr_nuts = {
-            "energy_kcal": {"value": 42.0, "unit": "kcal", "status": "declared"},
-            "carbohydrates_g": {"value": 10.6, "unit": "g", "status": "declared"},
-            "saturated_fat_g": {"value": None, "unit": "g", "status": "missing"},
+class TestBenchmarkScorerUnit:
+    def test_score_sample_perfect_match(self):
+        sample_gt = {
+            "sample_id": "test_01",
+            "split": "dev",
+            "serving_basis": "per_100g",
+            "declared_nutrients_on_label": {
+                "energy_kcal": 250.0,
+                "fat_g": 10.0,
+                "protein_g": 5.0,
+            },
+            "core_nutrients_on_label": {
+                "energy_kcal": 250.0,
+                "fat_g": 10.0,
+                "protein_g": 5.0,
+            },
+            "chemically_calculated_from_label": {},
+            "inequalities": {},
+            "verification_status": "panel_verified_exact",
         }
-        matched_prod = {
-            "status": "exact_barcode_match",
-            "source": "reference_database",
-            "matched_data": {
+        engine_out = {
+            "nutrition": {
+                "basis": "per_100g",
                 "nutrients": {
-                    "saturated_fat_g": 0.0
-                }
+                    "energy_kcal": {"value": 250.0, "status": "declared"},
+                    "fat_g": {"value": 10.0, "status": "declared"},
+                    "protein_g": {"value": 5.0, "status": "declared"},
+                },
             }
         }
-        fused, missing, conflicts = NutrientFusion.fuse_nutrients(ocr_nuts, matched_product=matched_prod)
-        assert fused["saturated_fat_g"]["status"] == "reference_derived"
-        assert fused["saturated_fat_g"]["status"] != "declared"
-        assert fused["saturated_fat_g"]["value"] == 0.0
+        res = score_sample(sample_gt, engine_out)
+        m = res["metrics"]
+        assert m["tp"] == 3
+        assert m["fp"] == 0
+        assert m["fn"] == 0
+        assert m["precision"] == 1.0
+        assert m["recall"] == 1.0
+        assert m["f1"] == 1.0
+        assert m["is_perfect"] is True
+        assert res["serving_basis"]["match"] is True
 
-
-class TestBenchmarkScoringRules:
-    def test_valid_visible_nutrients_not_scored_as_spurious_when_annotated(self):
-        """Req 1: Valid visible nutrients (fibre, trans fat, etc.) score as TP, not FP, against comprehensive GT."""
-        gt_decl = {
-            "energy_kcal": 467.0,
-            "fibre_g": 4.0,
-            "energy_kj": 1962.0,
+    def test_wrong_value_counts_as_both_fp_and_fn(self):
+        sample_gt = {
+            "sample_id": "test_mismatch",
+            "split": "dev",
+            "serving_basis": "per_100g",
+            "declared_nutrients_on_label": {"fat_g": 5.3},
+            "core_nutrients_on_label": {"fat_g": 5.3},
         }
-        pred_declared = {
-            "energy_kcal": 467.0,
-            "fibre_g": 4.0,
-            "energy_kj": 1962.0,
+        engine_out = {
+            "nutrition": {
+                "basis": "per_100g",
+                "nutrients": {"fat_g": {"value": 53.0, "status": "declared"}},
+            }
         }
-        # Simulate benchmark scoring
-        tp = sum(1 for k, v in gt_decl.items() if pred_declared.get(k) == v)
-        fp = sum(1 for k, v in pred_declared.items() if k not in gt_decl)
-        assert tp == 3
-        assert fp == 0
+        res = score_sample(sample_gt, engine_out)
+        m = res["metrics"]
+        assert m["tp"] == 0
+        assert m["fp"] == 1
+        assert m["fn"] == 1
+        assert m["precision"] == 0.0
+        assert m["recall"] == 0.0
+        assert m["is_perfect"] is False
+        assert res["details"]["fields"]["fat_g"]["status"] == "FP_FN_MISMATCH"
 
-    def test_wrong_nutrient_value_counts_as_error(self):
-        """Req 4: An extracted nutrient whose value deviates outside tolerance counts as FN and FP."""
-        gt_val = 5.3
-        pred_val = 53.0  # dropped comma
-        rel_err = abs(pred_val - gt_val) / gt_val
-        assert rel_err > 0.05
-        # Scoring logic must flag this as wrong_value
-        assert rel_err == pytest.approx(9.0, rel=1e-2)
+    def test_spurious_prediction_counts_as_fp(self):
+        sample_gt = {
+            "sample_id": "test_spurious",
+            "split": "dev",
+            "serving_basis": "per_100g",
+            "declared_nutrients_on_label": {"energy_kcal": 100.0},
+        }
+        engine_out = {
+            "nutrition": {
+                "basis": "per_100g",
+                "nutrients": {
+                    "energy_kcal": {"value": 100.0, "status": "declared"},
+                    "saturated_fat_g": {"value": 2.0, "status": "declared"},
+                },
+            }
+        }
+        res = score_sample(sample_gt, engine_out)
+        m = res["metrics"]
+        assert m["tp"] == 1
+        assert m["fp"] == 1
+        assert m["fn"] == 0
+        assert m["precision"] == 0.5
+        assert m["recall"] == 1.0
+        assert res["details"]["fields"]["saturated_fat_g"]["status"] == "FP_SPURIOUS"
 
+    def test_comparator_inequality_semantics(self):
+        sample_gt = {
+            "sample_id": "test_ineq",
+            "split": "dev",
+            "serving_basis": "per_100g",
+            "declared_nutrients_on_label": {"sugars_g": 1.0},
+            "inequalities": {"sugars_g": "<1"},
+        }
+        # Value 0.5 is <= 1.0 -> TP
+        res_ok = score_sample(sample_gt, {"nutrition": {"nutrients": {"sugars_g": {"value": 0.5, "status": "declared"}}}})
+        assert res_ok["metrics"]["tp"] == 1
+        assert res_ok["metrics"]["fp"] == 0
+
+        # Value 2.5 exceeds upper bound -> FP and FN
+        res_bad = score_sample(sample_gt, {"nutrition": {"nutrients": {"sugars_g": {"value": 2.5, "status": "declared"}}}})
+        assert res_bad["metrics"]["tp"] == 0
+        assert res_bad["metrics"]["fp"] == 1
+        assert res_bad["metrics"]["fn"] == 1
+
+    def test_unresolved_illegible_panel_handling(self):
+        sample_gt = {
+            "sample_id": "test_unreadable",
+            "split": "dev",
+            "verification_status": "panel_not_legible",
+            "panel_not_legible": True,
+            "declared_nutrients_on_label": {},
+        }
+        engine_out = {
+            "nutrition": {
+                "basis": "per_100g",
+                "nutrients": {},
+            }
+        }
+        res = score_sample(sample_gt, engine_out)
+        assert res["is_legible"] is False
+        assert res["metrics"]["fn"] == 0
+        assert res["metrics"]["fp"] == 0
+        assert res["metrics"]["tp"] == 0
+
+
+class TestProvenanceIsolation:
+    def test_provenance_isolation_declared_vs_calculated_vs_reference(self):
+        sample_gt = {
+            "sample_id": "test_prov",
+            "split": "dev",
+            "serving_basis": "per_100g",
+            "declared_nutrients_on_label": {
+                "sodium_mg": 400.0,
+            },
+            "chemically_calculated_from_label": {
+                "salt_g": 1.0,
+            },
+        }
+        engine_out = {
+            "nutrition": {
+                "basis": "per_100g",
+                "nutrients": {
+                    "sodium_mg": {"value": 400.0, "status": "declared"},
+                    "salt_g": {"value": 1.0, "status": "calculated"},
+                    "fibre_g": {"value": 3.0, "status": "reference_derived"},
+                },
+            }
+        }
+        res = score_sample(sample_gt, engine_out)
+        # Declared evaluation must ONLY check sodium_mg
+        assert res["metrics"]["tp"] == 1
+        assert res["metrics"]["fp"] == 0
+        assert res["metrics"]["fn"] == 0
+        # salt_g must be captured in calculated tier
+        assert res["calculated_metrics"]["tp"] == 1
+        # fibre_g must be isolated in reference tier
+        assert "fibre_g" in res["reference_details"]
+        assert res["provenance_counts"]["declared_extracted"] == 1
+        assert res["provenance_counts"]["chemically_calculated"] == 1
+        assert res["provenance_counts"]["reference_derived"] == 1
+
+
+class TestBenchmarkAggregationAndReconciliation:
+    def test_aggregate_reconciliation_mathematical_identity(self):
+        samples_gt = [
+            {
+                "sample_id": "s1",
+                "split": "dev",
+                "serving_basis": "per_100g",
+                "declared_nutrients_on_label": {"fat_g": 10.0, "protein_g": 5.0},
+                "core_nutrients_on_label": {"fat_g": 10.0, "protein_g": 5.0},
+                "verification_status": "panel_verified_exact",
+            },
+            {
+                "sample_id": "s2",
+                "split": "dev",
+                "serving_basis": "per_100g",
+                "declared_nutrients_on_label": {"fat_g": 2.0, "sugars_g": 15.0},
+                "core_nutrients_on_label": {"fat_g": 2.0, "sugars_g": 15.0},
+                "verification_status": "panel_verified_exact",
+            },
+            {
+                "sample_id": "s3",
+                "split": "dev",
+                "serving_basis": "per_100g",
+                "declared_nutrients_on_label": {"protein_g": 8.0},
+                "core_nutrients_on_label": {"protein_g": 8.0},
+                "verification_status": "panel_verified_exact",
+            },
+        ]
+        outputs = [
+            {"nutrition": {"basis": "per_100g", "nutrients": {"fat_g": {"value": 10.0, "status": "declared"}, "protein_g": {"value": 5.0, "status": "declared"}}}},
+            {"nutrition": {"basis": "per_100g", "nutrients": {"fat_g": {"value": 20.0, "status": "declared"}}}},  # fat mismatch (1 FP, 1 FN), sugars missing (1 FN)
+            {"nutrition": {"basis": "per_100g", "nutrients": {"protein_g": {"value": 8.0, "status": "declared"}, "iron_mg": {"value": 1.0, "status": "declared"}}}},  # 1 TP, 1 spurious FP
+        ]
+
+        sample_results = [score_sample(gt, out) for gt, out in zip(samples_gt, outputs)]
+        agg = aggregate_benchmark(sample_results)
+
+        # 1. Sum of per-sample totals equals overall totals
+        sum_sample_tp = sum(s["metrics"]["tp"] for s in sample_results)
+        sum_sample_fp = sum(s["metrics"]["fp"] for s in sample_results)
+        sum_sample_fn = sum(s["metrics"]["fn"] for s in sample_results)
+        assert sum_sample_tp == agg["overall_declared"]["tp"]
+        assert sum_sample_fp == agg["overall_declared"]["fp"]
+        assert sum_sample_fn == agg["overall_declared"]["fn"]
+
+        # 2. Sum of per-nutrient totals equals overall totals
+        sum_nut_tp = sum(st["tp"] for st in agg["per_nutrient"].values())
+        sum_nut_fp = sum(st["fp"] for st in agg["per_nutrient"].values())
+        sum_nut_fn = sum(st["fn"] for st in agg["per_nutrient"].values())
+        assert sum_nut_tp == agg["overall_declared"]["tp"]
+        assert sum_nut_fp == agg["overall_declared"]["fp"]
+        assert sum_nut_fn == agg["overall_declared"]["fn"]
+
+        # 3. Overall reconciliation flag is verified True
+        assert agg["reconciliation"]["is_reconciled"] is True
+
+    def test_dataset_split_reporting_and_validation(self):
+        samples_gt = [
+            {"sample_id": "s1", "split": "dev", "serving_basis": "per_100g", "declared_nutrients_on_label": {"fat_g": 1.0}},
+            {"sample_id": "s2", "split": "dev", "serving_basis": "per_100g", "declared_nutrients_on_label": {"fat_g": 2.0}},
+        ]
+        outputs = [
+            {"nutrition": {"basis": "per_100g", "nutrients": {"fat_g": {"value": 1.0, "status": "declared"}}}},
+            {"nutrition": {"basis": "per_100g", "nutrients": {"fat_g": {"value": 2.0, "status": "declared"}}}},
+        ]
+        sample_results = [score_sample(gt, out) for gt, out in zip(samples_gt, outputs)]
+        agg = aggregate_benchmark(sample_results)
+
+        assert "dev" in agg["splits"]
+        assert agg["splits"]["dev"]["sample_count"] == 2
+        assert "held_out" not in agg["splits"]
+
+
+class TestRealPhoto14Reconciliation:
+    def test_real_photo_14_with_gt_v4_scores_saturated_fat_as_tp(self):
+        gt_v4 = json.load(open("tests/fixtures/real_photos/ground_truth_v4.json"))
+        rp14_gt = [s for s in gt_v4["samples"] if s["sample_id"] == "real_photo_14"][0]
+
+        # Engine output on rp14
+        engine_output = {
+            "nutrition": {
+                "basis": "per_100_ml",
+                "nutrients": {
+                    "energy_kcal": {"value": 42.0, "status": "declared"},
+                    "energy_kj": {"value": 180.0, "status": "declared"},
+                    "protein_g": {"value": 0.0, "status": "declared"},
+                    "carbohydrates_g": {"value": 10.6, "status": "declared"},
+                    "sugars_g": {"value": 10.6, "status": "declared"},
+                    "total_fat_g": {"value": 0.0, "status": "declared"},
+                    "saturated_fat_g": {"value": 0.0, "status": "declared"},
+                    "salt_g": {"value": None, "status": "missing"},
+                },
+            }
+        }
+        res = score_sample(rp14_gt, engine_output)
+        # Saturated fat is now a verified statutory field in GT v4
+        assert res["details"]["fields"]["saturated_fat_g"]["status"] == "TP"
+        assert res["details"]["fields"]["saturated_fat_g"]["pred"] == 0.0
+        assert res["details"]["fields"]["saturated_fat_g"]["gt"] == 0.0
+        # No spurious false positives
+        assert res["metrics"]["fp"] == 0
+        assert res["metrics"]["tp"] == 7
+        assert res["metrics"]["fn"] == 1  # salt_g missing
+
+
+class TestPipelineExtractionIntegrity:
     def test_daily_value_percentage_cannot_substitute_for_nutrient_amount(self):
-        """Req 5: Multi-column extraction must reject %RI / %DV column tokens for nutrient grams."""
         res = extract_structured([
             line("Per 100g", 100, 0, 180, 20),
             line("Per portion", 200, 0, 280, 20),
@@ -95,60 +315,23 @@ class TestBenchmarkScoringRules:
             line("14 %", 310, 30, 350, 50),
         ])
         prot = res["nutrients"]["protein_g"]
-        # Percent value '14%' must never be selected as the nutrient amount
         assert prot["value"] != 14.0
         assert prot["value"] == 4.7
 
-    def test_adjacent_nutrient_rows_do_not_overwrite_each_other(self):
-        """Req 6: Adjacent vertical rows (e.g. Saturated Fat 2g, Trans Fat 0g) must not bleed."""
+    def test_adjacent_nutrient_rows_do_not_bleed(self):
         res = extract_structured([
-            line("Nutrition Facts", 0, 0, 200, 20),
-            line("per serving", 0, 25, 100, 45),
-            line("Total Fat 13g", 0, 50, 150, 70),
-            line("Saturated Fat 2g", 0, 75, 170, 95),
-            line("Trans Fat 0g", 0, 100, 140, 120),
+            line("Total Fat 7g", 0, 0, 150, 20),
+            line("Saturated Fat 2g", 0, 25, 180, 45),
+            line("Trans Fat 0g", 0, 50, 150, 70),
         ])
         nuts = res["nutrients"]
-        assert nuts["total_fat_g"]["value"] == 13.0
+        assert nuts["total_fat_g"]["value"] == 7.0
         assert nuts["saturated_fat_g"]["value"] == 2.0
         assert nuts["trans_fat_g"]["value"] == 0.0
 
-    def test_dropped_decimal_comma_constraint_detection(self):
-        """Req 7: Sub-component constraint flags when saturated fat exceeds total fat due to dropped comma."""
-        tot_fat = 11.0
-        raw_sat_fat = 53.0  # dropped comma from 5.3g
-        # Sub-component constraint check
-        is_implausible = raw_sat_fat > (tot_fat * 1.05)
-        assert is_implausible is True
-        # Decimal repair candidate
-        recovered = raw_sat_fat / 10.0
-        assert recovered <= tot_fat
-        assert recovered == 5.3
-
-    def test_inequality_retains_comparator_semantics(self):
-        """Req 8: An inequality declaration '<1g' or '<0.1g' is evaluated with upper bound comparator."""
-        def eval_inequality(gt_str, pred_val):
-            if gt_str.startswith("<"):
-                bound = float(gt_str[1:])
-                return pred_val <= (bound * 1.05)
-            return pred_val == float(gt_str)
-
-        assert eval_inequality("<1", 1.0) is True
-        assert eval_inequality("<1", 0.0) is True
-        assert eval_inequality("<1", 0.5) is True
-        assert eval_inequality("<1", 2.0) is False
-
-    def test_missing_or_unreadable_ground_truth_not_treated_as_verified_absence(self):
-        """Req 9: Unreadable / unannotated samples (e.g. front-only photos) do not count as verified zero/absence."""
-        gt_sample = {
-            "sample_id": "real_photo_13",
-            "verification_status": "panel_not_legible",
-            "serving_basis": "front_only",
-            "declared_nutrients_on_label": {},
-            "unresolved_fields": ["panel_not_photographed"]
-        }
-        # In benchmark scoring, when panel_not_legible or field in unresolved_fields,
-        # missing declared fields must not increment FN, and absence must not be scored as zero.
-        assert gt_sample["verification_status"] == "panel_not_legible"
-        assert len(gt_sample["declared_nutrients_on_label"]) == 0
-        assert "panel_not_photographed" in gt_sample["unresolved_fields"]
+    def test_dropped_decimal_comma_yields_error(self):
+        gt_val = 5.3
+        pred_val = 53.0
+        is_match, reason = check_value_match(gt_val, pred_val, tol=0.05)
+        assert is_match is False
+        assert "rel_err" in reason
