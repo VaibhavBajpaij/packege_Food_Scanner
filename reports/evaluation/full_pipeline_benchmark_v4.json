@@ -1,0 +1,2601 @@
+{
+  "benchmark_name": "Food Intelligence Engine - Phase 6 Verified Benchmark",
+  "benchmark_type": "development_benchmark",
+  "audit_note": "This benchmark evaluates against ground_truth_v3.json with full provenance separation. All 22 samples are development samples, NOT an independent holdout.",
+  "timestamp": "2026-10-24T13:56:36.815626",
+  "git": {
+    "commit_hash": "e6cf5a7f29733ffb9fe1e09b8218a1d5d4c8cfea",
+    "commit_short": "e6cf5a7",
+    "branch": "main",
+    "is_dirty": true,
+    "dirty_files": [
+      "?? scripts/_tmp_debug_image.py",
+      "?? scripts/_tmp_debug_sample.py",
+      "?? scripts/_tmp_dump_lines.py",
+      "?? scripts/_tmp_eval_engine.py",
+      "?? scripts/_tmp_eval_ocr.py",
+      "?? scripts/_tmp_eval_structured.py",
+      "?? scripts/_tmp_ocr_rotate.py",
+      "?? scripts/_tmp_ocr_scale.py",
+      "?? scripts/_tmp_ocr_variants.py",
+      "?? scripts/_tmp_show_rows.py",
+      "?? scripts/run_verified_benchmark.py",
+      "?? tests/fixtures/real_photos/ground_truth_v3.json",
+      "?? tests/unit/test_verified_benchmark_scoring.py"
+    ]
+  },
+  "environment": {
+    "os": "Windows-11-10.0.26300",
+    "python_version": "3.13.9",
+    "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "cpu_count_physical": 12,
+    "cpu_count_logical": 16,
+    "total_ram_gb": 15.71,
+    "packages": {
+      "paddlepaddle": "3.3.1",
+      "paddleocr": "3.7.0",
+      "paddlex": "3.7.2",
+      "opencv-python": "5.0.0.93",
+      "pillow": "13.0.0",
+      "numpy": "2.3.5",
+      "pytest": "9.1.1",
+      "jsonschema": "4.26.0"
+    },
+    "initial_rss_mb": 46.8
+  },
+  "parameters": {
+    "relative_numeric_tolerance": 0.05,
+    "ground_truth_file": "D:\\health app\\food packet scanner\\food-intelligence-engine\\tests\\fixtures\\real_photos\\ground_truth_v3.json",
+    "engine_init_sec": 13.6452
+  },
+  "sample_counts": {
+    "total_evaluated_samples": 22,
+    "perfect_samples_100_percent_correct": 6,
+    "sample_level_accuracy": 0.2727
+  },
+  "overall_field_metrics": {
+    "evaluation_scope": "label_declared_nutrients_only",
+    "total_ground_truth_declared_fields": 220,
+    "true_positives": 170,
+    "false_positives": 7,
+    "false_negatives": 50,
+    "field_precision": 0.9605,
+    "field_recall": 0.7727,
+    "field_f1_score": 0.8564
+  },
+  "core_nutrient_subset_metrics": {
+    "core_nutrients_evaluated": [
+      "carbohydrates_g",
+      "energy_kcal",
+      "fat_g",
+      "protein_g",
+      "salt_g",
+      "saturated_fat_g",
+      "sodium_mg",
+      "sugars_g"
+    ],
+    "total_core_ground_truth_fields": 139,
+    "true_positives": 113,
+    "false_positives": 4,
+    "false_negatives": 26,
+    "core_field_precision": 0.9658,
+    "core_field_recall": 0.8129,
+    "core_field_f1_score": 0.8828
+  },
+  "derived_nutrient_metrics": {
+    "total_expected_derived_conversions": 19,
+    "correct_derived_conversions": 13,
+    "accuracy": 0.6842
+  },
+  "reference_database_metrics": {
+    "total_reference_derived_injections": 0
+  },
+  "serving_basis_metrics": {
+    "evaluated_basis_samples": 20,
+    "correct_basis_count": 19,
+    "basis_accuracy": 0.95
+  },
+  "latency_sec": {
+    "mean": 31.1511,
+    "median": 22.9543,
+    "min": 9.0516,
+    "max": 96.3739
+  },
+  "memory_mb": {
+    "peak_rss_during_benchmark": 527.35,
+    "post_init_rss": 307.86
+  },
+  "per_nutrient_metrics": {
+    "added_sugars_g": {
+      "gt_declared": 5,
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "is_core": false
+    },
+    "calcium_mg": {
+      "gt_declared": 7,
+      "tp": 4,
+      "fp": 0,
+      "fn": 3,
+      "precision": 1.0,
+      "recall": 0.5714,
+      "f1": 0.7273,
+      "is_core": false
+    },
+    "carbohydrates_g": {
+      "gt_declared": 20,
+      "tp": 16,
+      "fp": 0,
+      "fn": 4,
+      "precision": 1.0,
+      "recall": 0.8,
+      "f1": 0.8889,
+      "is_core": true
+    },
+    "cholesterol_mg": {
+      "gt_declared": 11,
+      "tp": 7,
+      "fp": 0,
+      "fn": 4,
+      "precision": 1.0,
+      "recall": 0.6364,
+      "f1": 0.7778,
+      "is_core": false
+    },
+    "energy_kcal": {
+      "gt_declared": 20,
+      "tp": 19,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.95,
+      "f1": 0.9744,
+      "is_core": true
+    },
+    "energy_kj": {
+      "gt_declared": 8,
+      "tp": 7,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.875,
+      "f1": 0.9333,
+      "is_core": false
+    },
+    "fat_g": {
+      "gt_declared": 20,
+      "tp": 17,
+      "fp": 0,
+      "fn": 3,
+      "precision": 1.0,
+      "recall": 0.85,
+      "f1": 0.9189,
+      "is_core": true
+    },
+    "fibre_g": {
+      "gt_declared": 14,
+      "tp": 12,
+      "fp": 1,
+      "fn": 2,
+      "precision": 0.9231,
+      "recall": 0.8571,
+      "f1": 0.8889,
+      "is_core": false
+    },
+    "iron_mg": {
+      "gt_declared": 7,
+      "tp": 4,
+      "fp": 1,
+      "fn": 3,
+      "precision": 0.8,
+      "recall": 0.5714,
+      "f1": 0.6667,
+      "is_core": false
+    },
+    "magnesium_mg": {
+      "gt_declared": 2,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "is_core": false
+    },
+    "potassium_mg": {
+      "gt_declared": 9,
+      "tp": 5,
+      "fp": 1,
+      "fn": 4,
+      "precision": 0.8333,
+      "recall": 0.5556,
+      "f1": 0.6667,
+      "is_core": false
+    },
+    "protein_g": {
+      "gt_declared": 20,
+      "tp": 16,
+      "fp": 1,
+      "fn": 4,
+      "precision": 0.9412,
+      "recall": 0.8,
+      "f1": 0.8649,
+      "is_core": true
+    },
+    "salt_g": {
+      "gt_declared": 8,
+      "tp": 3,
+      "fp": 0,
+      "fn": 5,
+      "precision": 1.0,
+      "recall": 0.375,
+      "f1": 0.5455,
+      "is_core": true
+    },
+    "saturated_fat_g": {
+      "gt_declared": 18,
+      "tp": 14,
+      "fp": 3,
+      "fn": 4,
+      "precision": 0.8235,
+      "recall": 0.7778,
+      "f1": 0.8,
+      "is_core": true
+    },
+    "sodium_mg": {
+      "gt_declared": 13,
+      "tp": 12,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.9231,
+      "f1": 0.96,
+      "is_core": true
+    },
+    "sugars_g": {
+      "gt_declared": 20,
+      "tp": 16,
+      "fp": 0,
+      "fn": 4,
+      "precision": 1.0,
+      "recall": 0.8,
+      "f1": 0.8889,
+      "is_core": true
+    },
+    "trans_fat_g": {
+      "gt_declared": 11,
+      "tp": 8,
+      "fp": 0,
+      "fn": 3,
+      "precision": 1.0,
+      "recall": 0.7273,
+      "f1": 0.8421,
+      "is_core": false
+    },
+    "vitamin_d_mcg": {
+      "gt_declared": 7,
+      "tp": 3,
+      "fp": 0,
+      "fn": 4,
+      "precision": 1.0,
+      "recall": 0.4286,
+      "f1": 0.6,
+      "is_core": false
+    }
+  },
+  "per_sample_results": [
+    {
+      "sample_id": "real_photo_01",
+      "filename": "real_photo_01_7622210449283.jpg",
+      "split": "held_out",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 10.7713,
+      "rss_mb": 344.18,
+      "serving_basis": {
+        "gt": "per_100g",
+        "pred": "per_100g",
+        "match": true
+      },
+      "metrics": {
+        "tp": 9,
+        "fp": 0,
+        "fn": 0,
+        "declared_gt_fields": 9,
+        "precision": 1.0,
+        "recall": 1.0,
+        "is_perfect": true
+      },
+      "provenance_counts": {
+        "declared_extracted": 9,
+        "chemically_calculated": 1,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kj": {
+            "status": "TP",
+            "gt": 1962.0,
+            "pred": 1962.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 467.0,
+            "pred": 467.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 17.0,
+            "pred": 17.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "TP",
+            "gt": 5.6,
+            "pred": 5.6,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 69.0,
+            "pred": 69.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 32.0,
+            "pred": 32.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fibre_g": {
+            "status": "TP",
+            "gt": 4.0,
+            "pred": 4.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 6.3,
+            "pred": 6.3,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "salt_g": {
+            "status": "TP",
+            "gt": 0.49,
+            "pred": 0.49,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          }
+        },
+        "errors": []
+      }
+    },
+    {
+      "sample_id": "real_photo_02",
+      "filename": "real_photo_02_0044000032029.jpg",
+      "split": "dev",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 21.3966,
+      "rss_mb": 370.37,
+      "serving_basis": {
+        "gt": "per_serving",
+        "pred": "per_serving",
+        "match": true
+      },
+      "metrics": {
+        "tp": 11,
+        "fp": 0,
+        "fn": 0,
+        "declared_gt_fields": 11,
+        "precision": 1.0,
+        "recall": 1.0,
+        "is_perfect": true
+      },
+      "provenance_counts": {
+        "declared_extracted": 11,
+        "chemically_calculated": 1,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 160.0,
+            "pred": 160.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 7.0,
+            "pred": 7.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "TP",
+            "gt": 2.0,
+            "pred": 2.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "trans_fat_g": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "cholesterol_mg": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "sodium_mg": {
+            "status": "TP",
+            "gt": 135.0,
+            "pred": 135.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "potassium_mg": {
+            "status": "TP",
+            "gt": 55.0,
+            "pred": 55.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 25.0,
+            "pred": 25.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fibre_g": {
+            "status": "TP",
+            "gt": 1.0,
+            "pred": 1.0,
+            "reason": "matched_inequality_upper_bound_(gt<1.0, pred=1.0)"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 14.0,
+            "pred": 14.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 1.0,
+            "pred": 1.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          }
+        },
+        "errors": []
+      }
+    },
+    {
+      "sample_id": "real_photo_03",
+      "filename": "real_photo_03_0028400070560.jpg",
+      "split": "dev",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 11.8876,
+      "rss_mb": 369.34,
+      "serving_basis": {
+        "gt": "per_serving",
+        "pred": "per_serving",
+        "match": true
+      },
+      "metrics": {
+        "tp": 11,
+        "fp": 1,
+        "fn": 3,
+        "declared_gt_fields": 14,
+        "precision": 0.9167,
+        "recall": 0.7857,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 12,
+        "chemically_calculated": 1,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 260.0,
+            "pred": 260.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 13.0,
+            "pred": 13.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "FN_WRONG",
+            "gt": 2.0,
+            "pred": 0.0,
+            "reason": "predicted_zero"
+          },
+          "trans_fat_g": {
+            "status": "FN_MISSING",
+            "gt": 0.0,
+            "pred": null
+          },
+          "cholesterol_mg": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "sodium_mg": {
+            "status": "TP",
+            "gt": 290.0,
+            "pred": 290.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 30.0,
+            "pred": 30.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fibre_g": {
+            "status": "TP",
+            "gt": 2.0,
+            "pred": 2.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 1.0,
+            "pred": 1.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 4.0,
+            "pred": 4.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "vitamin_d_mcg": {
+            "status": "FN_MISSING",
+            "gt": 0.0,
+            "pred": null
+          },
+          "calcium_mg": {
+            "status": "TP",
+            "gt": 80.0,
+            "pred": 80.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "iron_mg": {
+            "status": "TP",
+            "gt": 0.5,
+            "pred": 0.5,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "potassium_mg": {
+            "status": "TP",
+            "gt": 170.0,
+            "pred": 170.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          }
+        },
+        "errors": [
+          {
+            "field": "saturated_fat_g",
+            "type": "wrong_value",
+            "gt": 2.0,
+            "pred": 0.0,
+            "reason": "predicted_zero"
+          },
+          {
+            "field": "trans_fat_g",
+            "type": "missing",
+            "gt": 0.0,
+            "pred": null
+          },
+          {
+            "field": "vitamin_d_mcg",
+            "type": "missing",
+            "gt": 0.0,
+            "pred": null
+          }
+        ]
+      }
+    },
+    {
+      "sample_id": "real_photo_04",
+      "filename": "real_photo_04_5000159461122.jpg",
+      "split": "dev",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 22.3556,
+      "rss_mb": 367.53,
+      "serving_basis": {
+        "gt": "per_100g",
+        "pred": "per_100g",
+        "match": true
+      },
+      "metrics": {
+        "tp": 6,
+        "fp": 0,
+        "fn": 2,
+        "declared_gt_fields": 8,
+        "precision": 1.0,
+        "recall": 0.75,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 6,
+        "chemically_calculated": 0,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kj": {
+            "status": "TP",
+            "gt": 2018.0,
+            "pred": 2018.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 481.0,
+            "pred": 481.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 22.5,
+            "pred": 22.5,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "TP",
+            "gt": 7.9,
+            "pred": 7.9,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 60.5,
+            "pred": 60.5,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sugars_g": {
+            "status": "FN_MISSING",
+            "gt": 51.8,
+            "pred": null
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 8.6,
+            "pred": 8.6,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "salt_g": {
+            "status": "FN_MISSING",
+            "gt": 0.63,
+            "pred": null
+          }
+        },
+        "errors": [
+          {
+            "field": "sugars_g",
+            "type": "missing",
+            "gt": 51.8,
+            "pred": null
+          },
+          {
+            "field": "salt_g",
+            "type": "missing",
+            "gt": 0.63,
+            "pred": null
+          }
+        ]
+      }
+    },
+    {
+      "sample_id": "real_photo_05",
+      "filename": "real_photo_05_3046920029759.jpg",
+      "split": "dev",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 19.3679,
+      "rss_mb": 369.95,
+      "serving_basis": {
+        "gt": "per_100g",
+        "pred": "per_100g",
+        "match": true
+      },
+      "metrics": {
+        "tp": 7,
+        "fp": 0,
+        "fn": 1,
+        "declared_gt_fields": 8,
+        "precision": 1.0,
+        "recall": 0.875,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 7,
+        "chemically_calculated": 1,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kj": {
+            "status": "TP",
+            "gt": 2483.0,
+            "pred": 2483.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 592.0,
+            "pred": 592.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 55.0,
+            "pred": 55.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "TP",
+            "gt": 30.0,
+            "pred": 30.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 14.0,
+            "pred": 14.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 7.0,
+            "pred": 7.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "protein_g": {
+            "status": "FN_MISSING",
+            "gt": 10.0,
+            "pred": null
+          },
+          "salt_g": {
+            "status": "TP",
+            "gt": 0.03,
+            "pred": 0.03,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          }
+        },
+        "errors": [
+          {
+            "field": "protein_g",
+            "type": "missing",
+            "gt": 10.0,
+            "pred": null
+          }
+        ]
+      }
+    },
+    {
+      "sample_id": "real_photo_06",
+      "filename": "real_photo_06_0016000275270.jpg",
+      "split": "dev",
+      "verification_status": "panel_verified_partial",
+      "elapsed_sec": 46.5054,
+      "rss_mb": 448.77,
+      "serving_basis": {
+        "gt": "per_serving",
+        "pred": "per_serving",
+        "match": true
+      },
+      "metrics": {
+        "tp": 11,
+        "fp": 0,
+        "fn": 0,
+        "declared_gt_fields": 11,
+        "precision": 1.0,
+        "recall": 1.0,
+        "is_perfect": true
+      },
+      "provenance_counts": {
+        "declared_extracted": 11,
+        "chemically_calculated": 1,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 110.0,
+            "pred": 110.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 1.5,
+            "pred": 1.5,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "trans_fat_g": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "cholesterol_mg": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "sodium_mg": {
+            "status": "TP",
+            "gt": 160.0,
+            "pred": 160.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "potassium_mg": {
+            "status": "TP",
+            "gt": 115.0,
+            "pred": 115.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 22.0,
+            "pred": 22.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fibre_g": {
+            "status": "TP",
+            "gt": 2.0,
+            "pred": 2.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 9.0,
+            "pred": 9.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 2.0,
+            "pred": 2.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          }
+        },
+        "errors": []
+      }
+    },
+    {
+      "sample_id": "real_photo_07",
+      "filename": "real_photo_07_0030000010204.jpg",
+      "split": "held_out",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 19.9272,
+      "rss_mb": 454.97,
+      "serving_basis": {
+        "gt": "per_serving",
+        "pred": "per_serving",
+        "match": true
+      },
+      "metrics": {
+        "tp": 9,
+        "fp": 1,
+        "fn": 7,
+        "declared_gt_fields": 16,
+        "precision": 0.9,
+        "recall": 0.5625,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 10,
+        "chemically_calculated": 1,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 150.0,
+            "pred": 150.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 3.0,
+            "pred": 3.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "FN_MISSING",
+            "gt": 0.5,
+            "pred": null
+          },
+          "trans_fat_g": {
+            "status": "FN_MISSING",
+            "gt": 0.0,
+            "pred": null
+          },
+          "cholesterol_mg": {
+            "status": "FN_MISSING",
+            "gt": 0.0,
+            "pred": null
+          },
+          "sodium_mg": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 27.0,
+            "pred": 27.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fibre_g": {
+            "status": "TP",
+            "gt": 4.0,
+            "pred": 4.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 1.0,
+            "pred": 1.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "added_sugars_g": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 5.0,
+            "pred": 5.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "vitamin_d_mcg": {
+            "status": "FN_MISSING",
+            "gt": 0.0,
+            "pred": null
+          },
+          "calcium_mg": {
+            "status": "FN_MISSING",
+            "gt": 20.0,
+            "pred": null
+          },
+          "iron_mg": {
+            "status": "FN_MISSING",
+            "gt": 1.5,
+            "pred": null
+          },
+          "potassium_mg": {
+            "status": "FN_WRONG",
+            "gt": 150.0,
+            "pred": 1.5,
+            "reason": "rel_err_99.00%_(gt=150.0, pred=1.5)"
+          },
+          "magnesium_mg": {
+            "status": "TP",
+            "gt": 40.0,
+            "pred": 40.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          }
+        },
+        "errors": [
+          {
+            "field": "saturated_fat_g",
+            "type": "missing",
+            "gt": 0.5,
+            "pred": null
+          },
+          {
+            "field": "trans_fat_g",
+            "type": "missing",
+            "gt": 0.0,
+            "pred": null
+          },
+          {
+            "field": "cholesterol_mg",
+            "type": "missing",
+            "gt": 0.0,
+            "pred": null
+          },
+          {
+            "field": "vitamin_d_mcg",
+            "type": "missing",
+            "gt": 0.0,
+            "pred": null
+          },
+          {
+            "field": "calcium_mg",
+            "type": "missing",
+            "gt": 20.0,
+            "pred": null
+          },
+          {
+            "field": "iron_mg",
+            "type": "missing",
+            "gt": 1.5,
+            "pred": null
+          },
+          {
+            "field": "potassium_mg",
+            "type": "wrong_value",
+            "gt": 150.0,
+            "pred": 1.5,
+            "reason": "rel_err_99.00%_(gt=150.0, pred=1.5)"
+          }
+        ]
+      }
+    },
+    {
+      "sample_id": "real_photo_08",
+      "filename": "real_photo_08_737628064502.jpg",
+      "split": "dev",
+      "verification_status": "panel_verified_partial",
+      "elapsed_sec": 22.9543,
+      "rss_mb": 456.27,
+      "serving_basis": {
+        "gt": "per_serving",
+        "pred": "per_serving",
+        "match": true
+      },
+      "metrics": {
+        "tp": 9,
+        "fp": 0,
+        "fn": 1,
+        "declared_gt_fields": 10,
+        "precision": 1.0,
+        "recall": 0.9,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 9,
+        "chemically_calculated": 1,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 310.0,
+            "pred": 310.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 7.0,
+            "pred": 7.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "TP",
+            "gt": 1.0,
+            "pred": 1.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "trans_fat_g": {
+            "status": "FN_MISSING",
+            "gt": 0.0,
+            "pred": null
+          },
+          "cholesterol_mg": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "sodium_mg": {
+            "status": "TP",
+            "gt": 629.0,
+            "pred": 629.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 55.0,
+            "pred": 55.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fibre_g": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 10.0,
+            "pred": 10.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 7.0,
+            "pred": 7.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          }
+        },
+        "errors": [
+          {
+            "field": "trans_fat_g",
+            "type": "missing",
+            "gt": 0.0,
+            "pred": null
+          }
+        ]
+      }
+    },
+    {
+      "sample_id": "real_photo_09",
+      "filename": "real_photo_09_8901725181222.jpg",
+      "split": "held_out",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 17.5378,
+      "rss_mb": 451.07,
+      "serving_basis": {
+        "gt": "per_100g",
+        "pred": "per_100g",
+        "match": true
+      },
+      "metrics": {
+        "tp": 10,
+        "fp": 0,
+        "fn": 0,
+        "declared_gt_fields": 10,
+        "precision": 1.0,
+        "recall": 1.0,
+        "is_perfect": true
+      },
+      "provenance_counts": {
+        "declared_extracted": 10,
+        "chemically_calculated": 0,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kj": {
+            "status": "TP",
+            "gt": 464.0,
+            "pred": 464.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 111.0,
+            "pred": 111.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 8.9,
+            "pred": 8.9,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 19.8,
+            "pred": 19.8,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "TP",
+            "gt": 9.9,
+            "pred": 9.9,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 62.5,
+            "pred": 62.5,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 2.8,
+            "pred": 2.8,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fibre_g": {
+            "status": "TP",
+            "gt": 1.1,
+            "pred": 1.1,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sodium_mg": {
+            "status": "TP",
+            "gt": 1018.0,
+            "pred": 1018.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "salt_g": {
+            "status": "TP",
+            "gt": 2.5,
+            "pred": 2.5,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          }
+        },
+        "errors": []
+      }
+    },
+    {
+      "sample_id": "real_photo_10",
+      "filename": "real_photo_10_8076809513753.jpg",
+      "split": "dev",
+      "verification_status": "panel_verified_partial",
+      "elapsed_sec": 37.5903,
+      "rss_mb": 446.24,
+      "serving_basis": {
+        "gt": "per_100g",
+        "pred": "per_100g",
+        "match": true
+      },
+      "metrics": {
+        "tp": 4,
+        "fp": 3,
+        "fn": 5,
+        "declared_gt_fields": 9,
+        "precision": 0.5714,
+        "recall": 0.4444,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 7,
+        "chemically_calculated": 0,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kj": {
+            "status": "TP",
+            "gt": 2030.0,
+            "pred": 2030.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 492.0,
+            "pred": 492.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "FN_MISSING",
+            "gt": 47.0,
+            "pred": null
+          },
+          "saturated_fat_g": {
+            "status": "FN_WRONG",
+            "gt": 5.3,
+            "pred": 53.0,
+            "reason": "rel_err_900.00%_(gt=5.3, pred=53.0)"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 11.0,
+            "pred": 11.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 5.0,
+            "pred": 5.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fibre_g": {
+            "status": "FN_WRONG",
+            "gt": 3.0,
+            "pred": 30.0,
+            "reason": "rel_err_900.00%_(gt=3.0, pred=30.0)"
+          },
+          "protein_g": {
+            "status": "FN_WRONG",
+            "gt": 4.7,
+            "pred": 14.0,
+            "reason": "rel_err_197.87%_(gt=4.7, pred=14.0)"
+          },
+          "salt_g": {
+            "status": "FN_MISSING",
+            "gt": 3.2,
+            "pred": null
+          }
+        },
+        "errors": [
+          {
+            "field": "fat_g",
+            "type": "missing",
+            "gt": 47.0,
+            "pred": null
+          },
+          {
+            "field": "saturated_fat_g",
+            "type": "wrong_value",
+            "gt": 5.3,
+            "pred": 53.0,
+            "reason": "rel_err_900.00%_(gt=5.3, pred=53.0)"
+          },
+          {
+            "field": "fibre_g",
+            "type": "wrong_value",
+            "gt": 3.0,
+            "pred": 30.0,
+            "reason": "rel_err_900.00%_(gt=3.0, pred=30.0)"
+          },
+          {
+            "field": "protein_g",
+            "type": "wrong_value",
+            "gt": 4.7,
+            "pred": 14.0,
+            "reason": "rel_err_197.87%_(gt=4.7, pred=14.0)"
+          },
+          {
+            "field": "salt_g",
+            "type": "missing",
+            "gt": 3.2,
+            "pred": null
+          }
+        ]
+      }
+    },
+    {
+      "sample_id": "real_photo_11",
+      "filename": "real_photo_11_5000157024671.jpg",
+      "split": "held_out",
+      "verification_status": "panel_verified_partial",
+      "elapsed_sec": 31.7545,
+      "rss_mb": 460.2,
+      "serving_basis": {
+        "gt": "per_100g",
+        "pred": "per_100g",
+        "match": true
+      },
+      "metrics": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 8,
+        "declared_gt_fields": 9,
+        "precision": 1.0,
+        "recall": 0.1111,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 1,
+        "chemically_calculated": 0,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kj": {
+            "status": "FN_MISSING",
+            "gt": 339.0,
+            "pred": null
+          },
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 81.0,
+            "pred": 81.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "FN_MISSING",
+            "gt": 0.4,
+            "pred": null
+          },
+          "saturated_fat_g": {
+            "status": "FN_MISSING",
+            "gt": 0.1,
+            "pred": null
+          },
+          "carbohydrates_g": {
+            "status": "FN_MISSING",
+            "gt": 15.5,
+            "pred": null
+          },
+          "sugars_g": {
+            "status": "FN_MISSING",
+            "gt": 4.1,
+            "pred": null
+          },
+          "protein_g": {
+            "status": "FN_MISSING",
+            "gt": 3.9,
+            "pred": null
+          },
+          "fibre_g": {
+            "status": "FN_MISSING",
+            "gt": 4.8,
+            "pred": null
+          },
+          "salt_g": {
+            "status": "FN_MISSING",
+            "gt": 0.6,
+            "pred": null
+          }
+        },
+        "errors": [
+          {
+            "field": "energy_kj",
+            "type": "missing",
+            "gt": 339.0,
+            "pred": null
+          },
+          {
+            "field": "fat_g",
+            "type": "missing",
+            "gt": 0.4,
+            "pred": null
+          },
+          {
+            "field": "saturated_fat_g",
+            "type": "missing",
+            "gt": 0.1,
+            "pred": null
+          },
+          {
+            "field": "carbohydrates_g",
+            "type": "missing",
+            "gt": 15.5,
+            "pred": null
+          },
+          {
+            "field": "sugars_g",
+            "type": "missing",
+            "gt": 4.1,
+            "pred": null
+          },
+          {
+            "field": "protein_g",
+            "type": "missing",
+            "gt": 3.9,
+            "pred": null
+          },
+          {
+            "field": "fibre_g",
+            "type": "missing",
+            "gt": 4.8,
+            "pred": null
+          },
+          {
+            "field": "salt_g",
+            "type": "missing",
+            "gt": 0.6,
+            "pred": null
+          }
+        ]
+      }
+    },
+    {
+      "sample_id": "real_photo_12",
+      "filename": "real_photo_12_0011110038364.jpg",
+      "split": "dev",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 55.9473,
+      "rss_mb": 447.24,
+      "serving_basis": {
+        "gt": "per_serving",
+        "pred": "per_serving",
+        "match": true
+      },
+      "metrics": {
+        "tp": 13,
+        "fp": 0,
+        "fn": 2,
+        "declared_gt_fields": 15,
+        "precision": 1.0,
+        "recall": 0.8667,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 13,
+        "chemically_calculated": 1,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 90.0,
+            "pred": 90.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 1.0,
+            "pred": 1.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "trans_fat_g": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "cholesterol_mg": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "sodium_mg": {
+            "status": "TP",
+            "gt": 420.0,
+            "pred": 420.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 18.0,
+            "pred": 18.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fibre_g": {
+            "status": "TP",
+            "gt": 4.0,
+            "pred": 4.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 5.0,
+            "pred": 5.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "added_sugars_g": {
+            "status": "TP",
+            "gt": 1.0,
+            "pred": 1.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 3.0,
+            "pred": 3.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "vitamin_d_mcg": {
+            "status": "FN_MISSING",
+            "gt": 0.0,
+            "pred": null
+          },
+          "calcium_mg": {
+            "status": "TP",
+            "gt": 40.0,
+            "pred": 40.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "iron_mg": {
+            "status": "TP",
+            "gt": 1.6,
+            "pred": 1.6,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "potassium_mg": {
+            "status": "FN_MISSING",
+            "gt": 870.0,
+            "pred": null
+          }
+        },
+        "errors": [
+          {
+            "field": "vitamin_d_mcg",
+            "type": "missing",
+            "gt": 0.0,
+            "pred": null
+          },
+          {
+            "field": "potassium_mg",
+            "type": "missing",
+            "gt": 870.0,
+            "pred": null
+          }
+        ]
+      }
+    },
+    {
+      "sample_id": "real_photo_13",
+      "filename": "real_photo_13_3017620422003.jpg",
+      "split": "dev",
+      "verification_status": "panel_not_legible",
+      "elapsed_sec": 29.8903,
+      "rss_mb": 458.36,
+      "serving_basis": {
+        "gt": "front_only",
+        "pred": "per_100g",
+        "match": false
+      },
+      "metrics": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "declared_gt_fields": 0,
+        "precision": 1.0,
+        "recall": 0.0,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 0,
+        "chemically_calculated": 0,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {},
+        "errors": []
+      }
+    },
+    {
+      "sample_id": "real_photo_14",
+      "filename": "real_photo_14_5449000000996.jpg",
+      "split": "dev",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 39.907,
+      "rss_mb": 452.17,
+      "serving_basis": {
+        "gt": "per_100ml",
+        "pred": "per_100g",
+        "match": false
+      },
+      "metrics": {
+        "tp": 6,
+        "fp": 1,
+        "fn": 1,
+        "declared_gt_fields": 7,
+        "precision": 0.8571,
+        "recall": 0.8571,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 7,
+        "chemically_calculated": 0,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kj": {
+            "status": "TP",
+            "gt": 180.0,
+            "pred": 180.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 42.0,
+            "pred": 42.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 10.6,
+            "pred": 10.6,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 10.6,
+            "pred": 10.6,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "salt_g": {
+            "status": "FN_MISSING",
+            "gt": 0.0,
+            "pred": null
+          },
+          "saturated_fat_g": {
+            "status": "FP_SPURIOUS",
+            "gt": null,
+            "pred": 0.0
+          }
+        },
+        "errors": [
+          {
+            "field": "salt_g",
+            "type": "missing",
+            "gt": 0.0,
+            "pred": null
+          },
+          {
+            "field": "saturated_fat_g",
+            "type": "spurious_extra",
+            "gt": null,
+            "pred": 0.0
+          }
+        ]
+      }
+    },
+    {
+      "sample_id": "real_photo_15",
+      "filename": "real_photo_15_0070847811169.jpg",
+      "split": "dev",
+      "verification_status": "panel_not_legible",
+      "elapsed_sec": 9.0516,
+      "rss_mb": 461.88,
+      "serving_basis": {
+        "gt": "front_only",
+        "pred": "per_100g",
+        "match": false
+      },
+      "metrics": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "declared_gt_fields": 0,
+        "precision": 1.0,
+        "recall": 0.0,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 0,
+        "chemically_calculated": 0,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {},
+        "errors": []
+      }
+    },
+    {
+      "sample_id": "real_photo_16",
+      "filename": "real_photo_16_0041220576920.jpg",
+      "split": "held_out",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 20.714,
+      "rss_mb": 445.95,
+      "serving_basis": {
+        "gt": "per_serving",
+        "pred": "per_serving",
+        "match": true
+      },
+      "metrics": {
+        "tp": 12,
+        "fp": 0,
+        "fn": 3,
+        "declared_gt_fields": 15,
+        "precision": 1.0,
+        "recall": 0.8,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 12,
+        "chemically_calculated": 1,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 190.0,
+            "pred": 190.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 6.0,
+            "pred": 6.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "TP",
+            "gt": 1.0,
+            "pred": 1.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "trans_fat_g": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "cholesterol_mg": {
+            "status": "TP",
+            "gt": 5.0,
+            "pred": 5.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sodium_mg": {
+            "status": "TP",
+            "gt": 230.0,
+            "pred": 230.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 24.0,
+            "pred": 24.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fibre_g": {
+            "status": "TP",
+            "gt": 5.0,
+            "pred": 5.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 19.0,
+            "pred": 19.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "added_sugars_g": {
+            "status": "TP",
+            "gt": 5.0,
+            "pred": 5.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 10.0,
+            "pred": 10.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "vitamin_d_mcg": {
+            "status": "TP",
+            "gt": 6.0,
+            "pred": 6.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "calcium_mg": {
+            "status": "FN_MISSING",
+            "gt": 300.0,
+            "pred": null
+          },
+          "iron_mg": {
+            "status": "FN_MISSING",
+            "gt": 0.5,
+            "pred": null
+          },
+          "potassium_mg": {
+            "status": "FN_MISSING",
+            "gt": 350.0,
+            "pred": null
+          }
+        },
+        "errors": [
+          {
+            "field": "calcium_mg",
+            "type": "missing",
+            "gt": 300.0,
+            "pred": null
+          },
+          {
+            "field": "iron_mg",
+            "type": "missing",
+            "gt": 0.5,
+            "pred": null
+          },
+          {
+            "field": "potassium_mg",
+            "type": "missing",
+            "gt": 350.0,
+            "pred": null
+          }
+        ]
+      }
+    },
+    {
+      "sample_id": "real_photo_17",
+      "filename": "real_photo_17_0025293000995.jpg",
+      "split": "dev",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 56.6367,
+      "rss_mb": 462.32,
+      "serving_basis": {
+        "gt": "per_serving",
+        "pred": "per_serving",
+        "match": true
+      },
+      "metrics": {
+        "tp": 16,
+        "fp": 0,
+        "fn": 0,
+        "declared_gt_fields": 16,
+        "precision": 1.0,
+        "recall": 1.0,
+        "is_perfect": true
+      },
+      "provenance_counts": {
+        "declared_extracted": 16,
+        "chemically_calculated": 1,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 80.0,
+            "pred": 80.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 2.0,
+            "pred": 2.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "trans_fat_g": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "cholesterol_mg": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "sodium_mg": {
+            "status": "TP",
+            "gt": 130.0,
+            "pred": 130.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 14.0,
+            "pred": 14.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fibre_g": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 13.0,
+            "pred": 13.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "added_sugars_g": {
+            "status": "TP",
+            "gt": 13.0,
+            "pred": 13.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 1.0,
+            "pred": 1.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "vitamin_d_mcg": {
+            "status": "TP",
+            "gt": 4.0,
+            "pred": 4.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "calcium_mg": {
+            "status": "TP",
+            "gt": 470.0,
+            "pred": 470.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "iron_mg": {
+            "status": "TP",
+            "gt": 0.4,
+            "pred": 0.4,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "potassium_mg": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "magnesium_mg": {
+            "status": "TP",
+            "gt": 10.0,
+            "pred": 10.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          }
+        },
+        "errors": []
+      }
+    },
+    {
+      "sample_id": "real_photo_18",
+      "filename": "real_photo_18_0051500255162.jpg",
+      "split": "dev",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 20.2699,
+      "rss_mb": 462.35,
+      "serving_basis": {
+        "gt": "per_serving",
+        "pred": "per_serving",
+        "match": true
+      },
+      "metrics": {
+        "tp": 13,
+        "fp": 0,
+        "fn": 2,
+        "declared_gt_fields": 15,
+        "precision": 1.0,
+        "recall": 0.8667,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 13,
+        "chemically_calculated": 1,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kcal": {
+            "status": "FN_MISSING",
+            "gt": 190.0,
+            "pred": null
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 16.0,
+            "pred": 16.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "TP",
+            "gt": 3.5,
+            "pred": 3.5,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "trans_fat_g": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "cholesterol_mg": {
+            "status": "FN_MISSING",
+            "gt": 0.0,
+            "pred": null
+          },
+          "sodium_mg": {
+            "status": "TP",
+            "gt": 140.0,
+            "pred": 140.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 8.0,
+            "pred": 8.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fibre_g": {
+            "status": "TP",
+            "gt": 2.0,
+            "pred": 2.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 3.0,
+            "pred": 3.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "added_sugars_g": {
+            "status": "TP",
+            "gt": 2.0,
+            "pred": 2.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 7.0,
+            "pred": 7.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "vitamin_d_mcg": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "calcium_mg": {
+            "status": "TP",
+            "gt": 17.0,
+            "pred": 17.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "iron_mg": {
+            "status": "TP",
+            "gt": 0.5,
+            "pred": 0.5,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "potassium_mg": {
+            "status": "TP",
+            "gt": 185.0,
+            "pred": 185.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          }
+        },
+        "errors": [
+          {
+            "field": "energy_kcal",
+            "type": "missing",
+            "gt": 190.0,
+            "pred": null
+          },
+          {
+            "field": "cholesterol_mg",
+            "type": "missing",
+            "gt": 0.0,
+            "pred": null
+          }
+        ]
+      }
+    },
+    {
+      "sample_id": "real_photo_19",
+      "filename": "real_photo_19_0049000006346.jpg",
+      "split": "dev",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 96.3739,
+      "rss_mb": 518.69,
+      "serving_basis": {
+        "gt": "per_serving",
+        "pred": "per_serving",
+        "match": true
+      },
+      "metrics": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 6,
+        "declared_gt_fields": 7,
+        "precision": 1.0,
+        "recall": 0.1429,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 1,
+        "chemically_calculated": 0,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 140.0,
+            "pred": 140.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "FN_MISSING",
+            "gt": 0.0,
+            "pred": null
+          },
+          "cholesterol_mg": {
+            "status": "FN_MISSING",
+            "gt": 0.0,
+            "pred": null
+          },
+          "sodium_mg": {
+            "status": "FN_MISSING",
+            "gt": 45.0,
+            "pred": null
+          },
+          "carbohydrates_g": {
+            "status": "FN_MISSING",
+            "gt": 39.0,
+            "pred": null
+          },
+          "sugars_g": {
+            "status": "FN_MISSING",
+            "gt": 39.0,
+            "pred": null
+          },
+          "protein_g": {
+            "status": "FN_MISSING",
+            "gt": 0.0,
+            "pred": null
+          }
+        },
+        "errors": [
+          {
+            "field": "fat_g",
+            "type": "missing",
+            "gt": 0.0,
+            "pred": null
+          },
+          {
+            "field": "cholesterol_mg",
+            "type": "missing",
+            "gt": 0.0,
+            "pred": null
+          },
+          {
+            "field": "sodium_mg",
+            "type": "missing",
+            "gt": 45.0,
+            "pred": null
+          },
+          {
+            "field": "carbohydrates_g",
+            "type": "missing",
+            "gt": 39.0,
+            "pred": null
+          },
+          {
+            "field": "sugars_g",
+            "type": "missing",
+            "gt": 39.0,
+            "pred": null
+          },
+          {
+            "field": "protein_g",
+            "type": "missing",
+            "gt": 0.0,
+            "pred": null
+          }
+        ]
+      }
+    },
+    {
+      "sample_id": "real_photo_20",
+      "filename": "real_photo_20_0028400043809.jpg",
+      "split": "dev",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 36.1247,
+      "rss_mb": 527.35,
+      "serving_basis": {
+        "gt": "per_serving",
+        "pred": "per_serving",
+        "match": true
+      },
+      "metrics": {
+        "tp": 8,
+        "fp": 1,
+        "fn": 6,
+        "declared_gt_fields": 14,
+        "precision": 0.8889,
+        "recall": 0.5714,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 9,
+        "chemically_calculated": 1,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 160.0,
+            "pred": 160.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 10.0,
+            "pred": 10.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "TP",
+            "gt": 1.5,
+            "pred": 1.5,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "trans_fat_g": {
+            "status": "TP",
+            "gt": 0.0,
+            "pred": 0.0,
+            "reason": "matched_zero"
+          },
+          "cholesterol_mg": {
+            "status": "FN_MISSING",
+            "gt": 0.0,
+            "pred": null
+          },
+          "sodium_mg": {
+            "status": "TP",
+            "gt": 140.0,
+            "pred": 140.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "carbohydrates_g": {
+            "status": "FN_MISSING",
+            "gt": 15.0,
+            "pred": null
+          },
+          "fibre_g": {
+            "status": "TP",
+            "gt": 1.0,
+            "pred": 1.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 1.0,
+            "pred": 1.0,
+            "reason": "matched_inequality_upper_bound_(gt<1.0, pred=1.0)"
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 2.0,
+            "pred": 2.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "vitamin_d_mcg": {
+            "status": "FN_MISSING",
+            "gt": 0.0,
+            "pred": null
+          },
+          "calcium_mg": {
+            "status": "FN_MISSING",
+            "gt": 10.0,
+            "pred": null
+          },
+          "iron_mg": {
+            "status": "FN_WRONG",
+            "gt": 0.6,
+            "pred": 3.6,
+            "reason": "rel_err_500.00%_(gt=0.6, pred=3.6)"
+          },
+          "potassium_mg": {
+            "status": "FN_MISSING",
+            "gt": 350.0,
+            "pred": null
+          }
+        },
+        "errors": [
+          {
+            "field": "cholesterol_mg",
+            "type": "missing",
+            "gt": 0.0,
+            "pred": null
+          },
+          {
+            "field": "carbohydrates_g",
+            "type": "missing",
+            "gt": 15.0,
+            "pred": null
+          },
+          {
+            "field": "vitamin_d_mcg",
+            "type": "missing",
+            "gt": 0.0,
+            "pred": null
+          },
+          {
+            "field": "calcium_mg",
+            "type": "missing",
+            "gt": 10.0,
+            "pred": null
+          },
+          {
+            "field": "iron_mg",
+            "type": "wrong_value",
+            "gt": 0.6,
+            "pred": 3.6,
+            "reason": "rel_err_500.00%_(gt=0.6, pred=3.6)"
+          },
+          {
+            "field": "potassium_mg",
+            "type": "missing",
+            "gt": 350.0,
+            "pred": null
+          }
+        ]
+      }
+    },
+    {
+      "sample_id": "real_photo_21",
+      "filename": "real_photo_21_5000159407236.jpg",
+      "split": "held_out",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 43.5927,
+      "rss_mb": 516.21,
+      "serving_basis": {
+        "gt": "per_100g",
+        "pred": "per_100g",
+        "match": true
+      },
+      "metrics": {
+        "tp": 5,
+        "fp": 0,
+        "fn": 3,
+        "declared_gt_fields": 8,
+        "precision": 1.0,
+        "recall": 0.625,
+        "is_perfect": false
+      },
+      "provenance_counts": {
+        "declared_extracted": 5,
+        "chemically_calculated": 0,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kj": {
+            "status": "TP",
+            "gt": 1886.0,
+            "pred": 1886.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 449.0,
+            "pred": 449.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 16.6,
+            "pred": 16.6,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "TP",
+            "gt": 8.3,
+            "pred": 8.3,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "carbohydrates_g": {
+            "status": "FN_MISSING",
+            "gt": 70.2,
+            "pred": null
+          },
+          "sugars_g": {
+            "status": "FN_MISSING",
+            "gt": 61.7,
+            "pred": null
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 4.1,
+            "pred": 4.1,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "salt_g": {
+            "status": "FN_MISSING",
+            "gt": 0.42,
+            "pred": null
+          }
+        },
+        "errors": [
+          {
+            "field": "carbohydrates_g",
+            "type": "missing",
+            "gt": 70.2,
+            "pred": null
+          },
+          {
+            "field": "sugars_g",
+            "type": "missing",
+            "gt": 61.7,
+            "pred": null
+          },
+          {
+            "field": "salt_g",
+            "type": "missing",
+            "gt": 0.42,
+            "pred": null
+          }
+        ]
+      }
+    },
+    {
+      "sample_id": "real_photo_22",
+      "filename": "real_photo_22_8901491101837.jpg",
+      "split": "held_out",
+      "verification_status": "panel_verified_exact",
+      "elapsed_sec": 14.768,
+      "rss_mb": 522.46,
+      "serving_basis": {
+        "gt": "per_100g",
+        "pred": "per_100g",
+        "match": true
+      },
+      "metrics": {
+        "tp": 8,
+        "fp": 0,
+        "fn": 0,
+        "declared_gt_fields": 8,
+        "precision": 1.0,
+        "recall": 1.0,
+        "is_perfect": true
+      },
+      "provenance_counts": {
+        "declared_extracted": 8,
+        "chemically_calculated": 1,
+        "reference_derived": 0
+      },
+      "details": {
+        "fields": {
+          "energy_kcal": {
+            "status": "TP",
+            "gt": 554.0,
+            "pred": 554.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "protein_g": {
+            "status": "TP",
+            "gt": 7.0,
+            "pred": 7.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "carbohydrates_g": {
+            "status": "TP",
+            "gt": 51.7,
+            "pred": 51.7,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sugars_g": {
+            "status": "TP",
+            "gt": 2.6,
+            "pred": 2.6,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "fat_g": {
+            "status": "TP",
+            "gt": 35.5,
+            "pred": 35.5,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "saturated_fat_g": {
+            "status": "TP",
+            "gt": 14.0,
+            "pred": 14.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "trans_fat_g": {
+            "status": "TP",
+            "gt": 0.1,
+            "pred": 0.1,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          },
+          "sodium_mg": {
+            "status": "TP",
+            "gt": 510.0,
+            "pred": 510.0,
+            "reason": "matched_within_5.0%_(rel_err=0.00%)"
+          }
+        },
+        "errors": []
+      }
+    }
+  ]
+}
