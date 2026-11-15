@@ -8,16 +8,24 @@ nutrient data enrichment, and ground-truth accuracy evaluation.
 import io
 import json
 import os
+import queue
 import re
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+import av
 import cv2
 import numpy as np
 import pandas as pd
 from PIL import Image
 import streamlit as st
+from streamlit_webrtc import (
+    RTCConfiguration,
+    VideoProcessorBase,
+    WebRtcMode,
+    webrtc_streamer,
+)
 
 # Configure page layout
 st.set_page_config(
@@ -138,6 +146,156 @@ REPO_ROOT = Path(__file__).resolve().parent
 def get_engine():
     from food_engine.engine import FoodIntelligenceEngine
     return FoodIntelligenceEngine(repo_root=REPO_ROOT)
+
+
+# WebRTC Configuration with public Google STUN server for NAT traversal
+RTC_CONFIGURATION = RTCConfiguration(
+    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+)
+
+
+class BarcodeProcessor(VideoProcessorBase):
+    """Real-time WebRTC video processor for continuous barcode detection and smart OCR auto-capture."""
+
+    def __init__(self):
+        self.frame_count = 0
+        self.barcode_queue: "queue.Queue[str]" = queue.Queue()
+        self.ocr_queue: "queue.Queue[np.ndarray]" = queue.Queue()
+        self.ocr_mode: bool = False
+        self.barcode_detected: bool = False
+        self.ocr_captured: bool = False
+        self.steady_frames: int = 0
+        self.latest_sharpness: float = 0.0
+
+    def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
+        img_bgr = frame.to_ndarray(format="bgr24")
+        self.frame_count += 1
+        h, w = img_bgr.shape[:2]
+
+        if not self.ocr_mode:
+            # --- PHASE 1: CONTINUOUS BARCODE DETECTION ---
+            if not self.barcode_detected and (self.frame_count % 3 == 0):
+                # Analyze every 3rd frame to prevent UI freezing and ensure smooth 30fps
+                try:
+                    import zxingcpp
+                    img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+                    results = zxingcpp.read_barcodes(img_rgb)
+                    if results:
+                        for r in results:
+                            code_str = str(r.text).strip()
+                            if code_str:
+                                self.barcode_detected = True
+                                self.barcode_queue.put(code_str)
+                                break
+                except Exception:
+                    pass
+
+            if self.barcode_detected:
+                cv2.putText(
+                    img_bgr,
+                    "BARCODE DETECTED! PROCESSING...",
+                    (20, 45),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.85,
+                    (0, 255, 0),
+                    2,
+                )
+            else:
+                # Reticle viewfinder overlay
+                box_w, box_h = int(w * 0.72), int(h * 0.36)
+                x1, y1 = (w - box_w) // 2, (h - box_h) // 2
+                x2, y2 = x1 + box_w, y1 + box_h
+                cv2.rectangle(img_bgr, (x1, y1), (x2, y2), (0, 255, 255), 2)
+                cv2.putText(
+                    img_bgr,
+                    "HOLD BARCODE INSIDE BOX",
+                    (x1, max(30, y1 - 10)),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.6,
+                    (0, 255, 255),
+                    2,
+                )
+
+        else:
+            # --- PHASE 2: SMART OCR AUTO-CAPTURE ---
+            if not self.ocr_captured:
+                gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
+                sharpness = float(cv2.Laplacian(gray, cv2.CV_64F).var())
+                self.latest_sharpness = sharpness
+
+                if sharpness >= 100.0:
+                    self.steady_frames += 1
+                    color = (0, 255, 0)
+                    status_txt = f"STEADY ({self.steady_frames}/2) - Sharpness: {sharpness:.0f}"
+                else:
+                    self.steady_frames = 0
+                    color = (0, 165, 255)
+                    status_txt = f"HOLD STILL... (Sharpness: {sharpness:.0f} / 100)"
+
+                cv2.putText(
+                    img_bgr,
+                    status_txt,
+                    (20, 45),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.75,
+                    color,
+                    2,
+                )
+
+                if self.steady_frames >= 2:
+                    self.ocr_captured = True
+                    clean_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+                    self.ocr_queue.put(clean_rgb)
+            else:
+                cv2.putText(
+                    img_bgr,
+                    "LABEL CAPTURED! RUNNING OCR...",
+                    (20, 45),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.85,
+                    (0, 255, 0),
+                    2,
+                )
+
+        return av.VideoFrame.from_ndarray(img_bgr, format="bgr24")
+
+
+@st.dialog("📋 FSSAI & WHO Dietary Compliance Diagnosis")
+def show_diagnosis_dialog(payload_data: Dict[str, Any]):
+    """Displays a prominent executive compliance diagnosis modal."""
+    alerts = payload_data.get("evidence_based_alerts", [])
+    pm = payload_data.get("product_match", {})
+    p_name = pm.get("product_name") or "Packaged Food Item"
+    brand = pm.get("brand") or "Brand Not Stated"
+
+    st.markdown(f"### Product: **{p_name}** ({brand})")
+
+    if not alerts:
+        st.success("✅ **Fully Compliant**: No excessive sugar, sodium, saturated fat, or trans fat detected under WHO and FSSAI dietary limits.")
+    else:
+        st.markdown("**Compliance Alerts & Health Warnings:**")
+        for alt in alerts:
+            sev = alt.get("severity", "info").lower()
+            title = alt.get("title", "Notice")
+            reason = alt.get("reason", "")
+            src = alt.get("authority_source", "")
+            ref = alt.get("threshold_reference", "")
+
+            if sev in ("critical", "error"):
+                st.error(f"🚨 **{title}**\n\n{reason}\n\n*Statutory Reference: {src} ({ref})*")
+            elif sev == "warning":
+                st.warning(f"⚠️ **{title}**\n\n{reason}\n\n*Reference: {src} ({ref})*")
+            else:
+                st.info(f"ℹ️ **{title}**\n\n{reason}\n\n*Reference: {src}*")
+
+    st.markdown("---")
+    ing = payload_data.get("ingredients", {})
+    allergens = ing.get("declared_allergens", [])
+    traces = ing.get("potential_traces", [])
+    if allergens:
+        st.error(f"⚠️ **Declared Major Allergens:** {', '.join(allergens)}")
+    if traces:
+        st.warning(f"ℹ️ **Precautionary Traces:** {', '.join(traces)}")
 
 
 def decode_barcode_from_image(image_input: Any) -> Tuple[Optional[str], Optional[str]]:
@@ -450,29 +608,71 @@ with tab_scan:
 
         bc_mode = st.radio(
             "Select Barcode Input Method:",
-            ["📷 Live Camera Viewfinder", "📁 Upload Barcode Photo", "⌨️ Enter Digits Manually"],
+            ["📹 Real-Time WebRTC Continuous Scanner", "📁 Upload Barcode Photo", "⌨️ Enter Digits Manually"],
             index=0,
             horizontal=True,
-            help="Scan real-time using your device camera, upload an image, or type digits directly.",
+            help="Continuous real-time scanning with automatic auto-capture, or upload/type.",
         )
 
-        if bc_mode == "📷 Live Camera Viewfinder":
-            st.caption("Point your camera at the barcode on the food package and click Capture:")
-            cam_barcode_file = st.camera_input("Barcode Camera Viewfinder", key="camera_barcode_input")
-            if cam_barcode_file is not None:
-                with st.spinner("Decoding barcode from camera stream..."):
-                    detected_bc, bc_err = decode_barcode_from_image(cam_barcode_file)
-                    if detected_bc:
-                        st.success(f"🎯 **Barcode Detected:** `{detected_bc}`")
-                        user_barcode = detected_bc
-                        # Immediate automatic execution
-                        with st.spinner("Searching database and auditing nutrition completeness..."):
+        if bc_mode == "📹 Real-Time WebRTC Continuous Scanner":
+            is_ocr_fallback = st.session_state.get("ocr_fallback_mode", False)
+            if is_ocr_fallback:
+                st.warning("⚠️ **Barcode not found in database.** Point camera at back package label. Hold it steady (>100 sharpness) for auto-capture.")
+                if st.button("↩️ Reset to Barcode Scanner Mode"):
+                    st.session_state["ocr_fallback_mode"] = False
+                    st.rerun()
+            else:
+                st.caption("Point camera at barcode. Frames are analyzed continuously in real time:")
+
+            webrtc_ctx = webrtc_streamer(
+                key="realtime_scanner_stream",
+                mode=WebRtcMode.SENDRECV,
+                rtc_configuration=RTC_CONFIGURATION,
+                video_processor_factory=BarcodeProcessor,
+                media_stream_constraints={"video": True, "audio": False},
+                async_processing=True,
+            )
+
+            if webrtc_ctx.video_processor:
+                # Sync processor mode with state
+                webrtc_ctx.video_processor.ocr_mode = is_ocr_fallback
+
+                # Phase 1: Check thread-safe queue for detected barcode
+                try:
+                    detected_bc = webrtc_ctx.video_processor.barcode_queue.get_nowait()
+                    if detected_bc and detected_bc != st.session_state.get("last_auto_scanned_barcode"):
+                        st.session_state["last_auto_scanned_barcode"] = detected_bc
+                        st.session_state["user_barcode"] = detected_bc
+                        t0 = time.time()
+                        bc_res = engine.scan_barcode(detected_bc, allow_online=allow_online_lookup)
+                        st.session_state["barcode_scan_result"] = bc_res
+                        st.session_state["barcode_scan_time"] = time.time() - t0
+
+                        # Phase 2 auto-transition: If unmatched or label scan required, switch to OCR auto-capture
+                        if bc_res.get("action_required") in ("scan_label_required", "scan_label_recommended"):
+                            st.session_state["ocr_fallback_mode"] = True
+                        else:
+                            st.session_state["ocr_fallback_mode"] = False
+                        st.rerun()
+                except queue.Empty:
+                    pass
+
+                # Phase 2: Check thread-safe queue for auto-captured steady OCR frame
+                try:
+                    captured_frame_rgb = webrtc_ctx.video_processor.ocr_queue.get_nowait()
+                    if captured_frame_rgb is not None:
+                        with st.spinner("Auto-captured steady frame! Running PaddleOCR extraction..."):
                             t0 = time.time()
-                            bc_res = engine.scan_barcode(user_barcode, allow_online=allow_online_lookup)
-                            st.session_state["barcode_scan_result"] = bc_res
-                            st.session_state["barcode_scan_time"] = time.time() - t0
-                    else:
-                        st.warning(f"⚠️ {bc_err or 'No barcode detected in frame. Hold the camera closer with good lighting and snap again.'}")
+                            scan_payload = engine.process_image(
+                                image_input=captured_frame_rgb,
+                                barcode=st.session_state.get("last_auto_scanned_barcode"),
+                            )
+                            st.session_state["last_scan_payload"] = scan_payload
+                            st.session_state["last_scan_time"] = time.time() - t0
+                            st.session_state["ocr_fallback_mode"] = False
+                            st.rerun()
+                except queue.Empty:
+                    pass
 
         elif bc_mode == "📁 Upload Barcode Photo":
             barcode_img_file = st.file_uploader(
@@ -493,6 +693,8 @@ with tab_scan:
                             bc_res = engine.scan_barcode(user_barcode, allow_online=allow_online_lookup)
                             st.session_state["barcode_scan_result"] = bc_res
                             st.session_state["barcode_scan_time"] = time.time() - t0
+                            if bc_res.get("action_required") in ("scan_label_required", "scan_label_recommended"):
+                                st.session_state["ocr_fallback_mode"] = True
                     else:
                         st.warning(f"⚠️ {bc_err or 'No barcode detected. Ensure barcode is in focus and not cropped out.'}")
 
@@ -512,6 +714,8 @@ with tab_scan:
                         bc_res = engine.scan_barcode(user_barcode, allow_online=allow_online_lookup)
                         st.session_state["barcode_scan_result"] = bc_res
                         st.session_state["barcode_scan_time"] = time.time() - t0
+                        if bc_res.get("action_required") in ("scan_label_required", "scan_label_recommended"):
+                            st.session_state["ocr_fallback_mode"] = True
 
         st.markdown("---")
         st.markdown("**Package Label Images (Step 3)**")
@@ -677,6 +881,87 @@ with tab_scan:
                 unsafe_allow_html=True,
             )
 
+            # --- PHASE 3: TOP-LEVEL COMPLIANCE DIAGNOSIS & MODAL ---
+            col_modal_btn, _ = st.columns([1.5, 1])
+            with col_modal_btn:
+                if st.button("📋 View Final Dietary Diagnosis Modal", type="primary", use_container_width=True):
+                    show_diagnosis_dialog(payload)
+
+            st.markdown("### 🏥 FSSAI & WHO Dietary Compliance Diagnosis")
+            alerts = payload.get("evidence_based_alerts", [])
+            ing = payload.get("ingredients", {})
+            decl_allergens = ing.get("declared_allergens", [])
+
+            # High-visibility allergen alert card
+            if decl_allergens:
+                st.error(f"🚨 **ALLERGEN SAFETY WARNING**: Packaging explicitly declares: **{', '.join(decl_allergens)}**")
+
+            # FSSAI & WHO threshold alerts
+            if alerts:
+                for alt in alerts:
+                    sev = alt.get("severity", "info").lower()
+                    t_title = alt.get("title", "Nutrient Alert")
+                    r_reason = alt.get("reason", "")
+                    s_source = alt.get("authority_source", "")
+                    t_ref = alt.get("threshold_reference", "")
+                    if sev in ("critical", "error"):
+                        st.error(f"🚨 **{t_title}**\n\n{r_reason}\n\n*Statutory Standard: {s_source} ({t_ref})*")
+                    elif sev == "warning":
+                        st.error(f"⚠️ **{t_title}**\n\n{r_reason}\n\n*Reference: {s_source} ({t_ref})*")
+                    else:
+                        st.info(f"ℹ️ **{t_title}**\n\n{r_reason}\n\n*Reference: {s_source}*")
+            else:
+                st.success("✅ **FSSAI & WHO Dietary Compliant**: No excessive sugar, sodium, saturated fat, or industrial trans fat detected.")
+
+            # --- PHASE 3: INTERACTIVE MANUAL OVERRIDE FOR MISSING DATA ---
+            missing_fields = payload.get("missing_fields", [])
+            manual_review_needed = dq.get("manual_review_required", False)
+
+            if manual_review_needed or missing_fields:
+                with st.expander("✏️ Correct or Fill Missing Nutrient Values (Interactive Recalculation)", expanded=False):
+                    st.info("Some nutrient fields were missing or flagged. Enter values below to recalculate FSSAI & WHO compliance dynamically:")
+                    with st.form("manual_override_form"):
+                        fields_to_prompt = list(dict.fromkeys(missing_fields + ["sugars_g", "sodium_mg", "saturated_fat_g", "trans_fat_g", "protein_g", "carbohydrates_g"]))[:6]
+                        f_cols = st.columns(3)
+                        override_inputs = {}
+                        for idx, field in enumerate(fields_to_prompt):
+                            c = f_cols[idx % 3]
+                            with c:
+                                f_label = field.replace("_", " ").title()
+                                curr_val = payload.get("nutrition", {}).get("nutrients", {}).get(field, {}).get("value")
+                                default_input = float(curr_val) if curr_val is not None else 0.0
+                                override_inputs[field] = st.number_input(
+                                    f"{f_label}:",
+                                    value=default_input,
+                                    step=0.5 if "g" in field else 10.0,
+                                    min_value=0.0,
+                                    key=f"input_override_{field}",
+                                )
+                        recalc_clicked = st.form_submit_button("🔄 Recalculate Compliance Diagnosis", type="primary")
+                        if recalc_clicked:
+                            from food_engine.reporting.health_rules import EvidenceBasedHealthRules
+                            nuts = payload.get("nutrition", {}).get("nutrients", {})
+                            for k_f, v_f in override_inputs.items():
+                                if v_f > 0.0 or (nuts.get(k_f, {}).get("value") is not None):
+                                    if k_f not in nuts:
+                                        nuts[k_f] = {}
+                                    nuts[k_f]["value"] = v_f
+                                    nuts[k_f]["status"] = "declared"
+                                    nuts[k_f]["source"] = "user_manual_override"
+
+                            recalced_alerts = EvidenceBasedHealthRules.evaluate(
+                                nutrients=nuts,
+                                declared_allergens=ing.get("declared_allergens", []),
+                                potential_traces=ing.get("potential_traces", []),
+                                basis=payload.get("nutrition", {}).get("basis", "per_100_g"),
+                            )
+                            payload["evidence_based_alerts"] = recalced_alerts
+                            st.session_state["last_scan_payload"] = payload
+                            st.success("✅ Dietary compliance diagnosis recalculated!")
+                            st.rerun()
+
+            st.markdown("---")
+
             # 3. Nutrition Facts Table
             st.markdown("### 🥗 Extracted Nutrition Values")
             nut = payload.get("nutrition", {})
@@ -760,18 +1045,7 @@ with tab_scan:
                 with st.expander("View Raw Printed Ingredient Text"):
                     st.text(raw_ing_text)
 
-            # 5. Evidence-based Health Alerts
-            alerts = payload.get("evidence_based_alerts", [])
-            if alerts:
-                st.markdown("### ⚠️ Evidence-Based Health Alerts (WHO / FSSAI)")
-                for alt in alerts:
-                    sev = alt.get("severity", "info").lower()
-                    if sev == "warning":
-                        st.warning(f"**{alt.get('title')}:** {alt.get('reason')}")
-                    else:
-                        st.info(f"**{alt.get('title')}:** {alt.get('reason')}")
-
-            # 6. Source Discrepancies
+            # 5. Source Discrepancies
             discrepancies = dq.get("conflicting_fields", [])
             if discrepancies:
                 st.markdown("### ⚖️ Source Discrepancies Audit")
@@ -779,7 +1053,7 @@ with tab_scan:
                 for d in discrepancies:
                     st.write(f"- {d}")
 
-            # 7. Formatted Report and JSON Payload
+            # 6. Formatted Report and JSON Payload
             with st.expander("📄 View Formatted Human-Readable Report"):
                 from food_engine.reporting.output_builder import format_text_report
                 st.code(format_text_report(payload), language="text")
