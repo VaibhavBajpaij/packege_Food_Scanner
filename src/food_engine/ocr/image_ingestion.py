@@ -34,6 +34,23 @@ class ImageIngestion:
                 import io
                 img = Image.open(io.BytesIO(image_input))
                 source_identifier = "in_memory_bytes"
+            elif hasattr(image_input, "read"):
+                import io
+                content = image_input.read()
+                if hasattr(image_input, "seek"):
+                    image_input.seek(0)
+                img = Image.open(io.BytesIO(content))
+                source_identifier = getattr(image_input, "name", "file_stream")
+            elif isinstance(image_input, Image.Image):
+                img = image_input
+                source_identifier = "pil_image"
+            elif isinstance(image_input, np.ndarray):
+                import cv2
+                if len(image_input.shape) == 3 and image_input.shape[2] == 3:
+                    img = Image.fromarray(cv2.cvtColor(image_input, cv2.COLOR_BGR2RGB))
+                else:
+                    img = Image.fromarray(image_input)
+                source_identifier = "numpy_ndarray"
             else:
                 raise ImageIngestionError(f"Unsupported image input type: {type(image_input)}")
 

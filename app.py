@@ -774,6 +774,8 @@ with tab_scan:
         preview_img = None
         if nutrition_file is not None:
             preview_img = Image.open(nutrition_file)
+            if hasattr(nutrition_file, "seek"):
+                nutrition_file.seek(0)
             st.image(preview_img, caption="Uploaded Nutrition Label", use_container_width=True)
         elif default_nut_img and Path(default_nut_img).exists():
             preview_img = Image.open(default_nut_img)
@@ -789,6 +791,8 @@ with tab_scan:
 
         if ingredients_file is not None:
             ing_preview = Image.open(ingredients_file)
+            if hasattr(ingredients_file, "seek"):
+                ingredients_file.seek(0)
             st.image(ing_preview, caption="Uploaded Ingredients Panel", use_container_width=True)
 
         # Main Execute Button
@@ -832,6 +836,18 @@ with tab_scan:
             target_nut_img = nutrition_file
             if target_nut_img is None and default_nut_img and Path(default_nut_img).exists():
                 target_nut_img = default_nut_img
+            elif hasattr(target_nut_img, "seek"):
+                target_nut_img.seek(0)
+                target_nut_img = target_nut_img.read()
+            elif hasattr(target_nut_img, "read"):
+                target_nut_img = target_nut_img.read()
+
+            target_ing_img = ingredients_file
+            if target_ing_img is not None and hasattr(target_ing_img, "seek"):
+                target_ing_img.seek(0)
+                target_ing_img = target_ing_img.read()
+            elif target_ing_img is not None and hasattr(target_ing_img, "read"):
+                target_ing_img = target_ing_img.read()
 
             if target_nut_img is None and not user_barcode.strip():
                 st.error("❌ Please provide either a Nutrition Label Image or a Barcode to run the scanner.")
@@ -844,10 +860,10 @@ with tab_scan:
 
                         if target_nut_img is not None:
                             # Package label OCR workflow (single or dual image)
-                            if ingredients_file is not None:
+                            if target_ing_img is not None:
                                 scan_payload = engine.scan_package_label(
                                     nutrition_image=target_nut_img,
-                                    ingredients_image=ingredients_file,
+                                    ingredients_image=target_ing_img,
                                     barcode=clean_barcode,
                                     package_weight_g=net_weight,
                                 )
