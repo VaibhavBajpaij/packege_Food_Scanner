@@ -1,4 +1,6 @@
-# Food Intelligence AI Engine
+# Food Intelligence AI Engine — Offline Packaged Food OCR & Nutrition Analyzer
+
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://github.com/VaibhavBajpaij/packege_Food_Scanner) [![PaddleOCR](https://img.shields.io/badge/OCR-PP--OCRv4-00D2FF?style=flat-square)](https://github.com/VaibhavBajpaij/packege_Food_Scanner) [![SQLite](https://img.shields.io/badge/SQLite-85k%2B_Records-003B57?style=flat-square&logo=sqlite&logoColor=white)](https://github.com/VaibhavBajpaij/packege_Food_Scanner) [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg?style=flat-square)](LICENSE)
 
 A standalone, offline-first Python food intelligence engine for packaged food label OCR, nutrition table extraction, hierarchical product matching, deterministic arithmetic, and evidence-based allergen/health evaluation.
 
