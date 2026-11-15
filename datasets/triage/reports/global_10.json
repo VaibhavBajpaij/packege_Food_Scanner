@@ -1,0 +1,46 @@
+{
+  "triage_id": "global_10",
+  "timestamp": "2026-10-24T20:14:31Z",
+  "barcode": "7622210449283",
+  "product_name": "Prince",
+  "failure_reason": "SANITY_CHECK_WARNINGS",
+  "suspected_bucket": "BUCKET_A_IMAGE_QUALITY",
+  "category_description": "Camera / Photographic fault (blurry, out-of-focus, or motion artifact).",
+  "recommended_action": "Prompt user to retake photo; do not alter engine extraction rules.",
+  "sharpness_score": 68.21,
+  "blur_threshold": 80.0,
+  "is_blurry": true,
+  "image_file": "global_10.jpg",
+  "diagnostics": {
+    "sanity_warnings": [
+      "Atwater mismatch: Declared 467 kcal vs calculated 301 kcal."
+    ],
+    "sample_tp": 7,
+    "sample_fp": 0,
+    "sample_fn": 2,
+    "predicted_nutrients": {
+      "energy_kcal": 467.0,
+      "energy_kj": 1962.0,
+      "protein_g": 6.3,
+      "carbohydrates_g": 69.0,
+      "sugars_g": 32.0,
+      "dietary_fibre_g": 4.0,
+      "total_fat_g": 17.0,
+      "saturated_fat_g": 5.6,
+      "sodium_mg": 196.0,
+      "salt_g": 0.49
+    },
+    "ground_truth": {
+      "energy_kcal": 467.0,
+      "energy_kj": 1962.0,
+      "protein_g": 6.3,
+      "carbohydrates_g": 69.0,
+      "sugars_g": 32.0,
+      "fat_g": 17.0,
+      "saturated_fat_g": 5.6,
+      "fiber_g": 4.0,
+      "sodium_mg": 196.0,
+      "salt_g": 0.49
+    }
+  }
+}

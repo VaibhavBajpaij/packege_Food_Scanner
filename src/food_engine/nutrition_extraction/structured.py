@@ -114,6 +114,7 @@ class Candidate:
     y_center: float
     has_percent: bool = False
     upper_bound: bool = False
+    comparator: Optional[str] = None
 
 
 @dataclass
@@ -283,9 +284,14 @@ def _has_percent_after(text: str, end: int) -> bool:
     return re.match(r"\s*%", text[end:]) is not None
 
 
-def _looks_upper_bound(text: str, start: int) -> bool:
-    before = text[max(0, start - 14):start]
-    return bool(re.search(r"(?:<|less\s+than|max(?:imum)?|up\s+to|trace)\s*$", before))
+def _looks_upper_bound(text: str, start: int) -> Tuple[bool, Optional[str]]:
+    before = text[max(0, start - 16):start]
+    m = re.search(r"(?:(<|≤|<=)|(less\s+than|under|max(?:imum)?|up\s+to|trace))\s*$", before, re.IGNORECASE)
+    if m:
+        sym = (m.group(1) or m.group(2) or "").strip().lower()
+        comp = "≤" if sym in ("≤", "<=") else "<"
+        return True, comp
+    return False, None
 
 
 def extract_candidates(cell: Cell) -> List[Candidate]:
@@ -306,6 +312,7 @@ def extract_candidates(cell: Cell) -> List[Candidate]:
         if value is None:
             return
         x0, x1 = _x_for_span(cell, span_start, span_end)
+        is_ub, comp = _looks_upper_bound(text, span_start)
         found.append(Candidate(
             value=value,
             unit=_UNIT_ALIASES.get(unit.casefold()) if unit else None,
@@ -315,7 +322,8 @@ def extract_candidates(cell: Cell) -> List[Candidate]:
             x_center=(x0 + x1) / 2.0,
             y_center=cell.y_center,
             has_percent=_has_percent_after(text, span_end),
-            upper_bound=_looks_upper_bound(text, span_start),
+            upper_bound=is_ub,
+            comparator=comp,
         ))
         occupied.append((span_start, span_end))
 
@@ -1012,6 +1020,7 @@ def extract_structured(ocr_records: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
                     "match_method": method,
                     "source_unit": actual_unit,
                     "upper_bound": cand.upper_bound,
+                    "comparator": cand.comparator if cand.upper_bound else None,
                 }
         if chosen_value is not None:
             nutrients[field_name] = chosen_value
@@ -1021,6 +1030,8 @@ def extract_structured(ocr_records: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
                 "unit": unit,
                 "status": "missing",
                 "confidence": None,
+                "upper_bound": False,
+                "comparator": None,
             }
             if field_name in {
                 "energy_kcal", "protein_g", "carbohydrates_g", "total_fat_g",

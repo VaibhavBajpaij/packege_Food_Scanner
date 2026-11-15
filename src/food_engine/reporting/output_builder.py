@@ -113,3 +113,120 @@ class OutputBuilder:
         # Strict JSON Schema validation
         jsonschema.validate(instance=payload, schema=self.schema)
         return payload
+
+    @classmethod
+    def format_text_report(cls, payload: Dict[str, Any]) -> str:
+        """Formats the structured output dictionary into a human-readable report."""
+        pm = payload.get("product_match", {})
+        nut = payload.get("nutrition", {})
+        nutrients = nut.get("nutrients", {})
+        ing = payload.get("ingredients", {})
+        alerts = payload.get("evidence_based_alerts", [])
+        dq = payload.get("data_quality", {})
+        ocr_res = payload.get("ocr_result", {})
+
+        p_name = pm.get("product_name") or "Packaged Food Item"
+        brand = pm.get("brand") or "Brand Not Stated"
+        barcode_str = pm.get("barcode") or "None"
+        match_status = pm.get("status", "unmatched").upper()
+        basis = nut.get("basis", "per_100_g").replace("_", " ")
+
+        lines = [
+            "=" * 78,
+            "                   FOOD INTELLIGENCE NUTRITION REPORT",
+            "=" * 78,
+            f"PRODUCT:     {p_name} ({brand})",
+            f"BARCODE:     {barcode_str} [{match_status}]",
+            f"SOURCE:      {pm.get('source', 'Packaging Label OCR')}",
+            f"BASIS:       {basis}",
+        ]
+        if nut.get("serving_size_raw"):
+            lines.append(f"SERVING:     {nut.get('serving_size_raw')}")
+        if ocr_res.get("engine"):
+            lines.append(f"OCR ENGINE:  {ocr_res.get('engine')} ({ocr_res.get('model_version')}) - {ocr_res.get('line_count', 0)} lines extracted")
+
+        lines.append("-" * 78)
+        lines.append(f"{'NUTRIENT':<24} | {'AMOUNT':<16} | {'PROVENANCE / STATUS':<30}")
+        lines.append("-" * 78)
+
+        # Standard nutrient display order
+        display_order = [
+            ("energy_kcal", "Energy (Calories)"),
+            ("energy_kj", "Energy (kJ)"),
+            ("protein_g", "Protein"),
+            ("carbohydrates_g", "Total Carbohydrate"),
+            ("sugars_g", "  of which Sugars"),
+            ("added_sugars_g", "  of which Added Sugars"),
+            ("dietary_fibre_g", "Dietary Fibre"),
+            ("total_fat_g", "Total Fat"),
+            ("saturated_fat_g", "  of which Saturated Fat"),
+            ("trans_fat_g", "  of which Trans Fat"),
+            ("cholesterol_mg", "Cholesterol"),
+            ("sodium_mg", "Sodium"),
+            ("salt_g", "Salt (NaCl)"),
+            ("calcium_mg", "Calcium"),
+            ("iron_mg", "Iron"),
+            ("potassium_mg", "Potassium"),
+            ("vitamin_c_mg", "Vitamin C"),
+            ("vitamin_d_mcg", "Vitamin D"),
+        ]
+
+        for key, label in display_order:
+            item = nutrients.get(key)
+            if not item:
+                continue
+            val = item.get("value")
+            unit = item.get("unit", "")
+            status = item.get("status", "missing")
+            ub = item.get("upper_bound", False)
+            comp = item.get("comparator", "<") if ub else ""
+
+            if val is not None:
+                amt_str = f"{comp} {val} {unit}".strip()
+                if status == "declared":
+                    badge = "[DECLARED]"
+                elif status == "calculated":
+                    badge = "[CALCULATED]"
+                elif status == "reference_derived":
+                    badge = "[REFERENCE_DB]"
+                else:
+                    badge = f"[{status.upper()}]"
+            else:
+                amt_str = "Not Declared"
+                badge = "[MISSING]"
+
+            lines.append(f"{label:<24} | {amt_str:<16} | {badge:<30}")
+
+        lines.append("-" * 78)
+        lines.append("ALLERGENS & INGREDIENTS")
+        lines.append("-" * 78)
+        decl_allergens = ing.get("declared_allergens", [])
+        lines.append(f"Declared Allergens: {', '.join(decl_allergens) if decl_allergens else 'None declared on packaging'}")
+        traces = ing.get("potential_traces", [])
+        if traces:
+            lines.append(f"Potential Traces:   {', '.join(traces)}")
+        ing_text = ing.get("original_text")
+        if ing_text:
+            lines.append(f"Ingredients List:   {ing_text[:200]}{'...' if len(ing_text) > 200 else ''}")
+
+        if alerts:
+            lines.append("-" * 78)
+            lines.append("EVIDENCE-BASED HEALTH ALERTS (WHO / FSSAI Guidelines)")
+            lines.append("-" * 78)
+            for a in alerts:
+                sev = a.get("severity", "info").upper()
+                lines.append(f"[{sev}] {a.get('title')}: {a.get('reason')}")
+
+        if dq.get("conflicting_fields"):
+            lines.append("-" * 78)
+            lines.append("SOURCE DISCREPANCIES AUDIT")
+            lines.append("-" * 78)
+            for c in dq.get("conflicting_fields", []):
+                lines.append(f"* {c}")
+
+        lines.append("=" * 78)
+        return "\n".join(lines)
+
+
+format_text_report = OutputBuilder.format_text_report
+

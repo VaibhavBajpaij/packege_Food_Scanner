@@ -1,0 +1,17 @@
+{
+  "triage_id": "test_case_a",
+  "timestamp": "2026-10-24T20:48:47Z",
+  "barcode": null,
+  "product_name": null,
+  "failure_reason": "IMAGE_TOO_BLURRY",
+  "suspected_bucket": "BUCKET_A_IMAGE_QUALITY",
+  "category_description": "Camera / Photographic fault (blurry, out-of-focus, or motion artifact).",
+  "recommended_action": "Prompt user to retake photo; do not alter engine extraction rules.",
+  "sharpness_score": 0.0,
+  "blur_threshold": 80.0,
+  "is_blurry": true,
+  "image_file": "test_case_a.jpg",
+  "diagnostics": {
+    "raw_ocr_lines": 0
+  }
+}

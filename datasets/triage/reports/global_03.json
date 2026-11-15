@@ -1,0 +1,49 @@
+{
+  "triage_id": "global_03",
+  "timestamp": "2026-10-24T20:10:20Z",
+  "barcode": "0028400070560",
+  "product_name": "Nacho Cheese Flavored",
+  "failure_reason": "SANITY_CHECK_WARNINGS",
+  "suspected_bucket": "BUCKET_B_ENGINE_PARSER_BUG",
+  "category_description": "Engine / Parser bug (image is sharp, but extraction/normalization/fusion failed).",
+  "recommended_action": "Inspect raw OCR tokens and improve dictionary, regex, or table parser.",
+  "sharpness_score": 559.01,
+  "blur_threshold": 80.0,
+  "is_blurry": false,
+  "image_file": "global_03.jpg",
+  "diagnostics": {
+    "sanity_warnings": [
+      "Atwater mismatch: Declared 260 kcal vs calculated 136 kcal."
+    ],
+    "sample_tp": 0,
+    "sample_fp": 7,
+    "sample_fn": 2,
+    "predicted_nutrients": {
+      "energy_kcal": 260.0,
+      "protein_g": 4.0,
+      "carbohydrates_g": 30.0,
+      "sugars_g": 1.0,
+      "dietary_fibre_g": 2.0,
+      "total_fat_g": 13.0,
+      "saturated_fat_g": 0.0,
+      "cholesterol_mg": 0.0,
+      "sodium_mg": 290.0,
+      "salt_g": 0.725,
+      "iron_mg": 0.5,
+      "calcium_mg": 80.0,
+      "potassium_mg": 170.0
+    },
+    "ground_truth": {
+      "energy_kcal": 524.194,
+      "energy_kj": 2167.339,
+      "protein_g": 8.065,
+      "carbohydrates_g": 60.484,
+      "sugars_g": 2.016,
+      "fat_g": 26.21,
+      "saturated_fat_g": 4.032,
+      "fiber_g": 4.032,
+      "sodium_mg": 585.0,
+      "salt_g": 1.462
+    }
+  }
+}

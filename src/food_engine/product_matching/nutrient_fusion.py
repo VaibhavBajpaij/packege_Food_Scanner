@@ -37,30 +37,46 @@ class NutrientFusion:
             unit = item.get("unit", "g")
             status = item.get("status")
             conf = item.get("confidence")
+            upper_bound = item.get("upper_bound", False)
+            comparator = item.get("comparator")
 
             if status == "declared" and val is not None:
-                # Retain declared value
+                # Retain declared value - NEVER overwrite with database value!
                 fused[nut_name] = {
                     "value": val,
                     "unit": unit,
                     "status": "declared",
                     "confidence": conf,
                     "source": "printed_package_label",
+                    "upper_bound": upper_bound,
+                    "comparator": comparator,
                 }
 
                 # Check conflict with DB if DB has this nutrient
                 if nut_name in db_nutrients and db_nutrients[nut_name] is not None:
                     db_val = db_nutrients[nut_name]
-                    # If relative difference exceeds 30%, flag conflict
+                    if isinstance(db_val, dict):
+                        db_val = db_val.get("value")
+                    # If relative difference exceeds 35%, flag conflict
                     if isinstance(db_val, (int, float)) and val > 0:
                         diff = abs(val - db_val) / val
                         if diff > 0.35:
+                            src_name = matched_product.get("source", "reference_database") if matched_product else "database"
                             conflicting_fields.append(
-                                f"{nut_name}: declared on label={val}{unit}, reference db={db_val}{unit}"
+                                f"{nut_name}: declared on label={val} {unit}, database={db_val} {unit} ({src_name})"
                             )
 
             elif status in ("calculated", "declared"):
-                fused[nut_name] = item
+                # Retain calculated values (e.g. sodium/salt conversions) with explicit status
+                fused[nut_name] = {
+                    "value": val,
+                    "unit": unit,
+                    "status": status,
+                    "confidence": conf or 0.90,
+                    "source": item.get("source", "calculated_stoichiometry" if status == "calculated" else "printed_package_label"),
+                    "upper_bound": upper_bound,
+                    "comparator": comparator,
+                }
 
             else:
                 # Field is missing on label; check if matched database can provide reference value
@@ -69,12 +85,15 @@ class NutrientFusion:
                     if isinstance(db_val, dict):
                         db_val = db_val.get("value")
                     if isinstance(db_val, (int, float)):
+                        is_exact_db = matched_product and matched_product.get("match_type") == "exact_barcode"
                         fused[nut_name] = {
                             "value": float(db_val),
                             "unit": unit,
                             "status": "reference_derived",
-                            "confidence": 0.80,
-                            "source": matched_product.get("source", "reference_database"),
+                            "confidence": 0.85 if is_exact_db else 0.70,
+                            "source": matched_product.get("source", "reference_database") if matched_product else "reference_database",
+                            "upper_bound": False,
+                            "comparator": None,
                         }
                     else:
                         fused[nut_name] = {
@@ -82,6 +101,8 @@ class NutrientFusion:
                             "unit": unit,
                             "status": "missing",
                             "confidence": None,
+                            "upper_bound": False,
+                            "comparator": None,
                         }
                         missing_fields.append(nut_name)
                 else:
@@ -90,6 +111,8 @@ class NutrientFusion:
                         "unit": unit,
                         "status": "missing",
                         "confidence": None,
+                        "upper_bound": False,
+                        "comparator": None,
                     }
                     if nut_name in ["energy_kcal", "protein_g", "carbohydrates_g", "total_fat_g"]:
                         missing_fields.append(nut_name)

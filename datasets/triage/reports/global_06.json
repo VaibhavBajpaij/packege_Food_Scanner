@@ -1,0 +1,42 @@
+{
+  "triage_id": "global_06",
+  "timestamp": "2026-10-24T20:11:56Z",
+  "barcode": "5000159461122",
+  "product_name": "Snickers",
+  "failure_reason": "SANITY_CHECK_WARNINGS",
+  "suspected_bucket": "BUCKET_B_ENGINE_PARSER_BUG",
+  "category_description": "Engine / Parser bug (image is sharp, but extraction/normalization/fusion failed).",
+  "recommended_action": "Inspect raw OCR tokens and improve dictionary, regex, or table parser.",
+  "sharpness_score": 342.62,
+  "blur_threshold": 80.0,
+  "is_blurry": false,
+  "image_file": "global_06.jpg",
+  "diagnostics": {
+    "sanity_warnings": [
+      "Atwater mismatch: Declared 481 kcal vs calculated 276 kcal."
+    ],
+    "sample_tp": 4,
+    "sample_fp": 0,
+    "sample_fn": 5,
+    "predicted_nutrients": {
+      "energy_kcal": 481.0,
+      "energy_kj": 2018.0,
+      "protein_g": 8.6,
+      "carbohydrates_g": 60.5,
+      "total_fat_g": 22.5,
+      "saturated_fat_g": 7.9
+    },
+    "ground_truth": {
+      "energy_kcal": 481.0,
+      "energy_kj": 2018.0,
+      "protein_g": 8.6,
+      "carbohydrates_g": 60.5,
+      "sugars_g": 51.8,
+      "fat_g": 22.5,
+      "saturated_fat_g": 7.9,
+      "fiber_g": 4.3,
+      "sodium_mg": 252.0,
+      "salt_g": 0.629
+    }
+  }
+}

@@ -1,9 +1,9 @@
 # Food Intelligence Engine — Phase 7 Verified Benchmark Report
 
-- **Evaluation Date**: `2026-10-24T14:49:03.516708`
+- **Evaluation Date**: `2026-10-24T16:43:53.987517`
 - **Benchmark Type**: `development_benchmark` (All 22 samples are development photos; no independent holdout claimed)
 - **Dataset Split**: `development_only` (None - all 22 photos are explicitly designated and evaluated as development data. No independent holdout validation is claimed.)
-- **Git Commit**: `905f82c` (Branch: `main` | Dirty: `True`)
+- **Git Commit**: `dde7109` (Branch: `main` | Dirty: `True`)
 - **Environment**: Python `3.13.9` on `Windows-11-10.0.26300` | RAM: `15.71 GB`
 - **Ground Truth**: `ground_truth_v4.json` (Statutory Nutrients, Reconciled Packaging Evidence)
 

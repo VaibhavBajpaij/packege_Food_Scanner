@@ -13,8 +13,12 @@ Enforces:
 
 import json
 import sqlite3
+import urllib.error
+import urllib.request
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+from food_engine.validation.barcode_validator import BarcodeValidator
 
 
 class ProductMatcher:
@@ -35,23 +39,56 @@ class ProductMatcher:
         product_name: Optional[str] = None,
         brand: Optional[str] = None,
         ocr_lines: Optional[List[str]] = None,
+        allow_online: bool = False,
     ) -> Dict[str, Any]:
         """Performs hierarchical priority matching for a product."""
 
         # Priority 1: Exact barcode matching
         if barcode:
-            clean_code = str(barcode).strip().lstrip("0")
-            exact_match = self._lookup_barcode(barcode) or (self._lookup_barcode(clean_code) if clean_code else None)
+            val_res = BarcodeValidator.validate(barcode)
+            if not val_res.is_valid and val_res.status in ("invalid_checksum", "malformed_length", "non_numeric"):
+                return {
+                    "status": "unmatched",
+                    "match_type": "invalid_barcode",
+                    "product_name": None,
+                    "barcode": str(barcode),
+                    "brand": brand,
+                    "source": "none",
+                    "source_id": None,
+                    "source_dataset_version": None,
+                    "confidence": 0.0,
+                    "matched_data": None,
+                    "validation_error": val_res.error_message,
+                }
+
+            candidates = val_res.lookup_candidates if val_res.is_valid else [str(barcode).strip()]
+            exact_match = None
+            for cand in candidates:
+                exact_match = self._lookup_barcode(cand)
+                if exact_match:
+                    break
+
+            # Fallback to stripping leading zeros if no candidate matched
+            if not exact_match and str(barcode).strip().lstrip("0"):
+                exact_match = self._lookup_barcode(str(barcode).strip().lstrip("0"))
+
+            # Optional online lookup if permitted and not found locally
+            if not exact_match and allow_online and val_res.is_valid:
+                for cand in candidates:
+                    exact_match = self._lookup_barcode_online(cand)
+                    if exact_match:
+                        break
+
             if exact_match:
                 return {
                     "status": "exact_barcode_match",
                     "match_type": "exact_barcode",
-                    "product_name": exact_match["product_name"],
-                    "barcode": exact_match["code"],
-                    "brand": exact_match["brands"],
-                    "source": "Open Food Facts (Local Subset)",
-                    "source_id": exact_match["code"],
-                    "source_dataset_version": "2026-subset",
+                    "product_name": exact_match.get("product_name"),
+                    "barcode": exact_match.get("code") or val_res.normalized_code or str(barcode),
+                    "brand": exact_match.get("brands") or exact_match.get("brand"),
+                    "source": exact_match.get("source_provider", "Open Food Facts (Local Subset)"),
+                    "source_id": exact_match.get("code"),
+                    "source_dataset_version": exact_match.get("dataset_version", "2026-subset"),
                     "confidence": 1.0,
                     "matched_data": exact_match,
                 }
@@ -127,6 +164,56 @@ class ProductMatcher:
                 if d.get("nutrients_json"):
                     d["nutrients"] = json.loads(d["nutrients_json"])
                 return d
+        except Exception:
+            pass
+        return None
+
+    def _lookup_barcode_online(self, code: str, timeout_sec: float = 2.0) -> Optional[Dict[str, Any]]:
+        """Optional online fallback to query Open Food Facts API with short timeout."""
+        clean_code = str(code).strip()
+        url = f"https://world.openfoodfacts.org/api/v2/product/{clean_code}.json"
+        req = urllib.request.Request(
+            url,
+            headers={
+                "User-Agent": "Antigravity-FoodIntelligenceEngine/1.0 (https://github.com/food-intelligence-engine)"
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=timeout_sec) as resp:
+                if resp.status == 200:
+                    data = json.loads(resp.read().decode("utf-8"))
+                    if data.get("status") == 1 and "product" in data:
+                        p = data["product"]
+                        nm = p.get("nutriments", {})
+                        sod_100g = nm.get("sodium_100g")
+                        sod_mg = float(sod_100g) * 1000.0 if sod_100g is not None else None
+                        nutrients = {
+                            "energy_kcal": nm.get("energy-kcal_100g") or nm.get("energy-kcal"),
+                            "energy_kj": nm.get("energy-kj_100g") or nm.get("energy-kj"),
+                            "protein_g": nm.get("proteins_100g"),
+                            "carbohydrates_g": nm.get("carbohydrates_100g"),
+                            "sugars_g": nm.get("sugars_100g"),
+                            "added_sugars_g": nm.get("added-sugars_100g"),
+                            "total_fat_g": nm.get("fat_100g"),
+                            "saturated_fat_g": nm.get("saturated-fat_100g"),
+                            "trans_fat_g": nm.get("trans-fat_100g"),
+                            "dietary_fibre_g": nm.get("fiber_100g"),
+                            "sodium_mg": sod_mg,
+                            "salt_g": nm.get("salt_100g"),
+                        }
+                        return {
+                            "code": clean_code,
+                            "product_name": p.get("product_name") or p.get("product_name_en"),
+                            "brands": p.get("brands"),
+                            "categories": p.get("categories"),
+                            "countries": p.get("countries"),
+                            "ingredients_text": p.get("ingredients_text") or p.get("ingredients_text_en"),
+                            "allergens": p.get("allergens"),
+                            "serving_size": p.get("serving_size"),
+                            "nutrients": nutrients,
+                            "source_provider": "Open Food Facts (Live API)",
+                            "dataset_version": "v2-live",
+                        }
         except Exception:
             pass
         return None

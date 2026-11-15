@@ -1,0 +1,46 @@
+{
+  "triage_id": "global_15",
+  "timestamp": "2026-10-24T20:18:16Z",
+  "barcode": "8901058017687",
+  "product_name": "maggi",
+  "failure_reason": "SANITY_CHECK_WARNINGS",
+  "suspected_bucket": "BUCKET_B_ENGINE_PARSER_BUG",
+  "category_description": "Engine / Parser bug (image is sharp, but extraction/normalization/fusion failed).",
+  "recommended_action": "Inspect raw OCR tokens and improve dictionary, regex, or table parser.",
+  "sharpness_score": 2442.98,
+  "blur_threshold": 80.0,
+  "is_blurry": false,
+  "image_file": "global_15.jpg",
+  "diagnostics": {
+    "sanity_warnings": [
+      "Atwater mismatch: Declared 8 kcal vs calculated 271 kcal."
+    ],
+    "sample_tp": 4,
+    "sample_fp": 3,
+    "sample_fn": 1,
+    "predicted_nutrients": {
+      "energy_kcal": 8.2,
+      "protein_g": 8.2,
+      "carbohydrates_g": 59.6,
+      "sugars_g": 1.8,
+      "added_sugars_g": 384.0,
+      "total_fat_g": 12.5,
+      "saturated_fat_g": 8.2,
+      "trans_fat_g": 0.13,
+      "sodium_mg": 40.0,
+      "salt_g": 0.1
+    },
+    "ground_truth": {
+      "energy_kcal": 384.0,
+      "energy_kj": 1611.7,
+      "protein_g": 8.2,
+      "carbohydrates_g": 59.4,
+      "sugars_g": 1.8,
+      "fat_g": 12.5,
+      "saturated_fat_g": 8.2,
+      "fiber_g": null,
+      "sodium_mg": 1000.0,
+      "salt_g": 2.5
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "triage_id": "test_case_b",
+  "timestamp": "2026-10-24T20:48:47Z",
+  "barcode": null,
+  "product_name": null,
+  "failure_reason": "NO_NUTRITION_TABLE_FOUND",
+  "suspected_bucket": "BUCKET_B_ENGINE_PARSER_BUG",
+  "category_description": "Engine / Parser bug (image is sharp, but extraction/normalization/fusion failed).",
+  "recommended_action": "Inspect raw OCR tokens and improve dictionary, regex, or table parser.",
+  "sharpness_score": 77703.25,
+  "blur_threshold": 80.0,
+  "is_blurry": false,
+  "image_file": "test_case_b.jpg",
+  "diagnostics": {
+    "raw_tokens": [
+      "Ingredients:",
+      "Sugar",
+      "Flour"
+    ]
+  }
+}

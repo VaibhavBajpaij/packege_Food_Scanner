@@ -1,0 +1,48 @@
+{
+  "triage_id": "global_04",
+  "timestamp": "2026-10-24T20:10:36Z",
+  "barcode": "0051500255162",
+  "product_name": "Creamy Peanut Butter",
+  "failure_reason": "POOR_EXTRACTION_ACCURACY",
+  "suspected_bucket": "BUCKET_B_ENGINE_PARSER_BUG",
+  "category_description": "Engine / Parser bug (image is sharp, but extraction/normalization/fusion failed).",
+  "recommended_action": "Inspect raw OCR tokens and improve dictionary, regex, or table parser.",
+  "sharpness_score": 1500.38,
+  "blur_threshold": 80.0,
+  "is_blurry": false,
+  "image_file": "global_04.jpg",
+  "diagnostics": {
+    "sanity_warnings": [],
+    "sample_tp": 0,
+    "sample_fp": 6,
+    "sample_fn": 3,
+    "predicted_nutrients": {
+      "protein_g": 7.0,
+      "carbohydrates_g": 8.0,
+      "sugars_g": 3.0,
+      "added_sugars_g": 2.0,
+      "dietary_fibre_g": 2.0,
+      "total_fat_g": 16.0,
+      "saturated_fat_g": 3.5,
+      "trans_fat_g": 0.0,
+      "sodium_mg": 140.0,
+      "salt_g": 0.35,
+      "iron_mg": 0.5,
+      "calcium_mg": 17.0,
+      "potassium_mg": 185.0,
+      "vitamin_d_mcg": 0.0
+    },
+    "ground_truth": {
+      "energy_kcal": 575.758,
+      "energy_kj": 2615.152,
+      "protein_g": 21.212,
+      "carbohydrates_g": 24.242,
+      "sugars_g": 9.091,
+      "fat_g": 48.485,
+      "saturated_fat_g": 10.606,
+      "fiber_g": 6.061,
+      "sodium_mg": 424.0,
+      "salt_g": 1.061
+    }
+  }
+}

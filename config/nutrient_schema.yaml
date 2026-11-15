@@ -170,3 +170,7 @@ definitions:
         type: "string"
         enum: ["declared", "calculated", "reference_derived", "missing", "unclear"]
       confidence: { type: ["number", "null"] }
+      upper_bound: { type: ["boolean", "null"] }
+      comparator: { type: ["string", "null"] }
+      source: { type: ["string", "null"] }
+

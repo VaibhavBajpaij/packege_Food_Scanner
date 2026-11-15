@@ -3,19 +3,31 @@
   "benchmark_type": "development_benchmark",
   "dataset_split": "development_only",
   "holdout_protocol": "None - all 22 photos are explicitly designated and evaluated as development data. No independent holdout validation is claimed.",
-  "timestamp": "2026-10-24T14:49:03.516708",
+  "timestamp": "2026-10-24T16:43:53.987517",
   "git": {
-    "commit_hash": "905f82cef9dca881784d5cfc9229e438473a63ab",
-    "commit_short": "905f82c",
+    "commit_hash": "dde71098e6998253d14ccb8e8198f29649680c98",
+    "commit_short": "dde7109",
     "branch": "main",
     "is_dirty": true,
     "dirty_files": [
-      "M scripts/run_verified_benchmark.py",
-      "M tests/unit/test_verified_benchmark_scoring.py",
-      "?? reports/evaluation/false_positive_adjudication_ledger_v2.md",
-      "?? src/food_engine/evaluate/__init__.py",
-      "?? src/food_engine/evaluate/benchmark_scorer.py",
-      "?? tests/fixtures/real_photos/ground_truth_v4.json"
+      "M config/nutrient_schema.yaml",
+      "M scripts/run_image_inference.py",
+      "M src/food_engine/engine.py",
+      "M src/food_engine/ingredient_parser/parser.py",
+      "M src/food_engine/nutrition_extraction/extractor.py",
+      "M src/food_engine/nutrition_extraction/structured.py",
+      "M src/food_engine/product_matching/matcher.py",
+      "M src/food_engine/product_matching/nutrient_fusion.py",
+      "M src/food_engine/reporting/output_builder.py",
+      "M src/food_engine/validation/__init__.py",
+      "?? reports/audit/",
+      "?? reports/planning/",
+      "?? src/food_engine/validation/barcode_validator.py",
+      "?? src/food_engine/validation/completeness.py",
+      "?? tests/unit/test_barcode_first_workflow.py",
+      "?? tests/unit/test_difficult_nutrition_cases.py",
+      "?? tests/unit/test_enrichment_and_provenance.py",
+      "?? tests/unit/test_label_ocr_and_multi_image.py"
     ]
   },
   "environment": {
@@ -35,7 +47,7 @@
       "pytest": "9.1.1",
       "jsonschema": "4.26.0"
     },
-    "initial_rss_mb": 46.35
+    "initial_rss_mb": 49.42
   },
   "parameters": {
     "relative_numeric_tolerance": 0.05,
@@ -120,7 +132,7 @@
   },
   "memory_mb": {
     "peak_rss_during_benchmark": 527.35,
-    "post_init_rss": 46.64
+    "post_init_rss": 49.61
   },
   "per_nutrient_metrics": {
     "added_sugars_g": {

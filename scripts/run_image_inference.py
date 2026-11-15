@@ -21,39 +21,72 @@ from food_engine.engine import FoodIntelligenceEngine
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Food Intelligence Engine Image Inference CLI")
-    parser.add_argument("--image", type=str, default=None, help="Path to input packaged food image")
-    parser.add_argument("--barcode", type=str, default=None, help="Optional barcode / GTIN / UPC")
+    parser = argparse.ArgumentParser(description="Food Intelligence Engine Packaged Food & Nutrition Scanner CLI")
+    parser.add_argument("--image", type=str, default=None, help="Path to input packaged food image (or label)")
+    parser.add_argument("--nutrition-image", type=str, default=None, help="Separate image for nutrition facts panel")
+    parser.add_argument("--ingredients-image", type=str, default=None, help="Separate image for ingredients panel")
+    parser.add_argument("--barcode", type=str, default=None, help="Barcode / GTIN / EAN / UPC")
+    parser.add_argument("--barcode-only", action="store_true", help="Perform barcode-first lookup without requiring an image")
     parser.add_argument("--weight", type=float, default=None, help="Optional package net weight in grams")
     parser.add_argument("--volume", type=float, default=None, help="Optional package volume in millilitres")
     parser.add_argument("--output", type=str, default="outputs/inference_result.json", help="Path to save output JSON")
     parser.add_argument("--gpu", action="store_true", help="Enable GPU acceleration if available")
+    parser.add_argument("--online", action="store_true", help="Allow online Open Food Facts fallback if barcode missing from local DB")
 
     args = parser.parse_args()
     repo_root = Path(__file__).resolve().parent.parent
 
-    # If no image specified, use the realistic sample biscuit fixture
-    if not args.image:
-        fixture_path = repo_root / "tests" / "fixtures" / "sample_biscuit_packet.png"
-        if not fixture_path.exists():
-            from tests.fixtures.create_sample_images import create_sample_label_images
-            create_sample_label_images(repo_root / "tests" / "fixtures")
-        image_path = fixture_path
-        print(f"No --image argument provided. Running demonstration on test fixture: {image_path}")
-        package_weight = args.weight or 120.0
-    else:
-        image_path = Path(args.image)
-        package_weight = args.weight
-
     engine = FoodIntelligenceEngine(repo_root=repo_root, use_gpu=args.gpu)
 
-    print(f"\nProcessing packaged food image: {image_path} ...")
-    payload = engine.process_image(
-        image_input=image_path,
-        barcode=args.barcode,
-        package_weight_g=package_weight,
-        package_volume_ml=args.volume,
-    )
+    # 1. Barcode-Only Workflow
+    if args.barcode_only or (args.barcode and not args.image and not args.nutrition_image):
+        print(f"\n[STEP 1] Scanning product barcode: {args.barcode} ...")
+        res = engine.scan_barcode(args.barcode, allow_online=args.online)
+        print(f"Validation Status:  {res['barcode_validation']['status'].upper()} (Format: {res['barcode_validation']['format']})")
+        print(f"Product Match:      {res['product_match']['status']} ({res['product_match'].get('product_name') or 'Unknown'})")
+        print(f"Completeness Score: {res['completeness_audit']['completeness_score'] * 100:.1f}%")
+        print(f"Missing Fields:     {res['completeness_audit']['missing_fields']}")
+        print(f"Action Required:    {res['action_required'].upper()}")
+        print(f"Prompt:             {res['prompt_message']}")
+        out_file = repo_root / args.output
+        out_file.parent.mkdir(parents=True, exist_ok=True)
+        out_file.write_text(json.dumps(res, indent=2), encoding="utf-8")
+        print(f"\nBarcode scan verdict saved to: {out_file}\n")
+        return
+
+    # 2. Dual Images Workflow
+    if args.nutrition_image and args.ingredients_image:
+        print(f"\nProcessing dual package label images:")
+        print(f"  Nutrition panel:   {args.nutrition_image}")
+        print(f"  Ingredients panel: {args.ingredients_image}")
+        payload = engine.scan_package_label(
+            nutrition_image=Path(args.nutrition_image),
+            ingredients_image=Path(args.ingredients_image),
+            barcode=args.barcode,
+            package_weight_g=args.weight,
+            package_volume_ml=args.volume,
+        )
+    else:
+        # 3. Single Image Workflow
+        if not args.image:
+            fixture_path = repo_root / "tests" / "fixtures" / "sample_biscuit_packet.png"
+            if not fixture_path.exists():
+                from tests.fixtures.create_sample_images import create_sample_label_images
+                create_sample_label_images(repo_root / "tests" / "fixtures")
+            image_path = fixture_path
+            print(f"No --image argument provided. Running demonstration on test fixture: {image_path}")
+            package_weight = args.weight or 120.0
+        else:
+            image_path = Path(args.image)
+            package_weight = args.weight
+
+        print(f"\nProcessing packaged food image: {image_path} ...")
+        payload = engine.process_image(
+            image_input=image_path,
+            barcode=args.barcode,
+            package_weight_g=package_weight,
+            package_volume_ml=args.volume,
+        )
 
     # Save JSON output
     out_file = repo_root / args.output

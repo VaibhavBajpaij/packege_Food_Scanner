@@ -1,0 +1,43 @@
+{
+  "triage_id": "global_12",
+  "timestamp": "2026-10-24T20:16:38Z",
+  "barcode": "8076809513753",
+  "product_name": "Barilla PESTO alla GENOVESE",
+  "failure_reason": "SANITY_CHECK_WARNINGS",
+  "suspected_bucket": "BUCKET_B_ENGINE_PARSER_BUG",
+  "category_description": "Engine / Parser bug (image is sharp, but extraction/normalization/fusion failed).",
+  "recommended_action": "Inspect raw OCR tokens and improve dictionary, regex, or table parser.",
+  "sharpness_score": 221.6,
+  "blur_threshold": 80.0,
+  "is_blurry": false,
+  "image_file": "global_12.jpg",
+  "diagnostics": {
+    "sanity_warnings": [
+      "Atwater mismatch: Declared 492 kcal vs calculated 100 kcal."
+    ],
+    "sample_tp": 3,
+    "sample_fp": 2,
+    "sample_fn": 4,
+    "predicted_nutrients": {
+      "energy_kcal": 492.0,
+      "energy_kj": 2030.0,
+      "protein_g": 14.0,
+      "carbohydrates_g": 11.0,
+      "sugars_g": 5.0,
+      "dietary_fibre_g": 30.0,
+      "saturated_fat_g": 53.0
+    },
+    "ground_truth": {
+      "energy_kcal": 492.0,
+      "energy_kj": 2030.0,
+      "protein_g": 4.7,
+      "carbohydrates_g": 11.0,
+      "sugars_g": 5.0,
+      "fat_g": 47.0,
+      "saturated_fat_g": 5.3,
+      "fiber_g": 3.0,
+      "sodium_mg": 1280.0,
+      "salt_g": 3.2
+    }
+  }
+}

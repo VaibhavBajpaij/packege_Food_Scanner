@@ -1,0 +1,46 @@
+{
+  "triage_id": "global_13",
+  "timestamp": "2026-10-24T20:16:55Z",
+  "barcode": "8901725181222",
+  "product_name": "Yippee noodles",
+  "failure_reason": "SANITY_CHECK_WARNINGS",
+  "suspected_bucket": "BUCKET_B_ENGINE_PARSER_BUG",
+  "category_description": "Engine / Parser bug (image is sharp, but extraction/normalization/fusion failed).",
+  "recommended_action": "Inspect raw OCR tokens and improve dictionary, regex, or table parser.",
+  "sharpness_score": 438.6,
+  "blur_threshold": 80.0,
+  "is_blurry": false,
+  "image_file": "global_13.jpg",
+  "diagnostics": {
+    "sanity_warnings": [
+      "Atwater mismatch: Declared 111 kcal vs calculated 286 kcal."
+    ],
+    "sample_tp": 7,
+    "sample_fp": 0,
+    "sample_fn": 2,
+    "predicted_nutrients": {
+      "energy_kcal": 111.0,
+      "energy_kj": 464.0,
+      "protein_g": 8.9,
+      "carbohydrates_g": 62.5,
+      "sugars_g": 2.8,
+      "dietary_fibre_g": 1.1,
+      "total_fat_g": 19.8,
+      "saturated_fat_g": 9.9,
+      "sodium_mg": 1018.0,
+      "salt_g": 2.5
+    },
+    "ground_truth": {
+      "energy_kcal": 110.0,
+      "energy_kj": 1950.429,
+      "protein_g": 8.857,
+      "carbohydrates_g": 62.429,
+      "sugars_g": 2.857,
+      "fat_g": 19.714,
+      "saturated_fat_g": 9.857,
+      "fiber_g": 1.143,
+      "sodium_mg": 1029.0,
+      "salt_g": 2.571
+    }
+  }
+}

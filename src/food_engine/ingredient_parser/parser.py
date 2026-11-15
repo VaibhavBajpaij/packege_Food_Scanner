@@ -27,6 +27,9 @@ COMMON_ALLERGEN_KEYWORDS = {
     "soybean": "Soybeans / Soy",
     "peanut": "Peanuts",
     "peanuts": "Peanuts",
+    "tree nut": "Tree Nuts",
+    "tree nuts": "Tree Nuts",
+    "nuts": "Tree Nuts",
     "almond": "Tree Nuts (Almond)",
     "cashew": "Tree Nuts (Cashew)",
     "walnut": "Tree Nuts (Walnut)",
@@ -57,10 +60,10 @@ class IngredientParser:
     def parse_from_text(cls, raw_text: str) -> Dict[str, Any]:
         """Extracts ingredients block and analyzes items and allergens."""
         cleaned_text = raw_text.strip()
-        ingredient_block, trace_block = cls._extract_blocks(cleaned_text)
+        ingredient_block, contains_block, trace_block = cls._extract_blocks(cleaned_text)
 
         parsed_items = cls._split_ingredients(ingredient_block) if ingredient_block else []
-        declared_allergens, potential_traces = cls._detect_allergens(ingredient_block, trace_block)
+        declared_allergens, potential_traces = cls._detect_allergens(ingredient_block, contains_block, trace_block)
 
         # Review is always required for critical health safety unless verified by authoritative registry
         review_required = True
@@ -80,35 +83,44 @@ class IngredientParser:
         return cls.parse_from_text(full_text)
 
     @classmethod
-    def _extract_blocks(cls, text: str) -> Tuple[Optional[str], Optional[str]]:
+    def _extract_blocks(cls, text: str) -> Tuple[Optional[str], Optional[str], Optional[str]]:
         ing_block = None
+        contains_block = None
         trace_block = None
 
         # Search for Ingredients start
         ing_pattern = re.compile(
-            r"(?:INGREDIENTS?|CONTAINS|SAMAGRI)\s*[:\-]\s*(.*?)(?=(?:NUTRITION|ALLERGEN|MAY CONTAIN|CONTAINS|MFD|EXP|BATCH|NET WT|\Z))",
+            r"(?:INGREDIENTS?|SAMAGRI)\s*[:\-]\s*(.*?)(?=(?:NUTRITION|ALLERGEN|MAY CONTAIN|CONTAINS|MFD|EXP|BATCH|NET WT|\Z))",
             re.IGNORECASE | re.DOTALL,
         )
         m = ing_pattern.search(text)
         if m:
             ing_block = m.group(1).strip()
         else:
-            # Fallback: if 'ingredients' is mentioned
             lower_text = text.lower()
             if "ingredient" in lower_text:
                 idx = lower_text.find("ingredient")
                 ing_block = text[idx: idx + 400].strip()
 
-        # Search for Contains / May Contain allergen declaration
+        # Search for explicit Contains / Allergen declaration block
+        contains_pattern = re.compile(
+            r"(?:ALLERGEN DECLARATION|ALLERGEN INFORMATION|ALLERGENS?|CONTAINS)\s*[:\-]?\s*(.*?)(?=(?:MAY CONTAIN|PRODUCED IN|NUTRITION|MFD|EXP|BATCH|NET WT|\Z))",
+            re.IGNORECASE | re.DOTALL,
+        )
+        cm = contains_pattern.search(text)
+        if cm:
+            contains_block = cm.group(1).strip()
+
+        # Search for May Contain / trace statement
         trace_pattern = re.compile(
-            r"(?:MAY CONTAIN|PRODUCED IN A FACILITY THAT ALSO PROCESSES|ALLERGEN INFORMATION|ALLERGENS?)\s*[:\-]?\s*(.*?)(?=(?:NUTRITION|MFD|EXP|BATCH|NET WT|\Z))",
+            r"(?:MAY CONTAIN|PRODUCED IN A FACILITY THAT ALSO PROCESSES|TRACE ALLERGENS?)\s*[:\-]?\s*(.*?)(?=(?:NUTRITION|MFD|EXP|BATCH|NET WT|\Z))",
             re.IGNORECASE | re.DOTALL,
         )
         tm = trace_pattern.search(text)
         if tm:
             trace_block = tm.group(1).strip()
 
-        return ing_block, trace_block
+        return ing_block, contains_block, trace_block
 
     @classmethod
     def _split_ingredients(cls, block: str) -> List[str]:
@@ -142,15 +154,20 @@ class IngredientParser:
         return [c for c in cleaned if len(c) > 1]
 
     @classmethod
-    def _detect_allergens(cls, ing_block: Optional[str], trace_block: Optional[str]) -> Tuple[Set[str], Set[str]]:
+    def _detect_allergens(
+        cls,
+        ing_block: Optional[str],
+        contains_block: Optional[str],
+        trace_block: Optional[str],
+    ) -> Tuple[Set[str], Set[str]]:
         declared = set()
         traces = set()
 
-        if ing_block:
-            lower_ing = ing_block.lower()
+        combined_declared = f"{ing_block or ''} {contains_block or ''}".lower()
+        if combined_declared.strip():
             for kw, allergen_name in COMMON_ALLERGEN_KEYWORDS.items():
                 pattern = rf"\b{re.escape(kw)}\b"
-                if re.search(pattern, lower_ing):
+                if re.search(pattern, combined_declared):
                     declared.add(allergen_name)
 
         if trace_block:
@@ -158,6 +175,7 @@ class IngredientParser:
             for kw, allergen_name in COMMON_ALLERGEN_KEYWORDS.items():
                 pattern = rf"\b{re.escape(kw)}\b"
                 if re.search(pattern, lower_trace):
-                    traces.add(allergen_name)
+                    if allergen_name not in declared:
+                        traces.add(allergen_name)
 
         return declared, traces

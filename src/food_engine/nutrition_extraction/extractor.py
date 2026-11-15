@@ -16,53 +16,53 @@ from typing import Any, Dict, List, Optional, Tuple
 
 NUTRIENT_REGEX_MAP = {
     "energy_kcal": [
-        r"(?:energy|calories|calorie|energetic\s*value|energie)\b(?:(?!\bfrom\b)[^\d\n])*?(\d+(?:[.,]\d+)?)\s*(?:kcal|calories)?",
-        r"(\d+(?:[.,]\d+)?)\s*kcal",
+        r"(?:energy|calories|calorie|energetic\s*value|energie)\b(?:(?!\bfrom\b)[^\d\n])*?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*(?:kcal|calories)?",
+        r"(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*kcal",
     ],
     "energy_kj": [
-        r"(?:energy|energetic\s*value|energie)\b(?:(?!\bfrom\b)[^\d\n])*?(\d+(?:[.,]\d+)?)\s*kj",
-        r"(\d+(?:[.,]\d+)?)\s*kj",
+        r"(?:energy|energetic\s*value|energie)\b(?:(?!\bfrom\b)[^\d\n])*?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*kj",
+        r"(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*kj",
     ],
     "protein_g": [
-        r"(?:protein|proteins|prot[ée]ines?|eiwei[ßs])\s*(?:g\b)?\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
+        r"(?:protein|proteins|prot[ée]ines?|eiwei[ßs])\s*(?:g\b)?\s*[:\-]?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "carbohydrates_g": [
-        r"(?:total\s*carbohydrate|carbohydrates?|carbs?|glucides|kohlenhydrate)\s*(?:g\b)?\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
+        r"(?:total\s*carbohydrate|carbohydrates?|carbs?|glucides|kohlenhydrate)\s*(?:g\b)?\s*[:\-]?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "sugars_g": [
-        r"(?:total\s*sugars?|sugars?|dont\s*sucres|davon\s*zucker|sucres)\s*(?:g\b)?\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
-        r"(?:of\s*which\s*sugars?|dont\s*sucres)\b\s*(?:g\b)?\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
+        r"(?:total\s*sugars?|sugars?|dont\s*sucres|davon\s*zucker|sucres)\s*(?:g\b)?\s*[:\-]?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*g?",
+        r"(?:of\s*which\s*sugars?|dont\s*sucres)\b\s*(?:g\b)?\s*[:\-]?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "added_sugars_g": [
-        r"(?:added\s*sugars?|of\s*which\s*added\s*sugars?)\s*(?:g\b)?\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
-        r"(?:incl(?:udes|\.)?\s*)(\d+(?:[.,]\d+)?)\s*g\s*added\s*sugars?",
+        r"(?:added\s*sugars?|of\s*which\s*added\s*sugars?)\s*(?:g\b)?\s*[:\-]?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*g?",
+        r"(?:incl(?:udes|\.)?\s*)(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*g\s*added\s*sugars?",
     ],
     "dietary_fibre_g": [
-        r"(?:dietary\s*fib(?:re|er)|fib(?:re|er)|fibres?\s*alimentaires?|ballaststoffe|vlaknina)\s*(?:g\b)?\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
+        r"(?:dietary\s*fib(?:re|er)|fib(?:re|er)|fibres?\s*alimentaires?|ballaststoffe|vlaknina)\s*(?:g\b)?\s*[:\-]?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "total_fat_g": [
-        r"(?:total\s*fat|fat|mati[èe]res?\s*grasses?|fett|graisses?|tuk|zs[íi]r|lipides)\s*(?:g\b)?\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
+        r"(?:total\s*fat|fat|mati[èe]res?\s*grasses?|fett|graisses?|tuk|zs[íi]r|lipides)\s*(?:g\b)?\s*[:\-]?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "saturated_fat_g": [
-        r"(?:saturated\s*fat(?:ty\s*acids?)?|saturates?|dont\s*(?:acides\s*gras\s*)?satur[ée]s?|davon\s*ges[äa]ttigte|tel[íi]tett?\s*)\s*(?:g\b)?\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
+        r"(?:saturated\s*fat(?:ty\s*acids?)?|saturates?|dont\s*(?:acides\s*gras\s*)?satur[ée]s?|davon\s*ges[äa]ttigte|tel[íi]tett?\s*)\s*(?:g\b)?\s*[:\-]?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "trans_fat_g": [
-        r"(?:trans\s*fat(?:ty\s*acids?)?|trans\s*fat)\s*(?:g\b)?\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
+        r"(?:trans\s*fat(?:ty\s*acids?)?|trans\s*fat)\s*(?:g\b)?\s*[:\-]?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "cholesterol_mg": [
-        r"cholesterol\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*mg?",
+        r"cholesterol\s*[:\-]?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*mg?",
     ],
     "sodium_mg": [
-        r"(?:sodium|natrium|sodiu?)\s*(?:mg\b)?\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*mg?",
+        r"(?:sodium|natrium|sodiu?)\s*(?:mg\b)?\s*[:\-]?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*mg?",
     ],
     "salt_g": [
-        r"(?:salt|sel|salz|só)\s*(?:g\b)?\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*g?",
+        r"(?:salt|sel|salz|só)\s*(?:g\b)?\s*[:\-]?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*g?",
     ],
     "iron_mg": [
-        r"iron\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*mg?",
+        r"iron\s*[:\-]?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*mg?",
     ],
     "calcium_mg": [
-        r"calcium\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*mg?",
+        r"calcium\s*[:\-]?(?:\s*(?:<|\u2264|<=|less\s*than))?\s*(\d+(?:[.,]\d+)?)\s*mg?",
     ],
     "potassium_mg": [
         r"(?:potassium|potass\b|kalis?\b)\s*(?:mg\b)?\s*[:\-]?\s*(\d+(?:[.,]\d+)?)\s*mg?",
@@ -213,6 +213,9 @@ class NutritionExtractor:
                     "status": status,
                     "confidence": conf,
                     "match_method": diag.get("match_method"),
+                    "upper_bound": diag.get("upper_bound", False),
+                    "comparator": diag.get("comparator"),
+                    "source": "printed_package_label",
                 }
             else:
                 nutrients[field_name] = {
@@ -220,6 +223,8 @@ class NutritionExtractor:
                     "unit": unit,
                     "status": "missing",
                     "confidence": None,
+                    "upper_bound": False,
+                    "comparator": None,
                 }
                 # Track important missing fields
                 if field_name in ["energy_kcal", "protein_g", "carbohydrates_g", "total_fat_g", "sodium_mg", "salt_g"]:
@@ -351,8 +356,8 @@ class NutritionExtractor:
         Candidate numbers are parsed with locale awareness, DV-percent captures
         are excluded, and unit evidence / column layout drive the final pick.
         """
-        def _scan(text: str, extend: bool = False) -> List[Tuple[float, Any, Optional[str]]]:
-            cands: List[Tuple[float, Any, Optional[str]]] = []
+        def _scan(text: str, extend: bool = False) -> List[Tuple[float, Any, Optional[str], bool, Optional[str]]]:
+            cands: List[Tuple[float, Any, Optional[str], bool, Optional[str]]] = []
             seen_positions: set = set()
 
             def add_candidate(pos: int, raw: str, text: str, after: int) -> None:
@@ -371,7 +376,12 @@ class NutritionExtractor:
                     re.IGNORECASE,
                 )
                 unit = um.group(1).lower() if um else None
-                cands.append((pos, val, unit))
+                # Check for inequality prefix before pos
+                before = text[max(0, pos - 16):pos]
+                ub_match = re.search(r"(?:(<|≤|<=)|(less\s+than|under|max(?:imum)?|up\s+to|trace))\s*$", before, re.IGNORECASE)
+                is_ub = bool(ub_match)
+                comp = ("≤" if ub_match and ub_match.group(1) in ("≤", "<=") else "<") if is_ub else None
+                cands.append((pos, val, unit, is_ub, comp))
 
             for pat in patterns:
                 for m in re.finditer(pat, text, re.IGNORECASE):
@@ -401,16 +411,16 @@ class NutritionExtractor:
             val, multiple = cls._pick_candidate(cands, field_name or "", basis, column_layout)
             if val is None:
                 continue
+            chosen_cand = next((c for c in cands if c[1] == val), cands[0])
+            is_ub = chosen_cand[3] if len(chosen_cand) > 3 else False
+            comp = chosen_cand[4] if len(chosen_cand) > 4 else None
             method = "line" if conf == 0.90 else ("adjacent_pair" if conf == 0.85 else "full_text")
             return val, conf, {
                 "match_method": method,
                 "selected_from_multiple": multiple,
                 "candidates": [(round(c[1], 4), c[2]) for c in cands],
-            }
-            return val, conf, {
-                "match_method": method,
-                "selected_from_multiple": multiple,
-                "candidates": [(round(c[1], 4), c[2]) for c in cands],
+                "upper_bound": is_ub,
+                "comparator": comp,
             }
         return None, None, {}
 
@@ -422,17 +432,19 @@ class NutritionExtractor:
         serving_g = None
         serving_ml = None
 
-        # Check explicit serving size declaration
+        # Check explicit serving size declaration or per serving parenthetical (e.g. per serving (30g))
         m_srv = re.search(r"serving\s*size\s*[:\-]?\s*([^\n,;]+)", lower)
+        if not m_srv:
+            m_srv = re.search(r"(?:per\s+)?serving\s*\(([^)]+)\)", lower)
         if m_srv:
             serving_raw = m_srv.group(1).strip()
-            # Extract grams or ml from serving text
-            mg = re.search(r"(\d+(?:\.\d+)?)\s*g\b", serving_raw)
+            # Extract grams or ml from serving text (supports . or , decimals)
+            mg = re.search(r"(\d+(?:[.,]\d+)?)\s*g\b", serving_raw)
             if mg:
-                serving_g = float(mg.group(1))
-            mml = re.search(r"(\d+(?:\.\d+)?)\s*ml\b", serving_raw)
+                serving_g = float(mg.group(1).replace(",", "."))
+            mml = re.search(r"(\d+(?:[.,]\d+)?)\s*ml\b", serving_raw)
             if mml:
-                serving_ml = float(mml.group(1))
+                serving_ml = float(mml.group(1).replace(",", "."))
 
         # Check basis.  OCR often drops the space or misreads the trailing
         # unit ("100mlL"), so the 100 g / 100 ml checks are deliberately loose.

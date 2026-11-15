@@ -1,0 +1,46 @@
+{
+  "triage_id": "global_01",
+  "timestamp": "2026-10-24T20:09:52Z",
+  "barcode": "0044000032029",
+  "product_name": "oreo cookies shelf",
+  "failure_reason": "POOR_EXTRACTION_ACCURACY",
+  "suspected_bucket": "BUCKET_B_ENGINE_PARSER_BUG",
+  "category_description": "Engine / Parser bug (image is sharp, but extraction/normalization/fusion failed).",
+  "recommended_action": "Inspect raw OCR tokens and improve dictionary, regex, or table parser.",
+  "sharpness_score": 180.88,
+  "blur_threshold": 80.0,
+  "is_blurry": false,
+  "image_file": "global_01.jpg",
+  "diagnostics": {
+    "sanity_warnings": [],
+    "sample_tp": 1,
+    "sample_fp": 6,
+    "sample_fn": 2,
+    "predicted_nutrients": {
+      "energy_kcal": 160.0,
+      "protein_g": 1.0,
+      "carbohydrates_g": 25.0,
+      "sugars_g": 14.0,
+      "dietary_fibre_g": 1.0,
+      "total_fat_g": 7.0,
+      "saturated_fat_g": 2.0,
+      "trans_fat_g": 0.0,
+      "cholesterol_mg": 0.0,
+      "sodium_mg": 135.0,
+      "salt_g": 0.338,
+      "potassium_mg": 55.0
+    },
+    "ground_truth": {
+      "energy_kcal": 471.0,
+      "energy_kj": 1970.0,
+      "protein_g": 2.94,
+      "carbohydrates_g": 73.53,
+      "sugars_g": 41.18,
+      "fat_g": 20.59,
+      "saturated_fat_g": 5.88,
+      "fiber_g": 2.9,
+      "sodium_mg": 0.0,
+      "salt_g": 0.001
+    }
+  }
+}

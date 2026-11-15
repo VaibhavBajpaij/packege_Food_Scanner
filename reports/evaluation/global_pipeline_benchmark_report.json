@@ -1,0 +1,1411 @@
+{
+  "benchmark_name": "Global Packaged Food Scanner Comprehensive Benchmark",
+  "timestamp": "2026-10-24T20:20:39Z",
+  "total_samples": 19,
+  "overall_metrics": {
+    "true_positives": 61,
+    "false_positives": 41,
+    "false_negatives": 64,
+    "precision": 0.598,
+    "recall": 0.488,
+    "f1_score": 0.5374
+  },
+  "regional_breakdown": {
+    "North America": {
+      "total": 5,
+      "tp": 10,
+      "fp": 24,
+      "fn": 11,
+      "barcode_matches": 1,
+      "ocr_successes": 3
+    },
+    "Europe": {
+      "total": 8,
+      "tp": 30,
+      "fp": 5,
+      "fn": 36,
+      "barcode_matches": 1,
+      "ocr_successes": 7
+    },
+    "Asia-Pacific": {
+      "total": 4,
+      "tp": 16,
+      "fp": 12,
+      "fn": 7,
+      "barcode_matches": 0,
+      "ocr_successes": 3
+    },
+    "Global": {
+      "total": 2,
+      "tp": 5,
+      "fp": 0,
+      "fn": 10,
+      "barcode_matches": 0,
+      "ocr_successes": 1
+    }
+  },
+  "country_breakdown": {
+    "United States": {
+      "total": 5,
+      "tp": 10,
+      "fp": 24,
+      "fn": 11,
+      "barcode_matches": 1,
+      "ocr_successes": 3
+    },
+    "United Kingdom": {
+      "total": 2,
+      "tp": 8,
+      "fp": 1,
+      "fn": 9,
+      "barcode_matches": 0,
+      "ocr_successes": 2
+    },
+    "France": {
+      "total": 2,
+      "tp": 6,
+      "fp": 0,
+      "fn": 12,
+      "barcode_matches": 0,
+      "ocr_successes": 1
+    },
+    "Belgium": {
+      "total": 1,
+      "tp": 7,
+      "fp": 0,
+      "fn": 2,
+      "barcode_matches": 0,
+      "ocr_successes": 1
+    },
+    "Germany": {
+      "total": 1,
+      "tp": 3,
+      "fp": 2,
+      "fn": 3,
+      "barcode_matches": 0,
+      "ocr_successes": 1
+    },
+    "Italy": {
+      "total": 1,
+      "tp": 3,
+      "fp": 2,
+      "fn": 4,
+      "barcode_matches": 0,
+      "ocr_successes": 1
+    },
+    "India": {
+      "total": 3,
+      "tp": 16,
+      "fp": 5,
+      "fn": 5,
+      "barcode_matches": 0,
+      "ocr_successes": 3
+    },
+    "United States / Thailand": {
+      "total": 1,
+      "tp": 0,
+      "fp": 7,
+      "fn": 2,
+      "barcode_matches": 0,
+      "ocr_successes": 0
+    },
+    "International / Global": {
+      "total": 1,
+      "tp": 5,
+      "fp": 0,
+      "fn": 3,
+      "barcode_matches": 0,
+      "ocr_successes": 1
+    },
+    "United States / Global": {
+      "total": 1,
+      "tp": 0,
+      "fp": 0,
+      "fn": 7,
+      "barcode_matches": 0,
+      "ocr_successes": 0
+    },
+    "United Kingdom / EU": {
+      "total": 1,
+      "tp": 3,
+      "fp": 0,
+      "fn": 6,
+      "barcode_matches": 1,
+      "ocr_successes": 1
+    }
+  },
+  "results": [
+    {
+      "sample_id": "global_01",
+      "barcode": "0044000032029",
+      "product_name": "oreo cookies shelf",
+      "country": "United States",
+      "region": "North America",
+      "image_filename": "global_01_US_0044000032029.jpg",
+      "blur_score": 180.88,
+      "blur_passed": true,
+      "barcode_matched": false,
+      "elapsed_seconds": 24.06,
+      "sample_tp": 1,
+      "sample_fp": 6,
+      "sample_fn": 2,
+      "precision": 0.143,
+      "recall": 0.333,
+      "sanity_passed": true,
+      "sanity_warnings": [],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 471.0,
+          "predicted": 160.0,
+          "status": "FP_INCORRECT"
+        },
+        "protein_g": {
+          "ground_truth": 2.94,
+          "predicted": 1.0,
+          "status": "FP_INCORRECT"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 73.53,
+          "predicted": 25.0,
+          "status": "FP_INCORRECT"
+        },
+        "sugars_g": {
+          "ground_truth": 41.18,
+          "predicted": 14.0,
+          "status": "FP_INCORRECT"
+        },
+        "fat_g": {
+          "ground_truth": 20.59,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 5.88,
+          "predicted": 2.0,
+          "status": "FP_INCORRECT"
+        },
+        "fiber_g": {
+          "ground_truth": 2.9,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sodium_mg": {
+          "ground_truth": 0.0,
+          "predicted": 135.0,
+          "status": "FP_INCORRECT"
+        },
+        "salt_g": {
+          "ground_truth": 0.001,
+          "predicted": 0.338,
+          "status": "TP"
+        }
+      }
+    },
+    {
+      "sample_id": "global_02",
+      "barcode": "0016000275270",
+      "product_name": "Gmills hny nut cheerios sweetened whl grn oat cereal",
+      "country": "United States",
+      "region": "North America",
+      "image_filename": "global_02_US_0016000275270.jpg",
+      "blur_score": 1926.76,
+      "blur_passed": true,
+      "barcode_matched": true,
+      "elapsed_seconds": 14.17,
+      "sample_tp": 2,
+      "sample_fp": 5,
+      "sample_fn": 2,
+      "precision": 0.286,
+      "recall": 0.5,
+      "sanity_passed": false,
+      "sanity_warnings": [
+        "Atwater mismatch: Declared 15 kcal vs calculated 322 kcal."
+      ],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 393.0,
+          "predicted": 15.0,
+          "status": "FP_INCORRECT"
+        },
+        "protein_g": {
+          "ground_truth": 7.14,
+          "predicted": 2.0,
+          "status": "FP_INCORRECT"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 78.57,
+          "predicted": 78.57,
+          "status": "TP"
+        },
+        "sugars_g": {
+          "ground_truth": 32.14,
+          "predicted": 9.0,
+          "status": "FP_INCORRECT"
+        },
+        "fat_g": {
+          "ground_truth": 5.36,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 0.0,
+          "predicted": 0.0,
+          "status": "TP"
+        },
+        "fiber_g": {
+          "ground_truth": 7.1,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sodium_mg": {
+          "ground_truth": 571.0,
+          "predicted": 160.0,
+          "status": "FP_INCORRECT"
+        },
+        "salt_g": {
+          "ground_truth": 1.427,
+          "predicted": 0.4,
+          "status": "FP_INCORRECT"
+        }
+      }
+    },
+    {
+      "sample_id": "global_03",
+      "barcode": "0028400070560",
+      "product_name": "Nacho Cheese Flavored",
+      "country": "United States",
+      "region": "North America",
+      "image_filename": "global_03_US_0028400070560.jpg",
+      "blur_score": 559.01,
+      "blur_passed": true,
+      "barcode_matched": false,
+      "elapsed_seconds": 13.52,
+      "sample_tp": 0,
+      "sample_fp": 7,
+      "sample_fn": 2,
+      "precision": 0.0,
+      "recall": 0.0,
+      "sanity_passed": false,
+      "sanity_warnings": [
+        "Atwater mismatch: Declared 260 kcal vs calculated 136 kcal."
+      ],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 524.194,
+          "predicted": 260.0,
+          "status": "FP_INCORRECT"
+        },
+        "protein_g": {
+          "ground_truth": 8.065,
+          "predicted": 4.0,
+          "status": "FP_INCORRECT"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 60.484,
+          "predicted": 30.0,
+          "status": "FP_INCORRECT"
+        },
+        "sugars_g": {
+          "ground_truth": 2.016,
+          "predicted": 1.0,
+          "status": "FP_INCORRECT"
+        },
+        "fat_g": {
+          "ground_truth": 26.21,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 4.032,
+          "predicted": 0.0,
+          "status": "FP_INCORRECT"
+        },
+        "fiber_g": {
+          "ground_truth": 4.032,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sodium_mg": {
+          "ground_truth": 585.0,
+          "predicted": 290.0,
+          "status": "FP_INCORRECT"
+        },
+        "salt_g": {
+          "ground_truth": 1.462,
+          "predicted": 0.725,
+          "status": "FP_INCORRECT"
+        }
+      }
+    },
+    {
+      "sample_id": "global_04",
+      "barcode": "0051500255162",
+      "product_name": "Creamy Peanut Butter",
+      "country": "United States",
+      "region": "North America",
+      "image_filename": "global_04_US_0051500255162.jpg",
+      "blur_score": 1500.38,
+      "blur_passed": true,
+      "barcode_matched": false,
+      "elapsed_seconds": 16.1,
+      "sample_tp": 0,
+      "sample_fp": 6,
+      "sample_fn": 3,
+      "precision": 0.0,
+      "recall": 0.0,
+      "sanity_passed": true,
+      "sanity_warnings": [],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 575.758,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "protein_g": {
+          "ground_truth": 21.212,
+          "predicted": 7.0,
+          "status": "FP_INCORRECT"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 24.242,
+          "predicted": 8.0,
+          "status": "FP_INCORRECT"
+        },
+        "sugars_g": {
+          "ground_truth": 9.091,
+          "predicted": 3.0,
+          "status": "FP_INCORRECT"
+        },
+        "fat_g": {
+          "ground_truth": 48.485,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 10.606,
+          "predicted": 3.5,
+          "status": "FP_INCORRECT"
+        },
+        "fiber_g": {
+          "ground_truth": 6.061,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sodium_mg": {
+          "ground_truth": 424.0,
+          "predicted": 140.0,
+          "status": "FP_INCORRECT"
+        },
+        "salt_g": {
+          "ground_truth": 1.061,
+          "predicted": 0.35,
+          "status": "FP_INCORRECT"
+        }
+      }
+    },
+    {
+      "sample_id": "global_05",
+      "barcode": "0025293000995",
+      "product_name": "Almondmilk",
+      "country": "United States",
+      "region": "North America",
+      "image_filename": "global_05_US_0025293000995.jpg",
+      "blur_score": 385.97,
+      "blur_passed": true,
+      "barcode_matched": false,
+      "elapsed_seconds": 49.25,
+      "sample_tp": 7,
+      "sample_fp": 0,
+      "sample_fn": 2,
+      "precision": 1.0,
+      "recall": 0.778,
+      "sanity_passed": true,
+      "sanity_warnings": [],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 80.0,
+          "predicted": 80.0,
+          "status": "TP"
+        },
+        "protein_g": {
+          "ground_truth": 1.0,
+          "predicted": 1.0,
+          "status": "TP"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 14.0,
+          "predicted": 14.0,
+          "status": "TP"
+        },
+        "sugars_g": {
+          "ground_truth": 13.0,
+          "predicted": 13.0,
+          "status": "TP"
+        },
+        "fat_g": {
+          "ground_truth": 2.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 0.0,
+          "predicted": 0.0,
+          "status": "TP"
+        },
+        "fiber_g": {
+          "ground_truth": 0.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sodium_mg": {
+          "ground_truth": 130.0,
+          "predicted": 130.0,
+          "status": "TP"
+        },
+        "salt_g": {
+          "ground_truth": 0.325,
+          "predicted": 0.325,
+          "status": "TP"
+        }
+      }
+    },
+    {
+      "sample_id": "global_06",
+      "barcode": "5000159461122",
+      "product_name": "Snickers",
+      "country": "United Kingdom",
+      "region": "Europe",
+      "image_filename": "global_06_GB_5000159461122.jpg",
+      "blur_score": 342.62,
+      "blur_passed": true,
+      "barcode_matched": false,
+      "elapsed_seconds": 30.81,
+      "sample_tp": 4,
+      "sample_fp": 0,
+      "sample_fn": 5,
+      "precision": 1.0,
+      "recall": 0.444,
+      "sanity_passed": false,
+      "sanity_warnings": [
+        "Atwater mismatch: Declared 481 kcal vs calculated 276 kcal."
+      ],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 481.0,
+          "predicted": 481.0,
+          "status": "TP"
+        },
+        "protein_g": {
+          "ground_truth": 8.6,
+          "predicted": 8.6,
+          "status": "TP"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 60.5,
+          "predicted": 60.5,
+          "status": "TP"
+        },
+        "sugars_g": {
+          "ground_truth": 51.8,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "fat_g": {
+          "ground_truth": 22.5,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 7.9,
+          "predicted": 7.9,
+          "status": "TP"
+        },
+        "fiber_g": {
+          "ground_truth": 4.3,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sodium_mg": {
+          "ground_truth": 252.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "salt_g": {
+          "ground_truth": 0.629,
+          "predicted": null,
+          "status": "FN_MISSING"
+        }
+      }
+    },
+    {
+      "sample_id": "global_07",
+      "barcode": "5000157024671",
+      "product_name": "Beanz in a rich tomato sauce",
+      "country": "United Kingdom",
+      "region": "Europe",
+      "image_filename": "global_07_GB_5000157024671.jpg",
+      "blur_score": 144.37,
+      "blur_passed": true,
+      "barcode_matched": false,
+      "elapsed_seconds": 46.46,
+      "sample_tp": 4,
+      "sample_fp": 1,
+      "sample_fn": 4,
+      "precision": 0.8,
+      "recall": 0.5,
+      "sanity_passed": true,
+      "sanity_warnings": [],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 81.0,
+          "predicted": 81.0,
+          "status": "TP"
+        },
+        "protein_g": {
+          "ground_truth": 4.8,
+          "predicted": 4.8,
+          "status": "TP"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 15.5,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sugars_g": {
+          "ground_truth": 10.3,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "fat_g": {
+          "ground_truth": 0.4,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 0.2,
+          "predicted": 0.1,
+          "status": "TP"
+        },
+        "fiber_g": {
+          "ground_truth": 3.9,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sodium_mg": {
+          "ground_truth": 497.0,
+          "predicted": 240.0,
+          "status": "FP_INCORRECT"
+        },
+        "salt_g": {
+          "ground_truth": 0.6,
+          "predicted": 0.6,
+          "status": "TP"
+        }
+      }
+    },
+    {
+      "sample_id": "global_08",
+      "barcode": "3046920029759",
+      "product_name": "Excellence Noir Prodigieux 90% Cacao",
+      "country": "France",
+      "region": "Europe",
+      "image_filename": "global_08_FR_3046920029759.jpg",
+      "blur_score": 4553.19,
+      "blur_passed": true,
+      "barcode_matched": false,
+      "elapsed_seconds": 37.57,
+      "sample_tp": 6,
+      "sample_fp": 0,
+      "sample_fn": 3,
+      "precision": 1.0,
+      "recall": 0.667,
+      "sanity_passed": false,
+      "sanity_warnings": [
+        "Atwater mismatch: Declared 592 kcal vs calculated 56 kcal."
+      ],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 592.0,
+          "predicted": 592.0,
+          "status": "TP"
+        },
+        "protein_g": {
+          "ground_truth": 10.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 14.0,
+          "predicted": 14.0,
+          "status": "TP"
+        },
+        "sugars_g": {
+          "ground_truth": 7.0,
+          "predicted": 7.0,
+          "status": "TP"
+        },
+        "fat_g": {
+          "ground_truth": 55.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 30.0,
+          "predicted": 30.0,
+          "status": "TP"
+        },
+        "fiber_g": {
+          "ground_truth": 0.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sodium_mg": {
+          "ground_truth": 12.0,
+          "predicted": 12.0,
+          "status": "TP"
+        },
+        "salt_g": {
+          "ground_truth": 0.03,
+          "predicted": 0.03,
+          "status": "TP"
+        }
+      }
+    },
+    {
+      "sample_id": "global_09",
+      "barcode": "3017620422003",
+      "product_name": "Nutella",
+      "country": "France",
+      "region": "Europe",
+      "image_filename": "global_09_FR_3017620422003.jpg",
+      "blur_score": 258.85,
+      "blur_passed": true,
+      "barcode_matched": false,
+      "elapsed_seconds": 45.34,
+      "sample_tp": 0,
+      "sample_fp": 0,
+      "sample_fn": 9,
+      "precision": 0.0,
+      "recall": 0.0,
+      "sanity_passed": true,
+      "sanity_warnings": [],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 539.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "protein_g": {
+          "ground_truth": 6.3,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 57.5,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sugars_g": {
+          "ground_truth": 56.3,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "fat_g": {
+          "ground_truth": 30.9,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 10.6,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "fiber_g": {
+          "ground_truth": 0.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sodium_mg": {
+          "ground_truth": 43.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "salt_g": {
+          "ground_truth": 0.107,
+          "predicted": null,
+          "status": "FN_MISSING"
+        }
+      }
+    },
+    {
+      "sample_id": "global_10",
+      "barcode": "7622210449283",
+      "product_name": "Prince",
+      "country": "Belgium",
+      "region": "Europe",
+      "image_filename": "global_10_BE_7622210449283.jpg",
+      "blur_score": 68.21,
+      "blur_passed": false,
+      "barcode_matched": false,
+      "elapsed_seconds": 24.52,
+      "sample_tp": 7,
+      "sample_fp": 0,
+      "sample_fn": 2,
+      "precision": 1.0,
+      "recall": 0.778,
+      "sanity_passed": false,
+      "sanity_warnings": [
+        "Atwater mismatch: Declared 467 kcal vs calculated 301 kcal."
+      ],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 467.0,
+          "predicted": 467.0,
+          "status": "TP"
+        },
+        "protein_g": {
+          "ground_truth": 6.3,
+          "predicted": 6.3,
+          "status": "TP"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 69.0,
+          "predicted": 69.0,
+          "status": "TP"
+        },
+        "sugars_g": {
+          "ground_truth": 32.0,
+          "predicted": 32.0,
+          "status": "TP"
+        },
+        "fat_g": {
+          "ground_truth": 17.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 5.6,
+          "predicted": 5.6,
+          "status": "TP"
+        },
+        "fiber_g": {
+          "ground_truth": 4.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sodium_mg": {
+          "ground_truth": 196.0,
+          "predicted": 196.0,
+          "status": "TP"
+        },
+        "salt_g": {
+          "ground_truth": 0.49,
+          "predicted": 0.49,
+          "status": "TP"
+        }
+      }
+    },
+    {
+      "sample_id": "global_11",
+      "barcode": "4008400404127",
+      "product_name": "Nutella Nuss-Nugat-Creme",
+      "country": "Germany",
+      "region": "Europe",
+      "image_filename": "global_11_DE_4008400404127.jpg",
+      "blur_score": 65.78,
+      "blur_passed": false,
+      "barcode_matched": false,
+      "elapsed_seconds": 78.37,
+      "sample_tp": 3,
+      "sample_fp": 2,
+      "sample_fn": 3,
+      "precision": 0.6,
+      "recall": 0.5,
+      "sanity_passed": true,
+      "sanity_warnings": [],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 538.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "protein_g": {
+          "ground_truth": 6.3,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 57.5,
+          "predicted": 57.5,
+          "status": "TP"
+        },
+        "sugars_g": {
+          "ground_truth": 56.3,
+          "predicted": 56.3,
+          "status": "TP"
+        },
+        "fat_g": {
+          "ground_truth": 30.9,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 10.6,
+          "predicted": 10.6,
+          "status": "TP"
+        },
+        "fiber_g": {
+          "ground_truth": null,
+          "predicted": null,
+          "status": "TN"
+        },
+        "sodium_mg": {
+          "ground_truth": 44.0,
+          "predicted": 400.0,
+          "status": "FP_INCORRECT"
+        },
+        "salt_g": {
+          "ground_truth": 0.11,
+          "predicted": 1.0,
+          "status": "FP_INCORRECT"
+        }
+      }
+    },
+    {
+      "sample_id": "global_12",
+      "barcode": "8076809513753",
+      "product_name": "Barilla PESTO alla GENOVESE",
+      "country": "Italy",
+      "region": "Europe",
+      "image_filename": "global_12_IT_8076809513753.jpg",
+      "blur_score": 221.6,
+      "blur_passed": true,
+      "barcode_matched": false,
+      "elapsed_seconds": 48.36,
+      "sample_tp": 3,
+      "sample_fp": 2,
+      "sample_fn": 4,
+      "precision": 0.6,
+      "recall": 0.429,
+      "sanity_passed": false,
+      "sanity_warnings": [
+        "Atwater mismatch: Declared 492 kcal vs calculated 100 kcal."
+      ],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 492.0,
+          "predicted": 492.0,
+          "status": "TP"
+        },
+        "protein_g": {
+          "ground_truth": 4.7,
+          "predicted": 14.0,
+          "status": "FP_INCORRECT"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 11.0,
+          "predicted": 11.0,
+          "status": "TP"
+        },
+        "sugars_g": {
+          "ground_truth": 5.0,
+          "predicted": 5.0,
+          "status": "TP"
+        },
+        "fat_g": {
+          "ground_truth": 47.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 5.3,
+          "predicted": 53.0,
+          "status": "FP_INCORRECT"
+        },
+        "fiber_g": {
+          "ground_truth": 3.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sodium_mg": {
+          "ground_truth": 1280.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "salt_g": {
+          "ground_truth": 3.2,
+          "predicted": null,
+          "status": "FN_MISSING"
+        }
+      }
+    },
+    {
+      "sample_id": "global_13",
+      "barcode": "8901725181222",
+      "product_name": "Yippee noodles",
+      "country": "India",
+      "region": "Asia-Pacific",
+      "image_filename": "global_13_IN_8901725181222.jpg",
+      "blur_score": 438.6,
+      "blur_passed": true,
+      "barcode_matched": false,
+      "elapsed_seconds": 17.71,
+      "sample_tp": 7,
+      "sample_fp": 0,
+      "sample_fn": 2,
+      "precision": 1.0,
+      "recall": 0.778,
+      "sanity_passed": false,
+      "sanity_warnings": [
+        "Atwater mismatch: Declared 111 kcal vs calculated 286 kcal."
+      ],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 110.0,
+          "predicted": 111.0,
+          "status": "TP"
+        },
+        "protein_g": {
+          "ground_truth": 8.857,
+          "predicted": 8.9,
+          "status": "TP"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 62.429,
+          "predicted": 62.5,
+          "status": "TP"
+        },
+        "sugars_g": {
+          "ground_truth": 2.857,
+          "predicted": 2.8,
+          "status": "TP"
+        },
+        "fat_g": {
+          "ground_truth": 19.714,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 9.857,
+          "predicted": 9.9,
+          "status": "TP"
+        },
+        "fiber_g": {
+          "ground_truth": 1.143,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sodium_mg": {
+          "ground_truth": 1029.0,
+          "predicted": 1018.0,
+          "status": "TP"
+        },
+        "salt_g": {
+          "ground_truth": 2.571,
+          "predicted": 2.5,
+          "status": "TP"
+        }
+      }
+    },
+    {
+      "sample_id": "global_14",
+      "barcode": "8901491101837",
+      "product_name": "Lays Classics Salted 20rs",
+      "country": "India",
+      "region": "Asia-Pacific",
+      "image_filename": "global_14_IN_8901491101837.jpg",
+      "blur_score": 30.72,
+      "blur_passed": false,
+      "barcode_matched": false,
+      "elapsed_seconds": 14.64,
+      "sample_tp": 5,
+      "sample_fp": 2,
+      "sample_fn": 2,
+      "precision": 0.714,
+      "recall": 0.714,
+      "sanity_passed": false,
+      "sanity_warnings": [
+        "Atwater mismatch: Declared 554 kcal vs calculated 235 kcal."
+      ],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 554.0,
+          "predicted": 554.0,
+          "status": "TP"
+        },
+        "protein_g": {
+          "ground_truth": 7.0,
+          "predicted": 7.0,
+          "status": "TP"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 51.7,
+          "predicted": 51.7,
+          "status": "TP"
+        },
+        "sugars_g": {
+          "ground_truth": 2.6,
+          "predicted": 2.6,
+          "status": "TP"
+        },
+        "fat_g": {
+          "ground_truth": 35.5,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 14.0,
+          "predicted": 14.0,
+          "status": "TP"
+        },
+        "fiber_g": {
+          "ground_truth": 0.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sodium_mg": {
+          "ground_truth": 204.0,
+          "predicted": 510.0,
+          "status": "FP_INCORRECT"
+        },
+        "salt_g": {
+          "ground_truth": 0.51,
+          "predicted": 1.275,
+          "status": "FP_INCORRECT"
+        }
+      }
+    },
+    {
+      "sample_id": "global_15",
+      "barcode": "8901058017687",
+      "product_name": "maggi",
+      "country": "India",
+      "region": "Asia-Pacific",
+      "image_filename": "global_15_IN_8901058017687.jpg",
+      "blur_score": 2442.98,
+      "blur_passed": true,
+      "barcode_matched": false,
+      "elapsed_seconds": 65.83,
+      "sample_tp": 4,
+      "sample_fp": 3,
+      "sample_fn": 1,
+      "precision": 0.571,
+      "recall": 0.8,
+      "sanity_passed": false,
+      "sanity_warnings": [
+        "Atwater mismatch: Declared 8 kcal vs calculated 271 kcal."
+      ],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 384.0,
+          "predicted": 8.2,
+          "status": "FP_INCORRECT"
+        },
+        "protein_g": {
+          "ground_truth": 8.2,
+          "predicted": 8.2,
+          "status": "TP"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 59.4,
+          "predicted": 59.6,
+          "status": "TP"
+        },
+        "sugars_g": {
+          "ground_truth": 1.8,
+          "predicted": 1.8,
+          "status": "TP"
+        },
+        "fat_g": {
+          "ground_truth": 12.5,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 8.2,
+          "predicted": 8.2,
+          "status": "TP"
+        },
+        "fiber_g": {
+          "ground_truth": null,
+          "predicted": null,
+          "status": "TN"
+        },
+        "sodium_mg": {
+          "ground_truth": 1000.0,
+          "predicted": 40.0,
+          "status": "FP_INCORRECT"
+        },
+        "salt_g": {
+          "ground_truth": 2.5,
+          "predicted": 0.1,
+          "status": "FP_INCORRECT"
+        }
+      }
+    },
+    {
+      "sample_id": "global_17",
+      "barcode": "737628064502",
+      "product_name": "Thai peanut noodle kit includes stir-fry rice noodles & thai peanut seasoning",
+      "country": "United States / Thailand",
+      "region": "Asia-Pacific",
+      "image_filename": "global_17_TH_737628064502.jpg",
+      "blur_score": 659.62,
+      "blur_passed": true,
+      "barcode_matched": false,
+      "elapsed_seconds": 33.34,
+      "sample_tp": 0,
+      "sample_fp": 7,
+      "sample_fn": 2,
+      "precision": 0.0,
+      "recall": 0.0,
+      "sanity_passed": true,
+      "sanity_warnings": [],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 385.0,
+          "predicted": 310.0,
+          "status": "FP_INCORRECT"
+        },
+        "protein_g": {
+          "ground_truth": 9.62,
+          "predicted": 7.0,
+          "status": "FP_INCORRECT"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 71.15,
+          "predicted": 55.0,
+          "status": "FP_INCORRECT"
+        },
+        "sugars_g": {
+          "ground_truth": 13.46,
+          "predicted": 10.0,
+          "status": "FP_INCORRECT"
+        },
+        "fat_g": {
+          "ground_truth": 7.69,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 1.92,
+          "predicted": 1.0,
+          "status": "FP_INCORRECT"
+        },
+        "fiber_g": {
+          "ground_truth": 1.9,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sodium_mg": {
+          "ground_truth": 288.0,
+          "predicted": 629.0,
+          "status": "FP_INCORRECT"
+        },
+        "salt_g": {
+          "ground_truth": 0.72,
+          "predicted": 1.573,
+          "status": "FP_INCORRECT"
+        }
+      }
+    },
+    {
+      "sample_id": "global_18",
+      "barcode": "5449000000996",
+      "product_name": "Coca-Cola Original",
+      "country": "International / Global",
+      "region": "Global",
+      "image_filename": "global_18_GLOBAL_5449000000996.jpg",
+      "blur_score": 1156.0,
+      "blur_passed": true,
+      "barcode_matched": false,
+      "elapsed_seconds": 46.54,
+      "sample_tp": 5,
+      "sample_fp": 0,
+      "sample_fn": 3,
+      "precision": 1.0,
+      "recall": 0.625,
+      "sanity_passed": true,
+      "sanity_warnings": [],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 42.4,
+          "predicted": 42.0,
+          "status": "TP"
+        },
+        "protein_g": {
+          "ground_truth": 0.0,
+          "predicted": 0.0,
+          "status": "TP"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 10.6,
+          "predicted": 10.6,
+          "status": "TP"
+        },
+        "sugars_g": {
+          "ground_truth": 10.6,
+          "predicted": 10.6,
+          "status": "TP"
+        },
+        "fat_g": {
+          "ground_truth": 0.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 0.0,
+          "predicted": 0.0,
+          "status": "TP"
+        },
+        "fiber_g": {
+          "ground_truth": null,
+          "predicted": null,
+          "status": "TN"
+        },
+        "sodium_mg": {
+          "ground_truth": 0.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "salt_g": {
+          "ground_truth": 0.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        }
+      }
+    },
+    {
+      "sample_id": "global_19",
+      "barcode": "0070847811169",
+      "product_name": "Monster Energy",
+      "country": "United States / Global",
+      "region": "Global",
+      "image_filename": "global_19_GLOBAL_0070847811169.jpg",
+      "blur_score": 200.76,
+      "blur_passed": true,
+      "barcode_matched": false,
+      "elapsed_seconds": 9.06,
+      "sample_tp": 0,
+      "sample_fp": 0,
+      "sample_fn": 7,
+      "precision": 0.0,
+      "recall": 0.0,
+      "sanity_passed": true,
+      "sanity_warnings": [],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 48.608,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "protein_g": {
+          "ground_truth": 0.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 12.258,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sugars_g": {
+          "ground_truth": 11.412,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "fat_g": {
+          "ground_truth": 0.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": null,
+          "predicted": null,
+          "status": "TN"
+        },
+        "fiber_g": {
+          "ground_truth": null,
+          "predicted": null,
+          "status": "TN"
+        },
+        "sodium_mg": {
+          "ground_truth": 78.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "salt_g": {
+          "ground_truth": 0.195,
+          "predicted": null,
+          "status": "FN_MISSING"
+        }
+      }
+    },
+    {
+      "sample_id": "global_20",
+      "barcode": "5000159407236",
+      "product_name": "Mars",
+      "country": "United Kingdom / EU",
+      "region": "Europe",
+      "image_filename": "global_20_GB_5000159407236.jpg",
+      "blur_score": 712.65,
+      "blur_passed": true,
+      "barcode_matched": true,
+      "elapsed_seconds": 53.17,
+      "sample_tp": 3,
+      "sample_fp": 0,
+      "sample_fn": 6,
+      "precision": 1.0,
+      "recall": 0.333,
+      "sanity_passed": true,
+      "sanity_warnings": [],
+      "field_evaluations": {
+        "energy_kcal": {
+          "ground_truth": 450.0,
+          "predicted": 449.0,
+          "status": "TP"
+        },
+        "protein_g": {
+          "ground_truth": 4.04,
+          "predicted": 4.1,
+          "status": "TP"
+        },
+        "carbohydrates_g": {
+          "ground_truth": 70.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sugars_g": {
+          "ground_truth": 61.6,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "fat_g": {
+          "ground_truth": 16.8,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "saturated_fat_g": {
+          "ground_truth": 8.38,
+          "predicted": 8.3,
+          "status": "TP"
+        },
+        "fiber_g": {
+          "ground_truth": 1.24,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "sodium_mg": {
+          "ground_truth": 168.0,
+          "predicted": null,
+          "status": "FN_MISSING"
+        },
+        "salt_g": {
+          "ground_truth": 0.42,
+          "predicted": null,
+          "status": "FN_MISSING"
+        }
+      }
+    }
+  ]
+}

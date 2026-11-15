@@ -1,0 +1,44 @@
+{
+  "triage_id": "global_17",
+  "timestamp": "2026-10-24T20:18:50Z",
+  "barcode": "737628064502",
+  "product_name": "Thai peanut noodle kit includes stir-fry rice noodles & thai peanut seasoning",
+  "failure_reason": "POOR_EXTRACTION_ACCURACY",
+  "suspected_bucket": "BUCKET_B_ENGINE_PARSER_BUG",
+  "category_description": "Engine / Parser bug (image is sharp, but extraction/normalization/fusion failed).",
+  "recommended_action": "Inspect raw OCR tokens and improve dictionary, regex, or table parser.",
+  "sharpness_score": 659.62,
+  "blur_threshold": 80.0,
+  "is_blurry": false,
+  "image_file": "global_17.jpg",
+  "diagnostics": {
+    "sanity_warnings": [],
+    "sample_tp": 0,
+    "sample_fp": 7,
+    "sample_fn": 2,
+    "predicted_nutrients": {
+      "energy_kcal": 310.0,
+      "protein_g": 7.0,
+      "carbohydrates_g": 55.0,
+      "sugars_g": 10.0,
+      "dietary_fibre_g": 0.0,
+      "total_fat_g": 7.0,
+      "saturated_fat_g": 1.0,
+      "cholesterol_mg": 0.0,
+      "sodium_mg": 629.0,
+      "salt_g": 1.573
+    },
+    "ground_truth": {
+      "energy_kcal": 385.0,
+      "energy_kj": 1672.82,
+      "protein_g": 9.62,
+      "carbohydrates_g": 71.15,
+      "sugars_g": 13.46,
+      "fat_g": 7.69,
+      "saturated_fat_g": 1.92,
+      "fiber_g": 1.9,
+      "sodium_mg": 288.0,
+      "salt_g": 0.72
+    }
+  }
+}

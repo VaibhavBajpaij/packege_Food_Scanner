@@ -1,0 +1,44 @@
+{
+  "triage_id": "global_08",
+  "timestamp": "2026-10-24T20:13:21Z",
+  "barcode": "3046920029759",
+  "product_name": "Excellence Noir Prodigieux 90% Cacao",
+  "failure_reason": "SANITY_CHECK_WARNINGS",
+  "suspected_bucket": "BUCKET_B_ENGINE_PARSER_BUG",
+  "category_description": "Engine / Parser bug (image is sharp, but extraction/normalization/fusion failed).",
+  "recommended_action": "Inspect raw OCR tokens and improve dictionary, regex, or table parser.",
+  "sharpness_score": 4553.19,
+  "blur_threshold": 80.0,
+  "is_blurry": false,
+  "image_file": "global_08.jpg",
+  "diagnostics": {
+    "sanity_warnings": [
+      "Atwater mismatch: Declared 592 kcal vs calculated 56 kcal."
+    ],
+    "sample_tp": 6,
+    "sample_fp": 0,
+    "sample_fn": 3,
+    "predicted_nutrients": {
+      "energy_kcal": 592.0,
+      "energy_kj": 2483.0,
+      "carbohydrates_g": 14.0,
+      "sugars_g": 7.0,
+      "total_fat_g": 55.0,
+      "saturated_fat_g": 30.0,
+      "sodium_mg": 12.0,
+      "salt_g": 0.03
+    },
+    "ground_truth": {
+      "energy_kcal": 592.0,
+      "energy_kj": 2443.0,
+      "protein_g": 10.0,
+      "carbohydrates_g": 14.0,
+      "sugars_g": 7.0,
+      "fat_g": 55.0,
+      "saturated_fat_g": 30.0,
+      "fiber_g": 0.0,
+      "sodium_mg": 12.0,
+      "salt_g": 0.03
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "triage_id": "global_02",
+  "timestamp": "2026-10-24T20:10:06Z",
+  "barcode": "0016000275270",
+  "product_name": "Gmills hny nut cheerios sweetened whl grn oat cereal",
+  "failure_reason": "SANITY_CHECK_WARNINGS",
+  "suspected_bucket": "BUCKET_B_ENGINE_PARSER_BUG",
+  "category_description": "Engine / Parser bug (image is sharp, but extraction/normalization/fusion failed).",
+  "recommended_action": "Inspect raw OCR tokens and improve dictionary, regex, or table parser.",
+  "sharpness_score": 1926.76,
+  "blur_threshold": 80.0,
+  "is_blurry": false,
+  "image_file": "global_02.jpg",
+  "diagnostics": {
+    "sanity_warnings": [
+      "Atwater mismatch: Declared 15 kcal vs calculated 322 kcal."
+    ],
+    "sample_tp": 2,
+    "sample_fp": 5,
+    "sample_fn": 2,
+    "predicted_nutrients": {
+      "energy_kcal": 15.0,
+      "protein_g": 2.0,
+      "carbohydrates_g": 78.57,
+      "sugars_g": 9.0,
+      "dietary_fibre_g": 2.0,
+      "total_fat_g": 1.5,
+      "saturated_fat_g": 0.0,
+      "trans_fat_g": 0.0,
+      "cholesterol_mg": 0.0,
+      "sodium_mg": 160.0,
+      "salt_g": 0.4
+    },
+    "ground_truth": {
+      "energy_kcal": 393.0,
+      "energy_kj": 1712.19,
+      "protein_g": 7.14,
+      "carbohydrates_g": 78.57,
+      "sugars_g": 32.14,
+      "fat_g": 5.36,
+      "saturated_fat_g": 0.0,
+      "fiber_g": 7.1,
+      "sodium_mg": 571.0,
+      "salt_g": 1.427
+    }
+  }
+}

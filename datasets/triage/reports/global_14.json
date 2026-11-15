@@ -1,0 +1,45 @@
+{
+  "triage_id": "global_14",
+  "timestamp": "2026-10-24T20:17:10Z",
+  "barcode": "8901491101837",
+  "product_name": "Lays Classics Salted 20rs",
+  "failure_reason": "SANITY_CHECK_WARNINGS",
+  "suspected_bucket": "BUCKET_A_IMAGE_QUALITY",
+  "category_description": "Camera / Photographic fault (blurry, out-of-focus, or motion artifact).",
+  "recommended_action": "Prompt user to retake photo; do not alter engine extraction rules.",
+  "sharpness_score": 30.72,
+  "blur_threshold": 80.0,
+  "is_blurry": true,
+  "image_file": "global_14.jpg",
+  "diagnostics": {
+    "sanity_warnings": [
+      "Atwater mismatch: Declared 554 kcal vs calculated 235 kcal."
+    ],
+    "sample_tp": 5,
+    "sample_fp": 2,
+    "sample_fn": 2,
+    "predicted_nutrients": {
+      "energy_kcal": 554.0,
+      "protein_g": 7.0,
+      "carbohydrates_g": 51.7,
+      "sugars_g": 2.6,
+      "total_fat_g": 35.5,
+      "saturated_fat_g": 14.0,
+      "trans_fat_g": 0.1,
+      "sodium_mg": 510.0,
+      "salt_g": 1.275
+    },
+    "ground_truth": {
+      "energy_kcal": 554.0,
+      "energy_kj": 2311.4,
+      "protein_g": 7.0,
+      "carbohydrates_g": 51.7,
+      "sugars_g": 2.6,
+      "fat_g": 35.5,
+      "saturated_fat_g": 14.0,
+      "fiber_g": 0.0,
+      "sodium_mg": 204.0,
+      "salt_g": 0.51
+    }
+  }
+}
