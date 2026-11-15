@@ -1,0 +1,1436 @@
+{
+  "benchmark_title": "Comparative Evaluation: Barcode-Only Image Upload vs. Full Nutrition Label OCR",
+  "total_packaging_images_tested": 40,
+  "country_breakdown": {
+    "india_samples": 15,
+    "international_samples": 25
+  },
+  "workflow_a_barcode_only_image_upload": {
+    "total_tested": 40,
+    "barcodes_detected_from_image_pixels": 6,
+    "detection_rate_pct": 15.0,
+    "valid_barcode_formats": 4,
+    "matched_in_database": 4,
+    "times_barcode_alone_gave_complete_information": 0,
+    "barcode_alone_complete_info_pct": 0.0,
+    "times_needed_to_get_nutrition_via_label_ocr": 40,
+    "needed_nutrition_scan_rate_pct": 100.0
+  },
+  "workflow_b_full_nutrition_label_ocr": {
+    "total_tested": 40,
+    "fully_successful_scans_pass": 27,
+    "partial_scans_warn": 13,
+    "failed_scans_fail": 0,
+    "overall_label_readability_pct": 100.0,
+    "packages_with_allergens_detected": 4,
+    "packages_with_health_compliance_alerts": 5
+  },
+  "records": [
+    {
+      "test_id": "TEST-01",
+      "filename": "india_01_parle_g_gluco_8901719134845.jpg",
+      "country": "India",
+      "expected_barcode": "8901719134845",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 12,
+        "nutrients_extracted_count": 0,
+        "nutrients_extracted": [],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 181.27,
+        "workflow_b_status": "WARN"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-02",
+      "filename": "india_02_parle_g_original_8901719134852.jpg",
+      "country": "India",
+      "expected_barcode": "8901719134852",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 10,
+        "nutrients_extracted_count": 0,
+        "nutrients_extracted": [],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 78.9,
+        "workflow_b_status": "WARN"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-03",
+      "filename": "india_03_britannia_bourbon_8901063139329.jpg",
+      "country": "India",
+      "expected_barcode": "8901063139329",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 17,
+        "nutrients_extracted_count": 6,
+        "nutrients_extracted": [
+          "added_sugars_g",
+          "total_fat_g",
+          "saturated_fat_g",
+          "cholesterol_mg",
+          "sodium_mg",
+          "salt_g"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 216.89,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-04",
+      "filename": "india_04_pepsico_sting_energy_8902080000227.jpg",
+      "country": "India",
+      "expected_barcode": "8902080000227",
+      "barcode_workflow": {
+        "detected_barcode": "8902080000227",
+        "barcode_format": "EAN-13",
+        "is_valid_format": true,
+        "database_product_matched": "Sting Energy",
+        "database_source": "Open Food Facts (Live API)",
+        "is_complete_in_database": false,
+        "completeness_score": 0.875,
+        "action_required": "scan_label_recommended",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 21,
+        "nutrients_extracted_count": 9,
+        "nutrients_extracted": [
+          "energy_kcal",
+          "protein_g",
+          "carbohydrates_g",
+          "dietary_fibre_g",
+          "total_fat_g",
+          "saturated_fat_g",
+          "sodium_mg",
+          "iron_mg",
+          "calcium_mg"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 132.71,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode verified in OFF DB (Sting Energy), but database lacked complete nutrition basis/added sugars. Nutrition label scan was needed."
+    },
+    {
+      "test_id": "TEST-05",
+      "filename": "india_05_balaji_chataka_pataka_8906010500764.jpg",
+      "country": "India",
+      "expected_barcode": "8906010500764",
+      "barcode_workflow": {
+        "detected_barcode": "~\u00d8\u00da<BEL>\u00d4\u00e7/\u00c2\\<U+87>\u00a4\u00e73d\u00ec<U+8F>\u00bb\u00d8\u00a6\u00e1\u00f2{<U+96>\u00f8<U+96>\u00e4\u00bb\u00d8<U+87>\u00bcKX\u00de<CxKh\u00d2/<SO>\u00c22\u00f4<U+99>\u00df\u00ca\u00ec<U+8F><U+A0><FS>C`<U+81>=\u00c1|ElSM\u00c2\u00f6!<U+84>h<DC4>\u00ee\u00b4m<U+84>i\u00cf<U+8D>\u00a8_<SI>\u00bc<U+8F><SO>\u00c20<U+83>\u00bc\u00bf\u00c3\u00e1g$!\u00d8<U+97>\u00ec|<SOH><DC3><RS>\u00d44<VT><CAN>\u00da<DLE>\u00cc<\u00d9\u00bb<DC4>$<U+89>\u00deo<U+87>i<US>I\u00deH\u00e1\u00f2\u00be<U+87>\u00b1\u00cd\u00c3\u00f1g5\u00e19\u00c5\u00fe<C~<U+9A><CAN><U+8E><ENQ>(<U+98>\u00d2<DC3>\u00c8\u00e7/\u00c3\u00bc<U+87>\u00d4\u00e71\u00f1e\u00bc<EM>\u00d0<SUB>\u00e1<STX>{<U+92>\u00f8\u00ad\u00e0\u00f8<DC1>\u00a5\u00e1<VT><BS><U+80><O<DEL>\u00ab<CAN>\u00d1\u00df<SO>\u00c2\u00ca<U+92>\u00f1<U+84><U+90><U+8D><U+8C><U+86>\u00c4\u00eb\u00c3p\u00f1>I|Kt<ETX><EM><DC2>\u00f8<U+9D><U+84>h&!\u00b4<U+95><U+84>h<US><U+8E>\u00c8<ETX><CAN>\u00c4<U+8F><SO>\u00c2<ACK><U+83>\u00b9/<ACK>d\u00e7R\u00b7\u00e9\u00d3<U+9E>\u00fb<CR>\u00c9{N\u00d2<<LF>\u00f8\u00da<RS>\u00c2?\u00c3\u00bb<U+94>\u00dd<U+84>n@gi<US>I\u00deK<U+80><SYN>\u00e6<U+83>\u00ba<U+8D><U+8D>\u00f4\u00e8\u00c5\u00b1M\u00c3\u00f5\u00ecH\u00fd\u00afH<U+9B><BS><CAN><U+98>\u00da<RS>\u00cc\u00b7?\u00f3\u00bc<U+87>\u00a4\u00f6<DLE>\u00f4AOI\u00eeF\u00e1\u00f0\u00bc<U+92>\u00f8<U+96>\u00e1<DLE>\u00b8e\u00c1=\u00c9p<Cp[<CAN>\u00d0<HJ<SI>\u00b2\u00fd<U+8D><US><U+8D><U+8D>G\u00a4\u00e7}x\u00f1=\u00c1pE|<SO>\u00c9<DC2><U+84><U+96>\u00e4x<SYN>!\u00b4-<U+84>h<GS><U+8E>K\u00db<RS>\u00f2/[BN<U+83>\u00bc<U+8F><SO>\u00a5\u00e4<U+81>4)\u00c9A\u00fb<U+9D>\u00c1|Kr<FF><VT><CAN>\u00daN\u00c2?\u00b4\u00eb<U+A0>m<U+84>i<US>gi<US>I\u00e1O<U+89>\u00d6\u00b0\u00b3\u00cc<U+8F>\u00c7<DC4>\u00e7%\u00e1=\u00c0|\u00e9([<US>E\u00c1\u00b8<ETX>\u00a8\u00dan\u00c7<U+9B><DEL>\u00c3\u00bdO\u00a4\u00e7 <K/I\u00d3G\u00e1\u00f2{<U+92>\u00c0<U+96>\u00c1\u00f8<U+99>\u00e6<SOH>=\u00c1\u00f0<Cx[<GS>p<<HT>><U+83>\u00b2(\u00faG\u00eb<<U+8F>\u00aa\u00e7.\u00f7\u00f4<U+9D>\u00c1|C<DEL><SO>\u00b3rH<U+96>\u00ef\u00f8<SYN>!\u00b0-<U+8B>\u00b8<RS>\u00cb<U+9B>\u00fb<RS>P8<U+8E>\u00c2>\u00f2\\<U+8F><HT>p%\u00e14'v\u00e0{<GS>\u00c1|Cp|<ESC><CAN>\u00da<RS>\u00d2#\u00fd<4-\u00b4X<US><U+84>&<US>I\u00daNI\u00d1\u00bfC\u00bc<U+8E>\u00e3\u00e4\u00e7-\u00e1<3\u00f4\u00e3xR<DEL>B<U+97>\u00ae<ETX>\u00b9<SUB><RS>\u00c2,<DC1>\u00c3\u00bc<U+87>\u00aa\u00e1\u00a1\u00bb<ETB>/A\u00d1\u00bf<U+81>\u00f2[<U+92>\u00f8<U+96>\u00e1\u00fa)<DLE>1=\u00c3\u00fc\u00ea\u00c3<BS>Z\u00e6P<27\u00a6\"\u00fd<U+9E>G\u00d1<<U+87>\u00a4\u00e9'\u00c0\u00f1=\u00c1,C<DEL><ETX>\u00b3r\u00f8<U+96>\u00c3\u00f2v-\u00b4-\u00b9h<ETB>K\u00ab\u00bbh\u00d0=\u00ae\u00ca><U+8C>\u00bc<U+8C><U+86>\u00c7!wd%\u00d6\u00ec|\u00bd\u00c1<FF>Cp\u00f9;<EM>2<RS>\u00c20\u00f0\u00d2T-<U+88>h\u00f6'i<US>u\u00deO<U+8F>tg\u00ab\u00bc<U+8F><SO>\u00c5\u00b75\u00e1;C\u00f4\u00e3Z<DC2>o\u00b8<U+94><US><U+86>(\u00d2<DLE>\u00c2<<VT><DC4><<U+87>\u00a4\u00e7,<VT><NAK>\u00af\u00f9\u00deO<U+87>b\u00eb<U+96>\u00f8<U+96>\u00e1\u00f6<RS>Aq:C\u00f5<U+81>)\u00a8<<U+98>\u00d0<L<U+87>\u00aa\"\u00fd<U+80><U+91>\u00f7l<U+87>\u00a4",
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 55,
+        "nutrients_extracted_count": 0,
+        "nutrients_extracted": [],
+        "ingredients_count": 8,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 187.63,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Image contained visual noise/invalid barcode pattern; safely filtered out. Label OCR traced product."
+    },
+    {
+      "test_id": "TEST-06",
+      "filename": "india_06_britannia_good_day_cashew_8901063093522.jpg",
+      "country": "India",
+      "expected_barcode": "8901063093522",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 20,
+        "nutrients_extracted_count": 1,
+        "nutrients_extracted": [
+          "energy_kcal"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 54.77,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-07",
+      "filename": "india_07_nestle_maggi_noodles_8901058017687.jpg",
+      "country": "India",
+      "expected_barcode": "8901058017687",
+      "barcode_workflow": {
+        "detected_barcode": "8901058017687",
+        "barcode_format": "EAN-13",
+        "is_valid_format": true,
+        "database_product_matched": "maggi",
+        "database_source": "Open Food Facts (Live API)",
+        "is_complete_in_database": false,
+        "completeness_score": 0.875,
+        "action_required": "scan_label_recommended",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 81,
+        "nutrients_extracted_count": 10,
+        "nutrients_extracted": [
+          "energy_kcal",
+          "protein_g",
+          "carbohydrates_g",
+          "sugars_g",
+          "added_sugars_g",
+          "total_fat_g",
+          "saturated_fat_g",
+          "trans_fat_g",
+          "sodium_mg",
+          "salt_g"
+        ],
+        "ingredients_count": 1,
+        "declared_allergens": [
+          "Wheat"
+        ],
+        "health_alerts_count": 4,
+        "health_alerts": [
+          "Declared Allergen: Wheat",
+          "Potential Allergen Trace: Milk / Dairy",
+          "Potential Allergen Trace: Soybeans / Soy",
+          "High Saturated Fat Content"
+        ],
+        "ocr_latency_sec": 91.92,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode verified in OFF DB (maggi), but database lacked complete nutrition basis/added sugars. Nutrition label scan was needed."
+    },
+    {
+      "test_id": "TEST-08",
+      "filename": "india_08_britannia_marie_gold_8901063162914.jpg",
+      "country": "India",
+      "expected_barcode": "8901063162914",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 0,
+        "nutrients_extracted_count": 0,
+        "nutrients_extracted": [],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 8.78,
+        "workflow_b_status": "WARN"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-09",
+      "filename": "india_09_balaji_mung_dal_8906010500559.jpg",
+      "country": "India",
+      "expected_barcode": "8906010500559",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 16,
+        "nutrients_extracted_count": 4,
+        "nutrients_extracted": [
+          "energy_kcal",
+          "protein_g",
+          "sugars_g",
+          "total_fat_g"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 55.14,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-10",
+      "filename": "india_10_coca_cola_thums_up_8901764042911.jpg",
+      "country": "India",
+      "expected_barcode": "8901764042911",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 0,
+        "nutrients_extracted_count": 0,
+        "nutrients_extracted": [],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 70.43,
+        "workflow_b_status": "WARN"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-11",
+      "filename": "india_11_balaji_masala_sev_murmura_8906010500245.jpg",
+      "country": "India",
+      "expected_barcode": "8906010500245",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 54,
+        "nutrients_extracted_count": 10,
+        "nutrients_extracted": [
+          "energy_kcal",
+          "protein_g",
+          "carbohydrates_g",
+          "sugars_g",
+          "added_sugars_g",
+          "dietary_fibre_g",
+          "trans_fat_g",
+          "cholesterol_mg",
+          "sodium_mg",
+          "salt_g"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [
+          "Soybeans / Soy",
+          "Wheat"
+        ],
+        "health_alerts_count": 3,
+        "health_alerts": [
+          "Declared Allergen: Soybeans / Soy",
+          "Declared Allergen: Wheat",
+          "Declared Trans Fatty Acids"
+        ],
+        "ocr_latency_sec": 123.81,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-12",
+      "filename": "india_12_balaji_panjabi_tadka_8906010502232.jpg",
+      "country": "India",
+      "expected_barcode": "8906010502232",
+      "barcode_workflow": {
+        "detected_barcode": "8906010502232",
+        "barcode_format": "EAN-13",
+        "is_valid_format": true,
+        "database_product_matched": "Balaji wafers panjabi tadka",
+        "database_source": "Open Food Facts (Live API)",
+        "is_complete_in_database": false,
+        "completeness_score": 0.875,
+        "action_required": "scan_label_recommended",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 71,
+        "nutrients_extracted_count": 9,
+        "nutrients_extracted": [
+          "energy_kcal",
+          "protein_g",
+          "carbohydrates_g",
+          "dietary_fibre_g",
+          "total_fat_g",
+          "saturated_fat_g",
+          "sodium_mg",
+          "iron_mg",
+          "calcium_mg"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [
+          "Milk / Dairy",
+          "Soybeans / Soy"
+        ],
+        "health_alerts_count": 2,
+        "health_alerts": [
+          "Declared Allergen: Milk / Dairy",
+          "Declared Allergen: Soybeans / Soy"
+        ],
+        "ocr_latency_sec": 186.65,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode verified in OFF DB (Balaji wafers panjabi tadka), but database lacked complete nutrition basis/added sugars. Nutrition label scan was needed."
+    },
+    {
+      "test_id": "TEST-13",
+      "filename": "india_13_balaji_wheelos_masala_8906010500900.jpg",
+      "country": "India",
+      "expected_barcode": "8906010500900",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 1,
+        "nutrients_extracted_count": 0,
+        "nutrients_extracted": [],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 16.58,
+        "workflow_b_status": "WARN"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-14",
+      "filename": "india_14_tata_salt_iodized_8904043901015.jpg",
+      "country": "India",
+      "expected_barcode": "8904043901015",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 4,
+        "nutrients_extracted_count": 0,
+        "nutrients_extracted": [],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 16.11,
+        "workflow_b_status": "WARN"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-15",
+      "filename": "india_15_nestle_maggi_masala_8901058000290.jpg",
+      "country": "India",
+      "expected_barcode": "8901058000290",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 2,
+        "nutrients_extracted_count": 0,
+        "nutrients_extracted": [],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 8.77,
+        "workflow_b_status": "WARN"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-16",
+      "filename": "world_01_doritos_spicy_nacho_0002840019914.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840019914",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 17,
+        "nutrients_extracted_count": 1,
+        "nutrients_extracted": [
+          "energy_kcal"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 61.2,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-17",
+      "filename": "world_02_fritos_original_corn_chips_0002840032730.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840032730",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 41,
+        "nutrients_extracted_count": 6,
+        "nutrients_extracted": [
+          "energy_kcal",
+          "added_sugars_g",
+          "dietary_fibre_g",
+          "total_fat_g",
+          "saturated_fat_g",
+          "cholesterol_mg"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 70.73,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-18",
+      "filename": "world_03_cheetos_crunchy_cheese_0002840058986.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840058986",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 14,
+        "nutrients_extracted_count": 1,
+        "nutrients_extracted": [
+          "energy_kcal"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 70.64,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-19",
+      "filename": "world_04_lays_wavy_potato_chips_0002840058988.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840058988",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 10,
+        "nutrients_extracted_count": 1,
+        "nutrients_extracted": [
+          "energy_kcal"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 46.96,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-20",
+      "filename": "world_05_lays_barbecue_potato_chips_0002840058989.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840058989",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 21,
+        "nutrients_extracted_count": 3,
+        "nutrients_extracted": [
+          "energy_kcal",
+          "sugars_g",
+          "total_fat_g"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 48.76,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-21",
+      "filename": "world_06_fritos_bbq_flavored_corn_chips_0002840063641.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840063641",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 38,
+        "nutrients_extracted_count": 4,
+        "nutrients_extracted": [
+          "energy_kcal",
+          "protein_g",
+          "dietary_fibre_g",
+          "total_fat_g"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 54.07,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-22",
+      "filename": "world_07_doritos_cool_ranch_0002840064203.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840064203",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 20,
+        "nutrients_extracted_count": 1,
+        "nutrients_extracted": [
+          "energy_kcal"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 48.5,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-23",
+      "filename": "world_08_tostitos_bite_size_0002840064205.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840064205",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 15,
+        "nutrients_extracted_count": 1,
+        "nutrients_extracted": [
+          "energy_kcal"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 37.6,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-24",
+      "filename": "world_09_frito_lay_party_mix_0002840064224.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840064224",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 7,
+        "nutrients_extracted_count": 0,
+        "nutrients_extracted": [],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 28.74,
+        "workflow_b_status": "WARN"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-25",
+      "filename": "world_10_frito_lay_flavor_mix_0002840064225.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840064225",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 13,
+        "nutrients_extracted_count": 1,
+        "nutrients_extracted": [
+          "energy_kcal"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 36.58,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-26",
+      "filename": "world_11_frito_lay_classic_mix_0002840064226.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840064226",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 6,
+        "nutrients_extracted_count": 0,
+        "nutrients_extracted": [],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 45.98,
+        "workflow_b_status": "WARN"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-27",
+      "filename": "world_12_cheetos_flamin_hot_crunchy_0002840067416.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840067416",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 84,
+        "nutrients_extracted_count": 2,
+        "nutrients_extracted": [
+          "energy_kcal",
+          "carbohydrates_g"
+        ],
+        "ingredients_count": 6,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 173.39,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-28",
+      "filename": "world_13_tostitos_hint_of_queso_chips_0002840075142.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840075142",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 6,
+        "nutrients_extracted_count": 1,
+        "nutrients_extracted": [
+          "energy_kcal"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 57.81,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-29",
+      "filename": "world_14_fritos_flavor_twists_queso_0002840076805.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840076805",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 43,
+        "nutrients_extracted_count": 3,
+        "nutrients_extracted": [
+          "energy_kcal",
+          "carbohydrates_g",
+          "total_fat_g"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 105.3,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-30",
+      "filename": "world_15_cheetos_crunchy_cheese_party_0002840076891.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840076891",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 6,
+        "nutrients_extracted_count": 0,
+        "nutrients_extracted": [],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 51.89,
+        "workflow_b_status": "WARN"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-31",
+      "filename": "world_16_lays_classic_potato_chips_0002840077008.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840077008",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 16,
+        "nutrients_extracted_count": 1,
+        "nutrients_extracted": [
+          "energy_kj"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 55.92,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-32",
+      "filename": "world_17_ruffles_cheddar_sour_cream_0002840077016.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0002840077016",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 12,
+        "nutrients_extracted_count": 1,
+        "nutrients_extracted": [
+          "energy_kj"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 51.95,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-33",
+      "filename": "world_18_reeses_pieces_candy_0003400011484.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0003400011484",
+      "barcode_workflow": {
+        "detected_barcode": "http://hrshys.net/ugtfe8f",
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 17,
+        "nutrients_extracted_count": 1,
+        "nutrients_extracted": [
+          "energy_kcal"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 71.07,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Image contained visual noise/invalid barcode pattern; safely filtered out. Label OCR traced product."
+    },
+    {
+      "test_id": "TEST-34",
+      "filename": "world_19_mms_peanut_chocolate_candy_0004000000432.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0004000000432",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 17,
+        "nutrients_extracted_count": 0,
+        "nutrients_extracted": [],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 45.24,
+        "workflow_b_status": "WARN"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-35",
+      "filename": "world_20_snickers_almond_bar_0004000001105.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0004000001105",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 4,
+        "nutrients_extracted_count": 0,
+        "nutrients_extracted": [],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 11.22,
+        "workflow_b_status": "WARN"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-36",
+      "filename": "world_21_snickers_peanut_butter_squares_0004000054243.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0004000054243",
+      "barcode_workflow": {
+        "detected_barcode": "0040000542438",
+        "barcode_format": "EAN-13",
+        "is_valid_format": true,
+        "database_product_matched": "snickers Peanut Butter",
+        "database_source": "Open Food Facts (Live API)",
+        "is_complete_in_database": false,
+        "completeness_score": 0.25,
+        "action_required": "scan_label_recommended",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 6,
+        "nutrients_extracted_count": 10,
+        "nutrients_extracted": [
+          "carbohydrates_g",
+          "sugars_g",
+          "dietary_fibre_g",
+          "saturated_fat_g",
+          "trans_fat_g",
+          "sodium_mg",
+          "salt_g",
+          "iron_mg",
+          "calcium_mg",
+          "potassium_mg"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 2,
+        "health_alerts": [
+          "High Saturated Fat Content",
+          "Declared Trans Fatty Acids"
+        ],
+        "ocr_latency_sec": 31.18,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode verified in OFF DB (snickers Peanut Butter), but database lacked complete nutrition basis/added sugars. Nutrition label scan was needed."
+    },
+    {
+      "test_id": "TEST-37",
+      "filename": "world_22_oreo_chocolate_sandwich_0004400003202.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0004400003202",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 13,
+        "nutrients_extracted_count": 0,
+        "nutrients_extracted": [],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 41.01,
+        "workflow_b_status": "WARN"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-38",
+      "filename": "world_23_general_mills_cheerios_0016000170032.jpg",
+      "country": "USA / International",
+      "expected_barcode": "0016000170032",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 129,
+        "nutrients_extracted_count": 16,
+        "nutrients_extracted": [
+          "energy_kcal",
+          "protein_g",
+          "carbohydrates_g",
+          "sugars_g",
+          "added_sugars_g",
+          "dietary_fibre_g",
+          "total_fat_g",
+          "saturated_fat_g",
+          "trans_fat_g",
+          "cholesterol_mg",
+          "sodium_mg",
+          "salt_g",
+          "iron_mg",
+          "calcium_mg",
+          "potassium_mg",
+          "vitamin_d_mcg"
+        ],
+        "ingredients_count": 41,
+        "declared_allergens": [
+          "Gluten"
+        ],
+        "health_alerts_count": 1,
+        "health_alerts": [
+          "Declared Allergen: Gluten"
+        ],
+        "ocr_latency_sec": 215.47,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-39",
+      "filename": "world_24_lindt_excellence_dark_3046920029759.jpg",
+      "country": "USA / International",
+      "expected_barcode": "3046920029759",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 21,
+        "nutrients_extracted_count": 7,
+        "nutrients_extracted": [
+          "energy_kcal",
+          "energy_kj",
+          "carbohydrates_g",
+          "sugars_g",
+          "total_fat_g",
+          "sodium_mg",
+          "salt_g"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 32.34,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    },
+    {
+      "test_id": "TEST-40",
+      "filename": "world_25_pringles_original_crisps_5053990156009.jpg",
+      "country": "USA / International",
+      "expected_barcode": "5053990156009",
+      "barcode_workflow": {
+        "detected_barcode": null,
+        "barcode_format": null,
+        "is_valid_format": false,
+        "database_product_matched": null,
+        "database_source": "None",
+        "is_complete_in_database": false,
+        "completeness_score": 0.0,
+        "action_required": "scan_label_required",
+        "barcode_alone_gave_complete_info": false,
+        "needed_nutrition_label_scan": true,
+        "workflow_a_status": "NEEDS_LABEL_SCAN"
+      },
+      "nutrition_label_ocr_workflow": {
+        "ocr_lines_detected": 38,
+        "nutrients_extracted_count": 3,
+        "nutrients_extracted": [
+          "energy_kcal",
+          "energy_kj",
+          "protein_g"
+        ],
+        "ingredients_count": 0,
+        "declared_allergens": [],
+        "health_alerts_count": 0,
+        "health_alerts": [],
+        "ocr_latency_sec": 87.25,
+        "workflow_b_status": "PASS"
+      },
+      "comparative_finding": "Barcode absent/unreadable on package photo. Physical label OCR recovered nutrition and allergens."
+    }
+  ]
+}

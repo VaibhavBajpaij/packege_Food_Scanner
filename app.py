@@ -29,6 +29,8 @@ from streamlit_webrtc import (
     webrtc_streamer,
 )
 
+from food_engine.validation.barcode_validator import BarcodeValidator
+
 logger = logging.getLogger("food_intelligence_scanner")
 
 # Configure page layout
@@ -168,8 +170,14 @@ MEDIA_STREAM_CONSTRAINTS = {
 }
 
 
-def decode_barcode_from_image(image_input: Any) -> Tuple[Optional[str], Optional[str]]:
-    """Decodes 1D barcode directly from image pixels using ZXing-C++ with multi-rotation, CLAHE, and OpenCV fallback."""
+def decode_barcode_from_image(
+    image_input: Any,
+    ocr_lines: Optional[List[str]] = None,
+) -> Tuple[Optional[str], Optional[str]]:
+    """Decodes 1D barcode directly from image pixels using ZXing-C++ with multi-scale/rotation,
+    CLAHE, OpenCV, and printed OCR line fallback."""
+    from food_engine.validation.barcode_validator import BarcodeValidator
+
     try:
         pil_img = None
         if isinstance(image_input, (str, Path)):
@@ -191,49 +199,53 @@ def decode_barcode_from_image(image_input: Any) -> Tuple[Optional[str], Optional
         if pil_img.mode != "RGB":
             pil_img = pil_img.convert("RGB")
 
-        # Strategy 1: ZXing-C++ on native image
+        w, h = pil_img.size
+
+        # Strategy 1 & 2: ZXing-C++ with multi-scale downscaling and rotations
         try:
             import zxingcpp
-            results = zxingcpp.read_barcodes(pil_img)
-            if results:
-                for r in results:
-                    txt = str(r.text).strip()
-                    if txt:
-                        return txt, None
-        except Exception as exc:
-            logger.debug(f"[Barcode Strategy 1 Exception]: {exc}")
+            scales = [1.0]
+            if max(w, h) > 1500:
+                scales.extend([0.75, 0.5, 0.35])
 
-        # Strategy 2: Multi-angle rotation (90, 180, 270) & resizing if high-res
-        try:
-            import zxingcpp
-            w, h = pil_img.size
-            if max(w, h) > 1800:
-                scale = 1800.0 / max(w, h)
-                scaled_img = pil_img.resize((int(w * scale), int(h * scale)), Image.Resampling.BILINEAR)
-            else:
-                scaled_img = pil_img
-
-            for angle in [90, 180, 270]:
-                rot = scaled_img.rotate(angle, expand=True)
-                results = zxingcpp.read_barcodes(rot)
+            for scale in scales:
+                cur_img = pil_img if scale == 1.0 else pil_img.resize((int(w * scale), int(h * scale)), Image.Resampling.BILINEAR)
+                results = zxingcpp.read_barcodes(
+                    cur_img,
+                    try_rotate=True,
+                    try_downscale=True,
+                    try_invert=True,
+                    return_errors=True,
+                )
                 if results:
                     for r in results:
                         txt = str(r.text).strip()
                         if txt:
+                            val = BarcodeValidator.validate(txt)
+                            if val.is_valid:
+                                return val.normalized_code, None
+                            elif val.lookup_candidates:
+                                return val.lookup_candidates[0], None
                             return txt, None
 
             # Strategy 3: Contrast enhancement with CLAHE on grayscale
-            cv_gray = cv2.cvtColor(np.array(scaled_img), cv2.COLOR_RGB2GRAY)
+            scaled_for_clahe = pil_img if max(w, h) <= 1800 else pil_img.resize((int(w * (1800.0 / max(w, h))), int(h * (1800.0 / max(w, h)))), Image.Resampling.BILINEAR)
+            cv_gray = cv2.cvtColor(np.array(scaled_for_clahe), cv2.COLOR_RGB2GRAY)
             clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
             enhanced = clahe.apply(cv_gray)
-            results = zxingcpp.read_barcodes(enhanced)
+            results = zxingcpp.read_barcodes(enhanced, try_rotate=True, try_downscale=True, try_invert=True, return_errors=True)
             if results:
                 for r in results:
                     txt = str(r.text).strip()
                     if txt:
+                        val = BarcodeValidator.validate(txt)
+                        if val.is_valid:
+                            return val.normalized_code, None
+                        elif val.lookup_candidates:
+                            return val.lookup_candidates[0], None
                         return txt, None
         except Exception as exc:
-            logger.debug(f"[Barcode Strategy 2/3 Exception]: {exc}")
+            logger.debug(f"[Barcode Strategy 1/2/3 Exception]: {exc}")
 
         # Strategy 4: Fallback to OpenCV BarcodeDetector
         try:
@@ -245,9 +257,20 @@ def decode_barcode_from_image(image_input: Any) -> Tuple[Optional[str], Optional
                 if decoded_info:
                     code_str = str(decoded_info).strip()
                     if code_str:
+                        val = BarcodeValidator.validate(code_str)
+                        if val.is_valid:
+                            return val.normalized_code, None
+                        elif val.lookup_candidates:
+                            return val.lookup_candidates[0], None
                         return code_str, None
         except Exception as exc:
             logger.debug(f"[Barcode Strategy 4 Exception]: {exc}")
+
+        # Strategy 5: OCR Line printed barcode numbers fallback
+        if ocr_lines:
+            recovered = BarcodeValidator.extract_barcode_from_ocr_lines(ocr_lines)
+            if recovered:
+                return recovered, None
 
         return None, "No barcode detected. Ensure barcode is in focus, well-lit, and visible in frame."
     except Exception as exc:
@@ -568,6 +591,33 @@ def load_global_dataset_presets() -> Dict[str, Any]:
     return {}
 
 
+def load_tested_images_catalog() -> List[Dict[str, Any]]:
+    """Loads metadata for verified food package images from tested_images/metadata.json."""
+    candidates_dirs = [
+        REPO_ROOT.parent / "tested_images",
+        REPO_ROOT / "tested_images",
+        REPO_ROOT.parent / "tested images",
+    ]
+    for d in candidates_dirs:
+        meta_file = d / "metadata.json"
+        if meta_file.exists():
+            try:
+                with open(meta_file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    valid_items = []
+                    for item in data:
+                        p = d / item["filename"]
+                        if p.exists():
+                            item_copy = dict(item)
+                            item_copy["local_path"] = str(p)
+                            valid_items.append(item_copy)
+                    return valid_items
+            except Exception as exc:
+                logger.warning(f"Error loading tested_images metadata: {exc}")
+    return []
+
+
+TESTED_IMAGES_CATALOG = load_tested_images_catalog()
 GLOBAL_PRESETS = load_global_dataset_presets()
 ALL_PRESETS = {**PRESETS, **GLOBAL_PRESETS}
 
@@ -617,34 +667,90 @@ with tab_scan:
     col_input, col_output = st.columns([1, 1.25], gap="large")
 
     with col_input:
-        st.subheader("1. Ingestion & Image Inputs")
+        st.subheader("1. Food Package Ingestion & Scanner")
 
         # Preset image resolution
         default_nut_img = active_preset["nutrition_img"]
         default_ing_img = active_preset["ingredients_img"]
         default_barcode = active_preset["barcode"]
 
-        # Option: Barcode input (Camera, Upload, or Text)
-        st.markdown("**Product Barcode (Step 1)**")
-        user_barcode = default_barcode or ""
-
-        bc_mode = st.radio(
-            "Select Barcode Input Method:",
-            ["📹 Real-Time WebRTC Continuous Scanner", "📁 Upload Barcode Photo", "⌨️ Enter Digits Manually"],
+        scan_mode = st.radio(
+            "Select Scanner Input Method:",
+            [
+                "📁 Upload Food Package Photo",
+                "📸 Take Photo with Camera",
+                "⚡ Quick-Test Verified Real Packets",
+                "📹 Real-Time WebRTC Live Video Stream",
+                "⌨️ Enter Barcode Digits Manually",
+            ],
             index=0,
-            horizontal=True,
-            help="Continuous real-time scanning with automatic auto-capture, or upload/type.",
+            help="Upload a photo from your device, take a real-time camera snapshot, or select from verified package dataset.",
         )
 
-        if bc_mode == "📹 Real-Time WebRTC Continuous Scanner":
+        active_image = None
+        active_image_label = None
+        manual_barcode = default_barcode or ""
+
+        if scan_mode == "📁 Upload Food Package Photo":
+            uploaded_file = st.file_uploader(
+                "Upload food packet photo (front, back, or full label):",
+                type=["png", "jpg", "jpeg", "webp"],
+                key="unified_package_uploader",
+                help="Accepts any photo of packaged food. Automatically scans barcode and traces nutrition & ingredients.",
+            )
+            if uploaded_file is not None:
+                active_image = uploaded_file
+                active_image_label = f"Uploaded Photo: {uploaded_file.name}"
+            elif default_nut_img and Path(default_nut_img).exists():
+                active_image = default_nut_img
+                active_image_label = f"Preset Default: {Path(default_nut_img).name}"
+
+        elif scan_mode == "📸 Take Photo with Camera":
+            camera_snap = st.camera_input(
+                "📸 Point camera at food package and click 'Take Photo':",
+                key="unified_package_camera",
+                help="Take a clear snapshot of the food packet. Automatically scans barcode and traces nutrition & ingredients.",
+            )
+            if camera_snap is not None:
+                active_image = camera_snap
+                active_image_label = "Camera Snapshot"
+
+        elif scan_mode == "⚡ Quick-Test Verified Real Packets":
+            if TESTED_IMAGES_CATALOG:
+                c_filt1, c_filt2 = st.columns(2)
+                with c_filt1:
+                    origin_filter = st.selectbox("Region Filter:", ["All Packets (40)", "India (15)", "USA & World (25)"])
+
+                filtered_catalog = TESTED_IMAGES_CATALOG
+                if "India" in origin_filter:
+                    filtered_catalog = [it for it in TESTED_IMAGES_CATALOG if it.get("country") == "India"]
+                elif "USA" in origin_filter:
+                    filtered_catalog = [it for it in TESTED_IMAGES_CATALOG if it.get("country") != "India"]
+
+                tested_options = {
+                    f"{'🇮🇳' if it.get('country') == 'India' else '🌐'} {it['filename']}": it
+                    for it in filtered_catalog
+                }
+                sel_label = st.selectbox("Select Verified Test Packet:", options=list(tested_options.keys()))
+                sel_pkg = tested_options[sel_label]
+                active_image = sel_pkg["local_path"]
+                active_image_label = f"Verified Packet: {sel_pkg['filename']}"
+                manual_barcode = sel_pkg.get("barcode", "")
+            else:
+                st.info("No tested_images catalog found; using preset samples.")
+                if default_nut_img and Path(default_nut_img).exists():
+                    active_image = default_nut_img
+                    active_image_label = f"Preset Default: {Path(default_nut_img).name}"
+
+        elif scan_mode == "📹 Real-Time WebRTC Live Video Stream":
             is_ocr_fallback = st.session_state.get("ocr_fallback_mode", False)
             if is_ocr_fallback:
-                st.warning("⚠️ **Barcode not found in database.** Point camera at back package label. Hold it steady (>100 sharpness) for auto-capture.")
+                st.warning("⚠️ **Barcode lookup required label scan.** Point camera at back package label. Hold it steady (>100 sharpness) for auto-capture.")
                 if st.button("↩️ Reset to Barcode Scanner Mode"):
                     st.session_state["ocr_fallback_mode"] = False
                     st.rerun()
             else:
-                st.caption("Point camera at barcode. Frames are analyzed continuously in real time:")
+                st.caption("Point camera at barcode or label. Stream analyzes video frames in real time:")
 
             webrtc_ctx = webrtc_streamer(
                 key="realtime_scanner_stream",
@@ -656,22 +762,15 @@ with tab_scan:
             )
 
             if webrtc_ctx.video_processor:
-                # Sync processor mode with state
                 webrtc_ctx.video_processor.ocr_mode = is_ocr_fallback
-
-                # Phase 1: Check thread-safe queue for detected barcode
                 try:
                     detected_bc = webrtc_ctx.video_processor.barcode_queue.get_nowait()
                     if detected_bc and detected_bc != st.session_state.get("last_auto_scanned_barcode"):
-                        logger.info(f"Retrieved detected barcode from queue: {detected_bc}")
                         st.session_state["last_auto_scanned_barcode"] = detected_bc
-                        st.session_state["user_barcode"] = detected_bc
                         t0 = time.time()
                         bc_res = engine.scan_barcode(detected_bc, allow_online=allow_online_lookup)
                         st.session_state["barcode_scan_result"] = bc_res
                         st.session_state["barcode_scan_time"] = time.time() - t0
-
-                        # Phase 2 auto-transition: If unmatched or label scan required, switch to OCR auto-capture
                         if bc_res.get("action_required") in ("scan_label_required", "scan_label_recommended"):
                             st.session_state["ocr_fallback_mode"] = True
                         else:
@@ -679,10 +778,7 @@ with tab_scan:
                         st.rerun()
                 except queue.Empty:
                     pass
-                except Exception as exc:
-                    logger.error(f"Error handling barcode queue item: {exc}\n{traceback.format_exc()}")
 
-                # Phase 2: Check thread-safe queue for auto-captured steady OCR frame
                 try:
                     captured_frame_rgb = webrtc_ctx.video_processor.ocr_queue.get_nowait()
                     if captured_frame_rgb is not None:
@@ -698,195 +794,149 @@ with tab_scan:
                             st.rerun()
                 except queue.Empty:
                     pass
-                except Exception as exc:
-                    logger.error(f"Error handling OCR queue item: {exc}\n{traceback.format_exc()}")
 
-        elif bc_mode == "📁 Upload Barcode Photo":
-            barcode_img_file = st.file_uploader(
-                "Upload photo containing the barcode:",
-                type=["png", "jpg", "jpeg", "webp"],
-                key="barcode_uploader",
-                help="Automatically scans all angles with multi-rotation ZXing engine.",
-            )
-            if barcode_img_file is not None:
-                with st.spinner("Scanning barcode from image pixels..."):
-                    detected_bc, bc_err = decode_barcode_from_image(barcode_img_file)
-                    if detected_bc:
-                        st.success(f"🎯 **Barcode Detected:** `{detected_bc}`")
-                        user_barcode = detected_bc
-                        # Immediate automatic execution
-                        with st.spinner("Searching database and auditing nutrition completeness..."):
-                            t0 = time.time()
-                            bc_res = engine.scan_barcode(user_barcode, allow_online=allow_online_lookup)
-                            st.session_state["barcode_scan_result"] = bc_res
-                            st.session_state["barcode_scan_time"] = time.time() - t0
-                            if bc_res.get("action_required") in ("scan_label_required", "scan_label_recommended"):
-                                st.session_state["ocr_fallback_mode"] = True
-                    else:
-                        st.warning(f"⚠️ {bc_err or 'No barcode detected. Ensure barcode is in focus and not cropped out.'}")
-
-        else:  # Manual digits
-            user_barcode = st.text_input(
-                "Enter barcode digits (EAN-13, UPC-A, etc.):",
+        else:  # Manual barcode digits
+            manual_barcode = st.text_input(
+                "Enter Barcode Digits (EAN-13, UPC-A, etc.):",
                 value=default_barcode,
                 placeholder="e.g. 8901030000001",
                 help="Preserves significant leading zeros and verifies checksum.",
             )
-            if st.button("🔍 Step 1: Scan Barcode Only", help="Run fast database lookup without OCR"):
-                if not user_barcode.strip():
-                    st.error("Please enter a barcode to run Step 1.")
-                else:
-                    with st.spinner("Checking barcode and completeness policy..."):
-                        t0 = time.time()
-                        bc_res = engine.scan_barcode(user_barcode, allow_online=allow_online_lookup)
-                        st.session_state["barcode_scan_result"] = bc_res
-                        st.session_state["barcode_scan_time"] = time.time() - t0
-                        if bc_res.get("action_required") in ("scan_label_required", "scan_label_recommended"):
-                            st.session_state["ocr_fallback_mode"] = True
 
-        st.markdown("---")
-        st.markdown("**Package Label Images (Step 3)**")
-        st.caption("Upload either a single back-of-package label, or test with separate nutrition and ingredient photos.")
-
-        # Nutrition image uploader
-        nutrition_file = st.file_uploader(
-            "Upload Nutrition Facts Label (Required for OCR):",
-            type=["png", "jpg", "jpeg", "webp"],
-            key="nutrition_uploader",
-        )
-
-        # Ingredients image uploader (Optional)
-        ingredients_file = st.file_uploader(
-            "Upload Ingredients Panel (Optional - Dual Panel Mode):",
-            type=["png", "jpg", "jpeg", "webp"],
-            key="ingredients_uploader",
-        )
-
-        package_weight = st.number_input(
-            "Package Net Weight (g, optional):",
-            min_value=0.0,
-            value=float(active_preset["package_weight_g"]) if active_preset["package_weight_g"] else 0.0,
-            step=10.0,
-            help="Computes package totals (e.g. 120g package scaling)",
-        )
-
-        # Preview loaded images
+        # Image preview & quality audit
         preview_img = None
-        if nutrition_file is not None:
-            preview_img = Image.open(nutrition_file)
-            if hasattr(nutrition_file, "seek"):
-                nutrition_file.seek(0)
-            st.image(preview_img, caption="Uploaded Nutrition Label", use_container_width=True)
-        elif default_nut_img and Path(default_nut_img).exists():
-            preview_img = Image.open(default_nut_img)
-            st.image(preview_img, caption=f"Preset Image: {Path(default_nut_img).name}", use_container_width=True)
+        if active_image is not None:
+            if isinstance(active_image, (str, Path)):
+                preview_img = Image.open(str(active_image))
+            elif isinstance(active_image, Image.Image):
+                preview_img = active_image
+            elif hasattr(active_image, "read"):
+                file_bytes = active_image.read()
+                preview_img = Image.open(io.BytesIO(file_bytes))
+                active_image.seek(0)
 
-        if preview_img is not None:
-            from food_engine.validation.triage_logger import calculate_blur_score, check_image_quality
-            is_sharp, b_score, b_msg = check_image_quality(preview_img)
-            if not is_sharp:
-                st.warning(f"⚠️ **Image Blur Detected** (Sharpness Score: {b_score:.1f} < 80.0 required). Edge blur may degrade OCR extraction.")
-            else:
-                st.caption(f"🔍 Image Edge Sharpness: **{b_score:.1f}** (Passed quality threshold 80.0)")
+            if preview_img is not None:
+                st.image(preview_img, caption=active_image_label or "Loaded Food Package Image", use_container_width=True)
+                from food_engine.validation.triage_logger import check_image_quality
+                is_sharp, b_score, b_msg = check_image_quality(preview_img)
+                if not is_sharp:
+                    st.warning(f"⚠️ **Image Blur Warning** (Sharpness: {b_score:.1f} < 80.0 required). Edge blur may degrade small table text OCR.")
+                else:
+                    st.caption(f"🔍 Image Edge Sharpness: **{b_score:.1f}** (Passed quality threshold 80.0)")
 
-        if ingredients_file is not None:
-            ing_preview = Image.open(ingredients_file)
-            if hasattr(ingredients_file, "seek"):
-                ingredients_file.seek(0)
-            st.image(ing_preview, caption="Uploaded Ingredients Panel", use_container_width=True)
+        # Advanced options expander
+        with st.expander("⚙️ Advanced Package Options (Net Weight, Dual-Image Mode, Barcode Override)", expanded=False):
+            package_weight = st.number_input(
+                "Package Net Weight (g, optional):",
+                min_value=0.0,
+                value=float(active_preset["package_weight_g"]) if active_preset.get("package_weight_g") else 0.0,
+                step=10.0,
+                help="Computes package totals (e.g. 120g package scaling)",
+            )
+            ingredients_file = st.file_uploader(
+                "Separate Ingredients Image (Optional - Dual Panel Mode):",
+                type=["png", "jpg", "jpeg", "webp"],
+                key="dual_ingredients_uploader",
+            )
+            user_barcode_override = st.text_input(
+                "Manual Barcode Override (Optional):",
+                value=manual_barcode,
+                help="Leave empty to let the scanner automatically detect barcode from the image.",
+            )
 
         # Main Execute Button
         st.markdown("---")
-        run_scan = st.button("🚀 Run Full Packaging Scanner", type="primary", use_container_width=True)
+        run_scan = st.button("🚀 Scan & Trace Food Package", type="primary", use_container_width=True)
 
     with col_output:
         st.subheader("2. Real Engine Results & Diagnostics")
 
-        # Display Barcode Scan result if triggered
-        if "barcode_scan_result" in st.session_state:
-            bc_res = st.session_state["barcode_scan_result"]
-            st.markdown("### 🏷️ Step 1 & 2: Barcode Lookup Result")
-            val = bc_res.get("barcode_validation", {})
-            audit = bc_res.get("completeness_audit", {})
-            action = bc_res.get("action_required", "unknown")
-
-            b_col1, b_col2, b_col3 = st.columns(3)
-            b_col1.metric("Barcode Valid", "Yes" if val.get("is_valid") else "No", delta=val.get("format"))
-            b_col2.metric("Completeness Score", f"{audit.get('completeness_score', 0):.0%}")
-            b_col3.metric("Action Decision", action.upper())
-
-            if val.get("is_valid"):
-                pm = bc_res.get("product_match", {})
-                if pm.get("status") == "exact_barcode_match":
-                    st.success(f"**Found in Database:** {pm.get('product_name')} by {pm.get('brand', 'Unknown')} ({pm.get('source')})")
-                else:
-                    st.warning(f"**Unknown Barcode in DB:** {bc_res.get('prompt_message')}")
-            else:
-                st.error(f"**Invalid Barcode:** {val.get('error_message')}")
-
-            with st.expander("View Completeness Audit Details"):
-                st.write("**Present Fields:**", audit.get("present_fields", []))
-                st.write("**Missing Fields:**", audit.get("missing_fields", []))
-                st.write("**Reasons for Recommendation:**", audit.get("recommendation_reasons", []))
-
-            st.markdown("---")
-
-        # Execute Full Pipeline
+        # Execute Unified Pipeline
         if run_scan:
-            target_nut_img = nutrition_file
-            if target_nut_img is None and default_nut_img and Path(default_nut_img).exists():
-                target_nut_img = default_nut_img
-            elif hasattr(target_nut_img, "seek"):
-                target_nut_img.seek(0)
-                target_nut_img = target_nut_img.read()
-            elif hasattr(target_nut_img, "read"):
-                target_nut_img = target_nut_img.read()
+            target_image = active_image
+            target_barcode = user_barcode_override.strip() if user_barcode_override.strip() else None
+            net_weight = package_weight if package_weight > 0 else None
 
-            target_ing_img = ingredients_file
-            if target_ing_img is not None and hasattr(target_ing_img, "seek"):
-                target_ing_img.seek(0)
-                target_ing_img = target_ing_img.read()
-            elif target_ing_img is not None and hasattr(target_ing_img, "read"):
-                target_ing_img = target_ing_img.read()
+            # Prepare bytes for target image
+            img_bytes = None
+            if target_image is not None:
+                if isinstance(target_image, (str, Path)):
+                    img_bytes = str(target_image)
+                elif hasattr(target_image, "seek"):
+                    target_image.seek(0)
+                    img_bytes = target_image.read()
+                elif hasattr(target_image, "read"):
+                    img_bytes = target_image.read()
+                elif isinstance(target_image, Image.Image):
+                    buf = io.BytesIO()
+                    target_image.save(buf, format="PNG")
+                    img_bytes = buf.getvalue()
 
-            if target_nut_img is None and not user_barcode.strip():
-                st.error("❌ Please provide either a Nutrition Label Image or a Barcode to run the scanner.")
+            ing_bytes = None
+            if ingredients_file is not None:
+                if hasattr(ingredients_file, "seek"):
+                    ingredients_file.seek(0)
+                    ing_bytes = ingredients_file.read()
+                elif hasattr(ingredients_file, "read"):
+                    ing_bytes = ingredients_file.read()
+
+            if img_bytes is None and not target_barcode:
+                st.error("❌ Please provide a Package Photo (upload or camera snapshot) or enter a Barcode.")
             else:
-                with st.spinner("Processing packaging through OCR, table parser, and fusion engine..."):
+                with st.spinner("🔍 Scanning package: detecting barcode, running PaddleOCR, parsing nutrition & ingredients..."):
                     t_start = time.time()
                     try:
-                        clean_barcode = user_barcode.strip() if user_barcode.strip() else None
-                        net_weight = package_weight if package_weight > 0 else None
+                        # Step A: Barcode Detection directly from image pixels if not manually overridden
+                        detected_bc = target_barcode
+                        barcode_notice = None
+                        if img_bytes is not None and not target_barcode:
+                            detected_bc, bc_err = decode_barcode_from_image(img_bytes)
+                            if detected_bc:
+                                val_chk = BarcodeValidator.validate(detected_bc)
+                                if val_chk.is_valid:
+                                    detected_bc = val_chk.normalized_code
+                            else:
+                                barcode_notice = bc_err
 
-                        if target_nut_img is not None:
-                            # Package label OCR workflow (single or dual image)
-                            if target_ing_img is not None:
+                        # Step B: Unified Pipeline Execution
+                        if img_bytes is not None:
+                            if ing_bytes is not None:
                                 scan_payload = engine.scan_package_label(
-                                    nutrition_image=target_nut_img,
-                                    ingredients_image=target_ing_img,
-                                    barcode=clean_barcode,
+                                    nutrition_image=img_bytes,
+                                    ingredients_image=ing_bytes,
+                                    barcode=detected_bc,
                                     package_weight_g=net_weight,
                                 )
                             else:
                                 scan_payload = engine.scan_package_label(
-                                    label_image=target_nut_img,
-                                    barcode=clean_barcode,
+                                    label_image=img_bytes,
+                                    barcode=detected_bc,
                                     package_weight_g=net_weight,
                                 )
                         else:
-                            # Barcode only workflow
                             scan_payload = engine.scan_barcode(
-                                barcode=clean_barcode,
+                                barcode=detected_bc,
                                 allow_online=allow_online_lookup,
                             )
+
+                        # Step C: OCR line fallback if barcode was undetected on pixels
+                        final_barcode = scan_payload.get("product_match", {}).get("barcode") or detected_bc
+                        if not final_barcode and scan_payload.get("ocr_result", {}).get("lines"):
+                            ocr_lines = [l["text"] for l in scan_payload["ocr_result"]["lines"]]
+                            recovered_code = BarcodeValidator.extract_barcode_from_ocr_lines(ocr_lines)
+                            if recovered_code:
+                                final_barcode = recovered_code
+                                scan_payload["product_match"]["barcode"] = recovered_code
 
                         t_total = time.time() - t_start
                         st.session_state["last_scan_payload"] = scan_payload
                         st.session_state["last_scan_time"] = t_total
+                        st.session_state["last_scanned_barcode"] = final_barcode
+                        st.session_state["last_barcode_notice"] = barcode_notice
                         st.session_state["last_tested_preset"] = selected_preset_name
 
                     except Exception as exc:
-                        st.error(f"❌ Engine Pipeline Error: {type(exc).__name__}: {exc}")
+                        st.error(f"❌ Scanner Pipeline Error: {type(exc).__name__}: {exc}")
                         import traceback
                         with st.expander("View Exception Traceback"):
                             st.code(traceback.format_exc())
@@ -895,6 +945,21 @@ with tab_scan:
         if "last_scan_payload" in st.session_state:
             payload = st.session_state["last_scan_payload"]
             exec_time = st.session_state.get("last_scan_time", 0.0)
+            pm = payload.get("product_match", {})
+            scanned_bc = payload.get("product_match", {}).get("barcode") or st.session_state.get("last_scanned_barcode")
+
+            # 0. Barcode Status Banner (Graceful & Non-blocking)
+            if scanned_bc:
+                val = BarcodeValidator.validate(scanned_bc)
+                if val.is_valid:
+                    if pm.get("status") == "exact_barcode_match":
+                        st.success(f"🎯 **Barcode Verified:** `{val.normalized_code}` ({val.format}) — Found in Product Database: **{pm.get('product_name')}** ({pm.get('brand', 'Unknown Brand')})")
+                    else:
+                        st.info(f"🏷️ **Barcode Detected:** `{val.normalized_code}` ({val.format}) — Packaging details traced directly via OCR.")
+                else:
+                    st.info(f"ℹ️ **Barcode Notice:** `{scanned_bc}` ({val.error_message or 'Unrecognized format'}). Tracing all product information directly from package label via OCR.")
+            else:
+                st.info("ℹ️ **Barcode unreadable or absent on packaging.** Tracing all nutrition facts, ingredients, allergens, and dietary compliance directly from package label via OCR.")
 
             # 1. Diagnostic Summary Banner
             d1, d2, d3, d4 = st.columns(4)

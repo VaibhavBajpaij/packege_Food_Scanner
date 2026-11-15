@@ -107,6 +107,21 @@ class BarcodeValidator:
 
         length = len(clean)
 
+        # 0. 7-digit variant (EAN-8 with dropped leading zero)
+        if length == 7:
+            candidate_8 = "0" + clean
+            expected_chk = calculate_ean_check_digit(candidate_8[:-1])
+            actual_chk = int(candidate_8[-1])
+            if actual_chk == expected_chk:
+                return BarcodeValidationResult(
+                    raw_code=str(raw_barcode),
+                    is_valid=True,
+                    format="EAN-8",
+                    normalized_code=candidate_8,
+                    lookup_candidates=[candidate_8, clean],
+                    status="valid",
+                )
+
         # 1. EAN-8 (8 digits)
         if length == 8:
             expected_chk = calculate_ean_check_digit(clean[:-1])
@@ -123,11 +138,13 @@ class BarcodeValidator:
                         lookup_candidates=[clean, upc_a_expanded, "0" + upc_a_expanded],
                         status="valid",
                     )
+                corrected = clean[:-1] + str(expected_chk)
                 return BarcodeValidationResult(
                     raw_code=str(raw_barcode),
                     is_valid=False,
                     format="EAN-8",
                     normalized_code=clean,
+                    lookup_candidates=[clean, corrected],
                     status="invalid_checksum",
                     error_message=f"Invalid EAN-8 checksum: expected {expected_chk}, got {actual_chk}",
                 )
@@ -153,16 +170,44 @@ class BarcodeValidator:
                     status="valid",
                 )
 
+        # 2b. 11-digit variant (UPC-A with dropped leading zero)
+        if length == 11:
+            candidate_12 = "0" + clean
+            expected_chk = calculate_ean_check_digit(candidate_12[:-1])
+            actual_chk = int(candidate_12[-1])
+            if actual_chk == expected_chk:
+                ean13_equiv = "0" + candidate_12
+                return BarcodeValidationResult(
+                    raw_code=str(raw_barcode),
+                    is_valid=True,
+                    format="UPC-A",
+                    normalized_code=candidate_12,
+                    lookup_candidates=[candidate_12, ean13_equiv, clean],
+                    status="valid",
+                )
+            corrected_12 = candidate_12[:-1] + str(expected_chk)
+            return BarcodeValidationResult(
+                raw_code=str(raw_barcode),
+                is_valid=False,
+                format="UPC-A",
+                normalized_code=clean,
+                lookup_candidates=[clean, candidate_12, corrected_12],
+                status="malformed_length",
+                error_message="Barcode has 11 digits (expected 12 for UPC-A).",
+            )
+
         # 3. UPC-A (12 digits)
         if length == 12:
             expected_chk = calculate_ean_check_digit(clean[:-1])
             actual_chk = int(clean[-1])
             if actual_chk != expected_chk:
+                corrected = clean[:-1] + str(expected_chk)
                 return BarcodeValidationResult(
                     raw_code=str(raw_barcode),
                     is_valid=False,
                     format="UPC-A",
                     normalized_code=clean,
+                    lookup_candidates=[clean, corrected, "0" + clean, "0" + corrected],
                     status="invalid_checksum",
                     error_message=f"Invalid UPC-A checksum: expected {expected_chk}, got {actual_chk}",
                 )
@@ -182,11 +227,16 @@ class BarcodeValidator:
             expected_chk = calculate_ean_check_digit(clean[:-1])
             actual_chk = int(clean[-1])
             if actual_chk != expected_chk:
+                corrected = clean[:-1] + str(expected_chk)
+                candidates = [clean, corrected]
+                if clean.startswith("0"):
+                    candidates.append(clean[1:])
                 return BarcodeValidationResult(
                     raw_code=str(raw_barcode),
                     is_valid=False,
                     format="EAN-13",
                     normalized_code=clean,
+                    lookup_candidates=candidates,
                     status="invalid_checksum",
                     error_message=f"Invalid EAN-13 checksum: expected {expected_chk}, got {actual_chk}",
                 )
@@ -208,11 +258,13 @@ class BarcodeValidator:
             expected_chk = calculate_ean_check_digit(clean[:-1])
             actual_chk = int(clean[-1])
             if actual_chk != expected_chk:
+                corrected = clean[:-1] + str(expected_chk)
                 return BarcodeValidationResult(
                     raw_code=str(raw_barcode),
                     is_valid=False,
                     format="GTIN-14",
                     normalized_code=clean,
+                    lookup_candidates=[clean, corrected],
                     status="invalid_checksum",
                     error_message=f"Invalid GTIN-14 checksum: expected {expected_chk}, got {actual_chk}",
                 )
@@ -238,3 +290,28 @@ class BarcodeValidator:
             status="malformed_length",
             error_message=f"Barcode length of {length} digits is not a standard format (must be 8, 12, 13, or 14 digits).",
         )
+
+    @classmethod
+    def extract_barcode_from_ocr_lines(cls, ocr_lines: List[str]) -> Optional[str]:
+        """Scans OCR lines for printed barcode digit sequences (e.g. beneath or beside barcode bars)."""
+        if not ocr_lines:
+            return None
+
+        # Regex for continuous or spaced digit sequences of 7 to 14 digits
+        pattern = re.compile(r"(?:\b|\D)(\d(?:[\s\-_]*\d){6,13})(?:\b|\D)")
+        candidates: List[str] = []
+
+        for line in ocr_lines:
+            matches = pattern.findall(line)
+            for m in matches:
+                clean_digits = re.sub(r"[\s\-_]+", "", m)
+                if len(clean_digits) in (7, 8, 11, 12, 13, 14):
+                    candidates.append(clean_digits)
+
+        # First pass: check for strictly valid checksums
+        for cand in candidates:
+            res = cls.validate(cand)
+            if res.is_valid:
+                return res.normalized_code
+
+        return None

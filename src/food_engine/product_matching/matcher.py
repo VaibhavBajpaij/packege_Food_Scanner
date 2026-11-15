@@ -46,22 +46,7 @@ class ProductMatcher:
         # Priority 1: Exact barcode matching
         if barcode:
             val_res = BarcodeValidator.validate(barcode)
-            if not val_res.is_valid and val_res.status in ("invalid_checksum", "malformed_length", "non_numeric"):
-                return {
-                    "status": "unmatched",
-                    "match_type": "invalid_barcode",
-                    "product_name": None,
-                    "barcode": str(barcode),
-                    "brand": brand,
-                    "source": "none",
-                    "source_id": None,
-                    "source_dataset_version": None,
-                    "confidence": 0.0,
-                    "matched_data": None,
-                    "validation_error": val_res.error_message,
-                }
-
-            candidates = val_res.lookup_candidates if val_res.is_valid else [str(barcode).strip()]
+            candidates = val_res.lookup_candidates if val_res.lookup_candidates else [str(barcode).strip()]
             exact_match = None
             for cand in candidates:
                 exact_match = self._lookup_barcode(cand)
@@ -73,7 +58,7 @@ class ProductMatcher:
                 exact_match = self._lookup_barcode(str(barcode).strip().lstrip("0"))
 
             # Optional online lookup if permitted and not found locally
-            if not exact_match and allow_online and val_res.is_valid:
+            if not exact_match and allow_online:
                 for cand in candidates:
                     exact_match = self._lookup_barcode_online(cand)
                     if exact_match:
@@ -91,6 +76,22 @@ class ProductMatcher:
                     "source_dataset_version": exact_match.get("dataset_version", "2026-subset"),
                     "confidence": 1.0,
                     "matched_data": exact_match,
+                }
+
+            # If barcode was invalid and no other identification hints exist, return invalid_barcode status
+            if not val_res.is_valid and not (product_name or brand or ocr_lines):
+                return {
+                    "status": "unmatched",
+                    "match_type": "invalid_barcode",
+                    "product_name": None,
+                    "barcode": str(barcode),
+                    "brand": brand,
+                    "source": "none",
+                    "source_id": None,
+                    "source_dataset_version": None,
+                    "confidence": 0.0,
+                    "matched_data": None,
+                    "validation_error": val_res.error_message,
                 }
 
         # Priority 2: Verified Brand + Product Name matching

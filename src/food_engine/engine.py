@@ -260,9 +260,13 @@ class FoodIntelligenceEngine:
             "lines": ocr_nut.get("lines", []) + ocr_ing.get("lines", []),
         }
 
-        # Stage 3: Product Matching
+        # Stage 3: Product Matching (with automatic OCR-line barcode recovery)
+        resolved_barcode = barcode
+        if not resolved_barcode and combined_lines:
+            resolved_barcode = BarcodeValidator.extract_barcode_from_ocr_lines(combined_lines)
+
         matched_product = self.product_matcher.match(
-            barcode=barcode,
+            barcode=resolved_barcode,
             product_name=product_name_hint,
             brand=brand_hint,
             ocr_lines=combined_lines,
@@ -373,9 +377,13 @@ class FoodIntelligenceEngine:
                     ocr_text_lines = [item["text"] for item in assembled_lines]
                     extracted_nutrition = alt_nutrition
 
-        # Stage 3: Product Matching
+        # Stage 3: Product Matching (with automatic OCR-line barcode recovery)
+        resolved_barcode = barcode
+        if not resolved_barcode and ocr_text_lines:
+            resolved_barcode = BarcodeValidator.extract_barcode_from_ocr_lines(ocr_text_lines)
+
         matched_product = self.product_matcher.match(
-            barcode=barcode,
+            barcode=resolved_barcode,
             product_name=product_name_hint,
             brand=brand_hint,
             ocr_lines=ocr_text_lines,
