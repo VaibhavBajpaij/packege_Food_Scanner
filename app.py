@@ -5,6 +5,7 @@ PaddleOCR nutrition-label extraction, ingredient and allergen parsing,
 nutrient data enrichment, and ground-truth accuracy evaluation.
 """
 
+import io
 import json
 import os
 import re
@@ -140,34 +141,87 @@ def get_engine():
 
 
 def decode_barcode_from_image(image_input: Any) -> Tuple[Optional[str], Optional[str]]:
-    """Attempts to decode 1D barcode directly from image pixels using OpenCV."""
+    """Decodes 1D barcode directly from image pixels using ZXing-C++ with multi-rotation, CLAHE, and OpenCV fallback."""
     try:
+        pil_img = None
         if isinstance(image_input, (str, Path)):
-            cv_img = cv2.imread(str(image_input))
+            pil_img = Image.open(str(image_input))
         elif isinstance(image_input, Image.Image):
-            cv_img = cv2.cvtColor(np.array(image_input), cv2.COLOR_RGB2BGR)
+            pil_img = image_input
         elif hasattr(image_input, "read"):
-            file_bytes = np.frombuffer(image_input.read(), np.uint8)
-            cv_img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+            file_bytes = image_input.read()
+            pil_img = Image.open(io.BytesIO(file_bytes))
             image_input.seek(0)
         elif isinstance(image_input, np.ndarray):
-            cv_img = image_input
+            pil_img = Image.fromarray(cv2.cvtColor(image_input, cv2.COLOR_BGR2RGB))
         else:
             return None, "Unsupported image object for barcode detection."
 
-        if cv_img is None:
+        if pil_img is None:
             return None, "Failed to load image pixels for barcode detection."
 
-        detector = cv2.barcode.BarcodeDetector()
-        res = detector.detectAndDecode(cv_img)
-        # OpenCV 4.10 returns (decoded_info, decoded_type, points)
-        if len(res) == 3:
-            decoded_info, decoded_type, _ = res
-            if decoded_info:
-                code_str = str(decoded_info).strip()
-                if code_str:
-                    return code_str, None
-        return None, "No barcode detected by 1D scanner."
+        if pil_img.mode != "RGB":
+            pil_img = pil_img.convert("RGB")
+
+        # Strategy 1: ZXing-C++ on native image
+        try:
+            import zxingcpp
+            results = zxingcpp.read_barcodes(pil_img)
+            if results:
+                for r in results:
+                    txt = str(r.text).strip()
+                    if txt:
+                        return txt, None
+        except Exception:
+            pass
+
+        # Strategy 2: Multi-angle rotation (90, 180, 270) & resizing if high-res
+        try:
+            import zxingcpp
+            w, h = pil_img.size
+            if max(w, h) > 1800:
+                scale = 1800.0 / max(w, h)
+                scaled_img = pil_img.resize((int(w * scale), int(h * scale)), Image.Resampling.BILINEAR)
+            else:
+                scaled_img = pil_img
+
+            for angle in [90, 180, 270]:
+                rot = scaled_img.rotate(angle, expand=True)
+                results = zxingcpp.read_barcodes(rot)
+                if results:
+                    for r in results:
+                        txt = str(r.text).strip()
+                        if txt:
+                            return txt, None
+
+            # Strategy 3: Contrast enhancement with CLAHE on grayscale
+            cv_gray = cv2.cvtColor(np.array(scaled_img), cv2.COLOR_RGB2GRAY)
+            clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+            enhanced = clahe.apply(cv_gray)
+            results = zxingcpp.read_barcodes(enhanced)
+            if results:
+                for r in results:
+                    txt = str(r.text).strip()
+                    if txt:
+                        return txt, None
+        except Exception:
+            pass
+
+        # Strategy 4: Fallback to OpenCV BarcodeDetector
+        try:
+            cv_img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
+            detector = cv2.barcode.BarcodeDetector()
+            res = detector.detectAndDecode(cv_img)
+            if len(res) == 3:
+                decoded_info, decoded_type, _ = res
+                if decoded_info:
+                    code_str = str(decoded_info).strip()
+                    if code_str:
+                        return code_str, None
+        except Exception:
+            pass
+
+        return None, "No barcode detected. Ensure barcode is in focus, well-lit, and visible in frame."
     except Exception as exc:
         return None, f"Barcode scanner error: {exc}"
 
@@ -390,47 +444,74 @@ with tab_scan:
         default_ing_img = active_preset["ingredients_img"]
         default_barcode = active_preset["barcode"]
 
-        # Option: Barcode input (Text or Image)
+        # Option: Barcode input (Camera, Upload, or Text)
         st.markdown("**Product Barcode (Step 1)**")
-        barcode_input_col, barcode_upload_col = st.columns([1.2, 1])
+        user_barcode = default_barcode or ""
 
-        with barcode_input_col:
+        bc_mode = st.radio(
+            "Select Barcode Input Method:",
+            ["📷 Live Camera Viewfinder", "📁 Upload Barcode Photo", "⌨️ Enter Digits Manually"],
+            index=0,
+            horizontal=True,
+            help="Scan real-time using your device camera, upload an image, or type digits directly.",
+        )
+
+        if bc_mode == "📷 Live Camera Viewfinder":
+            st.caption("Point your camera at the barcode on the food package and click Capture:")
+            cam_barcode_file = st.camera_input("Barcode Camera Viewfinder", key="camera_barcode_input")
+            if cam_barcode_file is not None:
+                with st.spinner("Decoding barcode from camera stream..."):
+                    detected_bc, bc_err = decode_barcode_from_image(cam_barcode_file)
+                    if detected_bc:
+                        st.success(f"🎯 **Barcode Detected:** `{detected_bc}`")
+                        user_barcode = detected_bc
+                        # Immediate automatic execution
+                        with st.spinner("Searching database and auditing nutrition completeness..."):
+                            t0 = time.time()
+                            bc_res = engine.scan_barcode(user_barcode, allow_online=allow_online_lookup)
+                            st.session_state["barcode_scan_result"] = bc_res
+                            st.session_state["barcode_scan_time"] = time.time() - t0
+                    else:
+                        st.warning(f"⚠️ {bc_err or 'No barcode detected in frame. Hold the camera closer with good lighting and snap again.'}")
+
+        elif bc_mode == "📁 Upload Barcode Photo":
+            barcode_img_file = st.file_uploader(
+                "Upload photo containing the barcode:",
+                type=["png", "jpg", "jpeg", "webp"],
+                key="barcode_uploader",
+                help="Automatically scans all angles with multi-rotation ZXing engine.",
+            )
+            if barcode_img_file is not None:
+                with st.spinner("Scanning barcode from image pixels..."):
+                    detected_bc, bc_err = decode_barcode_from_image(barcode_img_file)
+                    if detected_bc:
+                        st.success(f"🎯 **Barcode Detected:** `{detected_bc}`")
+                        user_barcode = detected_bc
+                        # Immediate automatic execution
+                        with st.spinner("Searching database and auditing nutrition completeness..."):
+                            t0 = time.time()
+                            bc_res = engine.scan_barcode(user_barcode, allow_online=allow_online_lookup)
+                            st.session_state["barcode_scan_result"] = bc_res
+                            st.session_state["barcode_scan_time"] = time.time() - t0
+                    else:
+                        st.warning(f"⚠️ {bc_err or 'No barcode detected. Ensure barcode is in focus and not cropped out.'}")
+
+        else:  # Manual digits
             user_barcode = st.text_input(
                 "Enter barcode digits (EAN-13, UPC-A, etc.):",
                 value=default_barcode,
                 placeholder="e.g. 8901030000001",
                 help="Preserves significant leading zeros and verifies checksum.",
             )
-
-        with barcode_upload_col:
-            barcode_img_file = st.file_uploader(
-                "Or upload barcode image:",
-                type=["png", "jpg", "jpeg", "webp"],
-                key="barcode_uploader",
-                help="Automatically decodes 1D barcode with OpenCV.",
-            )
-
-        # Handle barcode image decoding if uploaded
-        if barcode_img_file is not None:
-            detected_bc, bc_err = decode_barcode_from_image(barcode_img_file)
-            if detected_bc:
-                st.success(f"🔍 Barcode detected from image: **{detected_bc}**")
-                user_barcode = detected_bc
-            elif bc_err:
-                st.warning(f"Barcode image note: {bc_err}. You can type it manually above.")
-
-        # Quick Barcode-Only Check Button
-        if st.button("🔍 Step 1: Scan Barcode Only", help="Run fast database lookup without OCR"):
-            if not user_barcode.strip():
-                st.error("Please enter or upload a barcode to run Step 1.")
-            else:
-                with st.spinner("Checking barcode and completeness policy..."):
-                    t0 = time.time()
-                    bc_res = engine.scan_barcode(user_barcode, allow_online=allow_online_lookup)
-                    t_elapsed = time.time() - t0
-
-                st.session_state["barcode_scan_result"] = bc_res
-                st.session_state["barcode_scan_time"] = t_elapsed
+            if st.button("🔍 Step 1: Scan Barcode Only", help="Run fast database lookup without OCR"):
+                if not user_barcode.strip():
+                    st.error("Please enter a barcode to run Step 1.")
+                else:
+                    with st.spinner("Checking barcode and completeness policy..."):
+                        t0 = time.time()
+                        bc_res = engine.scan_barcode(user_barcode, allow_online=allow_online_lookup)
+                        st.session_state["barcode_scan_result"] = bc_res
+                        st.session_state["barcode_scan_time"] = time.time() - t0
 
         st.markdown("---")
         st.markdown("**Package Label Images (Step 3)**")
