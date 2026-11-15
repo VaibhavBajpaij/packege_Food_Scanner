@@ -7,10 +7,12 @@ nutrient data enrichment, and ground-truth accuracy evaluation.
 
 import io
 import json
+import logging
 import os
 import queue
 import re
 import time
+import traceback
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -26,6 +28,8 @@ from streamlit_webrtc import (
     WebRtcMode,
     webrtc_streamer,
 )
+
+logger = logging.getLogger("food_intelligence_scanner")
 
 # Configure page layout
 st.set_page_config(
@@ -153,6 +157,103 @@ RTC_CONFIGURATION = RTCConfiguration(
     {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
 )
 
+MEDIA_STREAM_CONSTRAINTS = {
+    "video": {
+        "facingMode": {"ideal": "environment"},
+        "width": {"ideal": 1920},
+        "height": {"ideal": 1080},
+        "advanced": [{"focusMode": "continuous"}],
+    },
+    "audio": False,
+}
+
+
+def decode_barcode_from_image(image_input: Any) -> Tuple[Optional[str], Optional[str]]:
+    """Decodes 1D barcode directly from image pixels using ZXing-C++ with multi-rotation, CLAHE, and OpenCV fallback."""
+    try:
+        pil_img = None
+        if isinstance(image_input, (str, Path)):
+            pil_img = Image.open(str(image_input))
+        elif isinstance(image_input, Image.Image):
+            pil_img = image_input
+        elif hasattr(image_input, "read"):
+            file_bytes = image_input.read()
+            pil_img = Image.open(io.BytesIO(file_bytes))
+            image_input.seek(0)
+        elif isinstance(image_input, np.ndarray):
+            pil_img = Image.fromarray(cv2.cvtColor(image_input, cv2.COLOR_BGR2RGB))
+        else:
+            return None, "Unsupported image object for barcode detection."
+
+        if pil_img is None:
+            return None, "Failed to load image pixels for barcode detection."
+
+        if pil_img.mode != "RGB":
+            pil_img = pil_img.convert("RGB")
+
+        # Strategy 1: ZXing-C++ on native image
+        try:
+            import zxingcpp
+            results = zxingcpp.read_barcodes(pil_img)
+            if results:
+                for r in results:
+                    txt = str(r.text).strip()
+                    if txt:
+                        return txt, None
+        except Exception as exc:
+            logger.debug(f"[Barcode Strategy 1 Exception]: {exc}")
+
+        # Strategy 2: Multi-angle rotation (90, 180, 270) & resizing if high-res
+        try:
+            import zxingcpp
+            w, h = pil_img.size
+            if max(w, h) > 1800:
+                scale = 1800.0 / max(w, h)
+                scaled_img = pil_img.resize((int(w * scale), int(h * scale)), Image.Resampling.BILINEAR)
+            else:
+                scaled_img = pil_img
+
+            for angle in [90, 180, 270]:
+                rot = scaled_img.rotate(angle, expand=True)
+                results = zxingcpp.read_barcodes(rot)
+                if results:
+                    for r in results:
+                        txt = str(r.text).strip()
+                        if txt:
+                            return txt, None
+
+            # Strategy 3: Contrast enhancement with CLAHE on grayscale
+            cv_gray = cv2.cvtColor(np.array(scaled_img), cv2.COLOR_RGB2GRAY)
+            clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+            enhanced = clahe.apply(cv_gray)
+            results = zxingcpp.read_barcodes(enhanced)
+            if results:
+                for r in results:
+                    txt = str(r.text).strip()
+                    if txt:
+                        return txt, None
+        except Exception as exc:
+            logger.debug(f"[Barcode Strategy 2/3 Exception]: {exc}")
+
+        # Strategy 4: Fallback to OpenCV BarcodeDetector
+        try:
+            cv_img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
+            detector = cv2.barcode.BarcodeDetector()
+            res = detector.detectAndDecode(cv_img)
+            if len(res) == 3:
+                decoded_info, decoded_type, _ = res
+                if decoded_info:
+                    code_str = str(decoded_info).strip()
+                    if code_str:
+                        return code_str, None
+        except Exception as exc:
+            logger.debug(f"[Barcode Strategy 4 Exception]: {exc}")
+
+        return None, "No barcode detected. Ensure barcode is in focus, well-lit, and visible in frame."
+    except Exception as exc:
+        logger.error(f"[decode_barcode_from_image Error]: {exc}\n{traceback.format_exc()}")
+        return None, f"Barcode scanner error: {exc}"
+
 
 class BarcodeProcessor(VideoProcessorBase):
     """Real-time WebRTC video processor for continuous barcode detection and smart OCR auto-capture."""
@@ -168,27 +269,29 @@ class BarcodeProcessor(VideoProcessorBase):
         self.latest_sharpness: float = 0.0
 
     def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
-        img_bgr = frame.to_ndarray(format="bgr24")
+        try:
+            img_bgr = frame.to_ndarray(format="bgr24")
+        except Exception as exc:
+            logger.error(f"[BarcodeProcessor] Error converting frame to ndarray: {exc}\n{traceback.format_exc()}")
+            return frame
+
         self.frame_count += 1
         h, w = img_bgr.shape[:2]
 
         if not self.ocr_mode:
-            # --- PHASE 1: CONTINUOUS BARCODE DETECTION ---
+            # --- PHASE 1: CONTINUOUS BARCODE DETECTION WITH FULL PARITY ---
             if not self.barcode_detected and (self.frame_count % 3 == 0):
-                # Analyze every 3rd frame to prevent UI freezing and ensure smooth 30fps
+                # Analyze every 3rd frame using robust multi-angle, CLAHE, and OpenCV fallback pipeline
                 try:
-                    import zxingcpp
-                    img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
-                    results = zxingcpp.read_barcodes(img_rgb)
-                    if results:
-                        for r in results:
-                            code_str = str(r.text).strip()
-                            if code_str:
-                                self.barcode_detected = True
-                                self.barcode_queue.put(code_str)
-                                break
-                except Exception:
-                    pass
+                    detected_code, decode_err = decode_barcode_from_image(img_bgr)
+                    if detected_code:
+                        self.barcode_detected = True
+                        self.barcode_queue.put(detected_code)
+                        logger.info(f"[BarcodeProcessor] Barcode detected in real-time stream: {detected_code}")
+                    elif decode_err and "No barcode detected" not in decode_err:
+                        logger.warning(f"[BarcodeProcessor] Barcode decoding notice: {decode_err}")
+                except Exception as exc:
+                    logger.error(f"[BarcodeProcessor Worker Thread Error]: {exc}\n{traceback.format_exc()}")
 
             if self.barcode_detected:
                 cv2.putText(
@@ -219,33 +322,37 @@ class BarcodeProcessor(VideoProcessorBase):
         else:
             # --- PHASE 2: SMART OCR AUTO-CAPTURE ---
             if not self.ocr_captured:
-                gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
-                sharpness = float(cv2.Laplacian(gray, cv2.CV_64F).var())
-                self.latest_sharpness = sharpness
+                try:
+                    gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
+                    sharpness = float(cv2.Laplacian(gray, cv2.CV_64F).var())
+                    self.latest_sharpness = sharpness
 
-                if sharpness >= 100.0:
-                    self.steady_frames += 1
-                    color = (0, 255, 0)
-                    status_txt = f"STEADY ({self.steady_frames}/2) - Sharpness: {sharpness:.0f}"
-                else:
-                    self.steady_frames = 0
-                    color = (0, 165, 255)
-                    status_txt = f"HOLD STILL... (Sharpness: {sharpness:.0f} / 100)"
+                    if sharpness >= 100.0:
+                        self.steady_frames += 1
+                        color = (0, 255, 0)
+                        status_txt = f"STEADY ({self.steady_frames}/2) - Sharpness: {sharpness:.0f}"
+                    else:
+                        self.steady_frames = 0
+                        color = (0, 165, 255)
+                        status_txt = f"HOLD STILL... (Sharpness: {sharpness:.0f} / 100)"
 
-                cv2.putText(
-                    img_bgr,
-                    status_txt,
-                    (20, 45),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.75,
-                    color,
-                    2,
-                )
+                    cv2.putText(
+                        img_bgr,
+                        status_txt,
+                        (20, 45),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.75,
+                        color,
+                        2,
+                    )
 
-                if self.steady_frames >= 2:
-                    self.ocr_captured = True
-                    clean_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
-                    self.ocr_queue.put(clean_rgb)
+                    if self.steady_frames >= 2:
+                        self.ocr_captured = True
+                        clean_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+                        self.ocr_queue.put(clean_rgb)
+                        logger.info(f"[BarcodeProcessor] Auto-captured steady frame with sharpness {sharpness:.1f}")
+                except Exception as exc:
+                    logger.error(f"[BarcodeProcessor OCR Sharpness Error]: {exc}\n{traceback.format_exc()}")
             else:
                 cv2.putText(
                     img_bgr,
@@ -297,91 +404,6 @@ def show_diagnosis_dialog(payload_data: Dict[str, Any]):
     if traces:
         st.warning(f"ℹ️ **Precautionary Traces:** {', '.join(traces)}")
 
-
-def decode_barcode_from_image(image_input: Any) -> Tuple[Optional[str], Optional[str]]:
-    """Decodes 1D barcode directly from image pixels using ZXing-C++ with multi-rotation, CLAHE, and OpenCV fallback."""
-    try:
-        pil_img = None
-        if isinstance(image_input, (str, Path)):
-            pil_img = Image.open(str(image_input))
-        elif isinstance(image_input, Image.Image):
-            pil_img = image_input
-        elif hasattr(image_input, "read"):
-            file_bytes = image_input.read()
-            pil_img = Image.open(io.BytesIO(file_bytes))
-            image_input.seek(0)
-        elif isinstance(image_input, np.ndarray):
-            pil_img = Image.fromarray(cv2.cvtColor(image_input, cv2.COLOR_BGR2RGB))
-        else:
-            return None, "Unsupported image object for barcode detection."
-
-        if pil_img is None:
-            return None, "Failed to load image pixels for barcode detection."
-
-        if pil_img.mode != "RGB":
-            pil_img = pil_img.convert("RGB")
-
-        # Strategy 1: ZXing-C++ on native image
-        try:
-            import zxingcpp
-            results = zxingcpp.read_barcodes(pil_img)
-            if results:
-                for r in results:
-                    txt = str(r.text).strip()
-                    if txt:
-                        return txt, None
-        except Exception:
-            pass
-
-        # Strategy 2: Multi-angle rotation (90, 180, 270) & resizing if high-res
-        try:
-            import zxingcpp
-            w, h = pil_img.size
-            if max(w, h) > 1800:
-                scale = 1800.0 / max(w, h)
-                scaled_img = pil_img.resize((int(w * scale), int(h * scale)), Image.Resampling.BILINEAR)
-            else:
-                scaled_img = pil_img
-
-            for angle in [90, 180, 270]:
-                rot = scaled_img.rotate(angle, expand=True)
-                results = zxingcpp.read_barcodes(rot)
-                if results:
-                    for r in results:
-                        txt = str(r.text).strip()
-                        if txt:
-                            return txt, None
-
-            # Strategy 3: Contrast enhancement with CLAHE on grayscale
-            cv_gray = cv2.cvtColor(np.array(scaled_img), cv2.COLOR_RGB2GRAY)
-            clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
-            enhanced = clahe.apply(cv_gray)
-            results = zxingcpp.read_barcodes(enhanced)
-            if results:
-                for r in results:
-                    txt = str(r.text).strip()
-                    if txt:
-                        return txt, None
-        except Exception:
-            pass
-
-        # Strategy 4: Fallback to OpenCV BarcodeDetector
-        try:
-            cv_img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
-            detector = cv2.barcode.BarcodeDetector()
-            res = detector.detectAndDecode(cv_img)
-            if len(res) == 3:
-                decoded_info, decoded_type, _ = res
-                if decoded_info:
-                    code_str = str(decoded_info).strip()
-                    if code_str:
-                        return code_str, None
-        except Exception:
-            pass
-
-        return None, "No barcode detected. Ensure barcode is in focus, well-lit, and visible in frame."
-    except Exception as exc:
-        return None, f"Barcode scanner error: {exc}"
 
 
 def load_ground_truth_samples() -> Dict[str, Any]:
@@ -629,7 +651,7 @@ with tab_scan:
                 mode=WebRtcMode.SENDRECV,
                 rtc_configuration=RTC_CONFIGURATION,
                 video_processor_factory=BarcodeProcessor,
-                media_stream_constraints={"video": True, "audio": False},
+                media_stream_constraints=MEDIA_STREAM_CONSTRAINTS,
                 async_processing=True,
             )
 
@@ -641,6 +663,7 @@ with tab_scan:
                 try:
                     detected_bc = webrtc_ctx.video_processor.barcode_queue.get_nowait()
                     if detected_bc and detected_bc != st.session_state.get("last_auto_scanned_barcode"):
+                        logger.info(f"Retrieved detected barcode from queue: {detected_bc}")
                         st.session_state["last_auto_scanned_barcode"] = detected_bc
                         st.session_state["user_barcode"] = detected_bc
                         t0 = time.time()
@@ -656,6 +679,8 @@ with tab_scan:
                         st.rerun()
                 except queue.Empty:
                     pass
+                except Exception as exc:
+                    logger.error(f"Error handling barcode queue item: {exc}\n{traceback.format_exc()}")
 
                 # Phase 2: Check thread-safe queue for auto-captured steady OCR frame
                 try:
@@ -673,6 +698,8 @@ with tab_scan:
                             st.rerun()
                 except queue.Empty:
                     pass
+                except Exception as exc:
+                    logger.error(f"Error handling OCR queue item: {exc}\n{traceback.format_exc()}")
 
         elif bc_mode == "📁 Upload Barcode Photo":
             barcode_img_file = st.file_uploader(

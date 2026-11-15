@@ -104,3 +104,30 @@ def test_accuracy_comparison_logic():
     recall = tp / (tp + fn)
     assert round(precision, 2) == 0.60
     assert round(recall, 2) == 0.75
+
+
+def test_webrtc_constraints_and_processor():
+    """Verifies that BarcodeProcessor initializes properly and MEDIA_STREAM_CONSTRAINTS are well-formed."""
+    from app import BarcodeProcessor, MEDIA_STREAM_CONSTRAINTS
+    import av
+
+    # Check media constraints
+    assert "video" in MEDIA_STREAM_CONSTRAINTS
+    v = MEDIA_STREAM_CONSTRAINTS["video"]
+    assert v.get("facingMode") == {"ideal": "environment"}
+    assert v.get("width") == {"ideal": 1920}
+    assert v.get("height") == {"ideal": 1080}
+    assert v.get("advanced") == [{"focusMode": "continuous"}]
+
+    # Test BarcodeProcessor
+    proc = BarcodeProcessor()
+    assert not proc.barcode_detected
+    assert proc.barcode_queue.empty()
+
+    # Feed dummy frame
+    blank = np.zeros((480, 640, 3), dtype=np.uint8)
+    frame = av.VideoFrame.from_ndarray(blank, format="bgr24")
+    out_frame = proc.recv(frame)
+    assert out_frame is not None
+    assert proc.barcode_queue.empty()
+
