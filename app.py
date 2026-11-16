@@ -11,10 +11,17 @@ import logging
 import os
 import queue
 import re
+import sys
 import time
 import traceback
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+# Ensure 'src' directory is in Python path for cloud deployments (Streamlit Cloud, Render, Docker)
+_ROOT_DIR = Path(__file__).resolve().parent
+_SRC_DIR = _ROOT_DIR / "src"
+if _SRC_DIR.exists() and str(_SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(_SRC_DIR))
 
 import av
 import cv2
