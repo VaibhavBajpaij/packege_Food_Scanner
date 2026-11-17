@@ -124,7 +124,7 @@ class OCREngine:
 
         except Exception as exc:
             self._ocr_instance = None
-            self._init_error = f"{type(exc).__name__}: {str(exc)}"
+            self._init_error = f"⚠️ OCR Engine Error: Model weights or system dependencies unavailable ({type(exc).__name__}: {str(exc)})"
             self._engine_type = "ocr_unavailable"
             self._init_time_sec = round(time.time() - t0, 4)
             logger.error("Genuine PaddleOCR initialization failed: %s", self._init_error)
@@ -138,6 +138,32 @@ class OCREngine:
     def is_ready(self) -> bool:
         """Returns True if genuine OCR engine is loaded and ready for inference."""
         return self._ocr_instance is not None
+
+    def self_test(self) -> Dict[str, Any]:
+        """Verifies PaddleOCR can run an inference pass without throwing."""
+        if not self.is_ready:
+            return {
+                "status": "degraded",
+                "ready": False,
+                "message": f"{self._init_error or '⚠️ OCR Engine Error: Model weights or system dependencies unavailable (Not initialized)'}",
+            }
+        try:
+            # Create a 64x64 blank RGB image for inference self-test
+            test_img = np.ones((64, 64, 3), dtype=np.uint8) * 255
+            _ = self._predict_lines(test_img)
+            return {
+                "status": "active",
+                "ready": True,
+                "message": "PaddleOCR PP-OCRv4 inference active and verified.",
+            }
+        except Exception as exc:
+            err = f"⚠️ OCR Engine Error: Model weights or system dependencies unavailable ({type(exc).__name__}: {str(exc)})"
+            logger.error("PaddleOCR self-test failed: %s", err)
+            return {
+                "status": "degraded",
+                "ready": False,
+                "message": err,
+            }
 
     def _predict_lines(self, np_img: np.ndarray) -> List[Dict[str, Any]]:
         lines: List[Dict[str, Any]] = []
@@ -176,7 +202,7 @@ class OCREngine:
         if self._ocr_instance is None:
             return {
                 "status": "ocr_failed",
-                "error": f"OCR Engine not available: {self._init_error}",
+                "error": f"⚠️ OCR Engine Error: Model weights or system dependencies unavailable ({self._init_error or 'Engine not initialized'})",
                 "engine": self._engine_type,
                 "model_version": "PP-OCRv4-mobile",
                 "execution_time_sec": 0.0,
@@ -241,7 +267,7 @@ class OCREngine:
                     deskew_angle = round(angle, 2)
 
         except Exception as exc:
-            ocr_error = f"OCR inference error: {type(exc).__name__}: {str(exc)}"
+            ocr_error = f"⚠️ OCR Engine Error: Model weights or system dependencies unavailable ({type(exc).__name__}: {str(exc)})"
             logger.error("PaddleOCR inference exception: %s", ocr_error)
 
         elapsed = time.time() - start_time

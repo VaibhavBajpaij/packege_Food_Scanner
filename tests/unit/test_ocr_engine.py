@@ -160,4 +160,4 @@ def test_failure_reported_when_real_ocr_not_required(tmp_path: Path):
         assert res["status"] == "ocr_failed"
         assert res["line_count"] == 0
         assert res["lines"] == []
-        assert "OCR Engine not available" in res["error"]
+        assert "OCR Engine" in res["error"]

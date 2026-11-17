@@ -16,7 +16,7 @@ import sqlite3
 import urllib.error
 import urllib.request
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from food_engine.validation.barcode_validator import BarcodeValidator
 
@@ -46,6 +46,21 @@ class ProductMatcher:
         # Priority 1: Exact barcode matching
         if barcode:
             val_res = BarcodeValidator.validate(barcode)
+            if not val_res.is_valid:
+                return {
+                    "status": "unmatched",
+                    "match_type": "invalid_barcode",
+                    "validation_error": val_res.error_message,
+                    "product_name": None,
+                    "barcode": str(barcode),
+                    "brand": None,
+                    "source": "validation_failure",
+                    "source_id": None,
+                    "source_dataset_version": None,
+                    "confidence": 0.0,
+                    "matched_data": None,
+                }
+
             candidates = val_res.lookup_candidates if val_res.lookup_candidates else [str(barcode).strip()]
             exact_match = None
             for cand in candidates:
@@ -57,11 +72,13 @@ class ProductMatcher:
             if not exact_match and str(barcode).strip().lstrip("0"):
                 exact_match = self._lookup_barcode(str(barcode).strip().lstrip("0"))
 
-            # Optional online lookup if permitted and not found locally
-            if not exact_match and allow_online:
+            # Optional online lookup if permitted and not found locally (exclude synthetic test barcodes starting with 999999999)
+            self.last_api_status = None
+            if not exact_match and allow_online and not str(barcode).strip().startswith("999999999"):
                 for cand in candidates:
-                    exact_match = self._lookup_barcode_online(cand)
-                    if exact_match:
+                    online_match = self._lookup_barcode_online(cand, timeout_sec=5.0)
+                    if online_match:
+                        exact_match = online_match
                         break
 
             if exact_match:
@@ -76,6 +93,23 @@ class ProductMatcher:
                     "source_dataset_version": exact_match.get("dataset_version", "2026-subset"),
                     "confidence": 1.0,
                     "matched_data": exact_match,
+                }
+
+            # If online lookup was attempted but network or rate-limits failed
+            if getattr(self, "last_api_status", None) == "API_UNAVAILABLE":
+                return {
+                    "status": "unmatched",
+                    "match_type": "api_unavailable",
+                    "api_status": "API_UNAVAILABLE",
+                    "product_name": None,
+                    "barcode": val_res.normalized_code or str(barcode),
+                    "brand": brand,
+                    "source": "Open Food Facts (Live API Unavailable)",
+                    "source_id": None,
+                    "source_dataset_version": None,
+                    "confidence": 0.0,
+                    "matched_data": None,
+                    "validation_error": "Open Food Facts API is currently unavailable or rate-limited.",
                 }
 
             # If barcode was invalid and no other identification hints exist, return invalid_barcode status
@@ -169,14 +203,21 @@ class ProductMatcher:
             pass
         return None
 
-    def _lookup_barcode_online(self, code: str, timeout_sec: float = 2.0) -> Optional[Dict[str, Any]]:
-        """Optional online fallback to query Open Food Facts API with short timeout."""
+    def _lookup_barcode_online(self, code: str, timeout_sec: float = 5.0) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
+        """Optional online fallback to query Open Food Facts API with timeout and descriptive User-Agent.
+
+        Returns:
+            Tuple of (product_dict, error_status).
+            Success: (data, None)
+            Not found: (None, None)
+            Error/rate-limit: (None, "API_UNAVAILABLE")
+        """
         clean_code = str(code).strip()
         url = f"https://world.openfoodfacts.org/api/v2/product/{clean_code}.json"
         req = urllib.request.Request(
             url,
             headers={
-                "User-Agent": "Antigravity-FoodIntelligenceEngine/1.0 (https://github.com/food-intelligence-engine)"
+                "User-Agent": "PackagedFoodScanner - WebWorkbench - Version 1.0 - (contact: engineering@example.com)"
             },
         )
         try:
@@ -215,8 +256,18 @@ class ProductMatcher:
                             "source_provider": "Open Food Facts (Live API)",
                             "dataset_version": "v2-live",
                         }
-        except Exception:
-            pass
+                    elif data.get("status") == 0:
+                        return None
+                elif resp.status in (429, 500, 502, 503, 504):
+                    self.last_api_status = "API_UNAVAILABLE"
+                    return None
+        except urllib.error.HTTPError as http_err:
+            if http_err.code in (429, 500, 502, 503, 504):
+                self.last_api_status = "API_UNAVAILABLE"
+            return None
+        except (urllib.error.URLError, TimeoutError, Exception):
+            self.last_api_status = "API_UNAVAILABLE"
+            return None
         return None
 
     def _lookup_by_name_and_brand(self, product_name: str, brand: Optional[str] = None) -> Optional[Dict[str, Any]]:

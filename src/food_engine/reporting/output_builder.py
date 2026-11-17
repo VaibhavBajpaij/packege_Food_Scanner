@@ -38,6 +38,7 @@ class OutputBuilder:
         missing_fields: List[str],
         conflicting_fields: List[str],
         source_verified: bool = False,
+        compliance: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Assembles and validates payload."""
 
@@ -108,6 +109,7 @@ class OutputBuilder:
                 "manual_review_required": manual_review_required,
                 "review_reasons": review_reasons,
             },
+            "compliance": compliance or {},
         }
 
         # Strict JSON Schema validation

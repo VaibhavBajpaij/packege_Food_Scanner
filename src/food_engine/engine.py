@@ -54,7 +54,7 @@ class FoodIntelligenceEngine:
         else:
             self.repo_root = Path(repo_root)
 
-        self.ocr_engine = OCREngine(repo_root=self.repo_root, use_gpu=use_gpu)
+        self.ocr_engine = OCREngine(repo_root=self.repo_root, use_gpu=use_gpu, require_real_ocr=False)
         self.product_matcher = ProductMatcher(repo_root=self.repo_root)
         self.output_builder = OutputBuilder(repo_root=self.repo_root)
 
@@ -152,6 +152,9 @@ class FoodIntelligenceEngine:
 
         # Build normalized product_data for quick display
         product_data = None
+        nutrients_dict = {}
+        decl_allergens = []
+        parsed_ing_list = []
         if is_matched and matched_data:
             product_data = {
                 "product_name": matched_product.get("product_name"),
@@ -162,6 +165,25 @@ class FoodIntelligenceEngine:
                 "ingredients_text": matched_data.get("ingredients_text"),
                 "nutrients": matched_data.get("nutrients") or {},
             }
+            raw_nuts = matched_data.get("nutrients") or {}
+            for k, val in raw_nuts.items():
+                if val is not None:
+                    nutrients_dict[k] = {
+                        "value": float(val),
+                        "unit": "kcal" if "kcal" in k else ("mg" if "mg" in k else "g"),
+                        "status": "declared",
+                        "source": matched_product.get("source", "database"),
+                    }
+            if matched_data.get("allergens"):
+                decl_allergens = [a.strip() for a in str(matched_data["allergens"]).split(",") if a.strip()]
+
+        compliance_res = EvidenceBasedHealthRules.evaluate_compliance(
+            nutrients=nutrients_dict,
+            declared_allergens=decl_allergens,
+            potential_traces=[],
+            basis="per_100_g",
+            ocr_lines_detected=None if is_matched else 0,
+        )
 
         return {
             "workflow_step": "barcode_scan",
@@ -188,6 +210,35 @@ class FoodIntelligenceEngine:
             "action_required": action_required,
             "prompt_message": prompt_message,
             "product_data": product_data,
+            "ocr_result": {
+                "engine": "barcode_direct",
+                "model_version": "N/A",
+                "execution_time_sec": 0.0,
+                "line_count": 0,
+                "lines": [],
+            },
+            "nutrition": {
+                "basis": "per_100_g",
+                "serving_size_raw": matched_data.get("serving_size") if is_matched else None,
+                "serving_size_g": None,
+                "serving_size_ml": None,
+                "nutrients": nutrients_dict,
+            },
+            "ingredients": {
+                "original_text": matched_data.get("ingredients_text") if is_matched else None,
+                "parsed_ingredients": parsed_ing_list,
+                "declared_allergens": decl_allergens,
+                "potential_traces": [],
+            },
+            "evidence_based_alerts": compliance_res["alerts"],
+            "compliance": compliance_res,
+            "data_quality": {
+                "missing_fields": audit.missing_fields,
+                "conflicting_fields": [],
+                "source_verified": is_matched,
+                "manual_review_required": not audit.is_complete,
+                "review_reasons": audit.recommendation_reasons,
+            },
         }
 
     def scan_package_label(
@@ -293,13 +344,15 @@ class FoodIntelligenceEngine:
             basis=extracted_nutrition["basis"],
         )
 
-        # Stage 8: Evidence-Based Health Rules
-        alerts = EvidenceBasedHealthRules.evaluate(
+        # Stage 8: Evidence-Based Health Rules & Compliance Validation
+        compliance_result = EvidenceBasedHealthRules.evaluate_compliance(
             nutrients=fused_nutrients,
             declared_allergens=ingredients["declared_allergens"],
             potential_traces=ingredients["potential_traces"],
             basis=extracted_nutrition["basis"],
+            ocr_lines_detected=combined_ocr_res.get("line_count"),
         )
+        alerts = compliance_result["alerts"]
 
         source_verified = matched_product.get("status") in ("exact_barcode_match", "fuzzy_name_match")
 
@@ -317,6 +370,7 @@ class FoodIntelligenceEngine:
             missing_fields=missing_fields,
             conflicting_fields=conflicting_fields,
             source_verified=source_verified,
+            compliance=compliance_result,
         )
 
     def process_image(
@@ -332,15 +386,33 @@ class FoodIntelligenceEngine:
         """Runs the complete 8-stage food intelligence pipeline on an input image."""
 
         # Stage 1 & 2: Ingestion & OCR
-        if isinstance(image_input, Image.Image):
+        meta = {}
+        try:
             _, meta = ImageIngestion.load_image(image_input)
-            ocr_res = self.ocr_engine.run_ocr(image_input)
+        except Exception as exc:
+            meta = {"error": str(exc)}
+
+        if isinstance(image_input, Image.Image):
             image_name = getattr(image_input, "filename", "pil_image_in_memory")
         else:
             image_path = str(image_input)
-            _, meta = ImageIngestion.load_image(image_input)
-            ocr_res = self.ocr_engine.run_ocr(image_input)
             image_name = Path(image_path).name if isinstance(image_input, (str, Path)) else "in_memory_bytes"
+
+        try:
+            ocr_res = self.ocr_engine.run_ocr(image_input)
+        except Exception as exc:
+            err_msg = f"⚠️ OCR Engine Error: Model weights or system dependencies unavailable ({type(exc).__name__}: {str(exc)})"
+            logger.error("OCR execution caught exception: %s", err_msg)
+            ocr_res = {
+                "status": "ocr_failed",
+                "error": err_msg,
+                "engine": getattr(self.ocr_engine, "_engine_type", "ocr_unavailable"),
+                "model_version": "PP-OCRv4-mobile",
+                "execution_time_sec": 0.0,
+                "line_count": 0,
+                "lines": [],
+                "image_metadata": meta,
+            }
 
         # If explicit OCR lines provided (for testing or pipeline chaining)
         if override_ocr_lines is not None:
@@ -415,13 +487,15 @@ class FoodIntelligenceEngine:
             basis=extracted_nutrition["basis"],
         )
 
-        # Stage 8: Evidence-Based Health Rules
-        alerts = EvidenceBasedHealthRules.evaluate(
+        # Stage 8: Evidence-Based Health Rules & Compliance Determination
+        compliance_result = EvidenceBasedHealthRules.evaluate_compliance(
             nutrients=fused_nutrients,
             declared_allergens=ingredients["declared_allergens"],
             potential_traces=ingredients["potential_traces"],
             basis=extracted_nutrition["basis"],
+            ocr_lines_detected=ocr_res.get("line_count"),
         )
+        alerts = compliance_result["alerts"]
 
         source_verified = matched_product.get("status") in ("exact_barcode_match", "fuzzy_name_match")
 
@@ -438,6 +512,7 @@ class FoodIntelligenceEngine:
             missing_fields=missing_fields,
             conflicting_fields=conflicting_fields,
             source_verified=source_verified,
+            compliance=compliance_result,
         )
 
         return final_payload

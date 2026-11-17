@@ -23,6 +23,27 @@ _SRC_DIR = _ROOT_DIR / "src"
 if _SRC_DIR.exists() and str(_SRC_DIR) not in sys.path:
     sys.path.insert(0, str(_SRC_DIR))
 
+def _load_env_safe():
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(_ROOT_DIR / ".env")
+        load_dotenv(_ROOT_DIR.parent / ".env")
+        load_dotenv()
+    except ImportError:
+        for p in [_ROOT_DIR / ".env", _ROOT_DIR.parent / ".env"]:
+            if p.exists():
+                with open(p, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith("#") and "=" in line:
+                            k, v = line.split("=", 1)
+                            k = k.strip()
+                            v = v.strip().strip('"').strip("'")
+                            if k not in os.environ:
+                                os.environ[k] = v
+
+_load_env_safe()
+
 import av
 import cv2
 import numpy as np
@@ -45,27 +66,29 @@ st.set_page_config(
     page_title="Food Packet Scanner - Testing UI",
     page_icon="🥗",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
-# Custom CSS for rich aesthetics and status badges
+# Custom CSS for WCAG contrast compliance and theme-resilient status badges
 st.markdown(
     """
     <style>
     .main-header {
         font-size: 2.2rem;
         font-weight: 700;
-        color: #1E293B;
+        color: var(--text-color, #f0f2f6);
         margin-bottom: 0.2rem;
     }
     .sub-header {
         font-size: 1.05rem;
-        color: #475569;
+        color: var(--text-color, #94a3b8);
+        opacity: 0.9;
         margin-bottom: 1.5rem;
     }
     .badge-declared {
-        background-color: #DEF7EC;
-        color: #03543F;
+        background-color: rgba(16, 185, 129, 0.18);
+        color: #10b981;
+        border: 1px solid #10b981;
         padding: 0.2rem 0.55rem;
         border-radius: 9999px;
         font-weight: 600;
@@ -73,8 +96,9 @@ st.markdown(
         display: inline-block;
     }
     .badge-exact-db {
-        background-color: #E1EFFE;
-        color: #1E429F;
+        background-color: rgba(59, 130, 246, 0.18);
+        color: #3b82f6;
+        border: 1px solid #3b82f6;
         padding: 0.2rem 0.55rem;
         border-radius: 9999px;
         font-weight: 600;
@@ -82,8 +106,9 @@ st.markdown(
         display: inline-block;
     }
     .badge-reference {
-        background-color: #FEF08A;
-        color: #854D0E;
+        background-color: rgba(245, 158, 11, 0.18);
+        color: #f59e0b;
+        border: 1px solid #f59e0b;
         padding: 0.2rem 0.55rem;
         border-radius: 9999px;
         font-weight: 600;
@@ -91,8 +116,9 @@ st.markdown(
         display: inline-block;
     }
     .badge-calculated {
-        background-color: #F3E8FF;
-        color: #6B21A8;
+        background-color: rgba(168, 85, 247, 0.18);
+        color: #a855f7;
+        border: 1px solid #a855f7;
         padding: 0.2rem 0.55rem;
         border-radius: 9999px;
         font-weight: 600;
@@ -100,8 +126,9 @@ st.markdown(
         display: inline-block;
     }
     .badge-missing {
-        background-color: #FDE8E8;
-        color: #9B1C1C;
+        background-color: rgba(239, 68, 68, 0.18);
+        color: #ef4444;
+        border: 1px solid #ef4444;
         padding: 0.2rem 0.55rem;
         border-radius: 9999px;
         font-weight: 600;
@@ -109,39 +136,44 @@ st.markdown(
         display: inline-block;
     }
     .badge-correct {
-        background-color: #10B981;
-        color: white;
+        background-color: #059669;
+        color: #ffffff !important;
         padding: 0.2rem 0.55rem;
         border-radius: 9999px;
         font-weight: 700;
         font-size: 0.78rem;
+        display: inline-block;
     }
     .badge-incorrect {
-        background-color: #EF4444;
-        color: white;
+        background-color: #dc2626;
+        color: #ffffff !important;
         padding: 0.2rem 0.55rem;
         border-radius: 9999px;
         font-weight: 700;
         font-size: 0.78rem;
+        display: inline-block;
     }
     .badge-missed {
-        background-color: #F59E0B;
-        color: white;
+        background-color: #d97706;
+        color: #ffffff !important;
         padding: 0.2rem 0.55rem;
         border-radius: 9999px;
         font-weight: 700;
         font-size: 0.78rem;
+        display: inline-block;
     }
     .metric-card {
-        background-color: #F8FAFC;
-        border: 1px solid #E2E8F0;
+        background-color: var(--secondary-background-color, #1e2530);
+        color: var(--text-color, inherit);
+        border: 1px solid rgba(128, 128, 128, 0.2);
         border-radius: 8px;
         padding: 1rem;
         margin-bottom: 1rem;
     }
     .info-callout {
         border-left: 4px solid #3B82F6;
-        background-color: #EFF6FF;
+        background-color: var(--secondary-background-color, #1e2530);
+        color: var(--text-color, inherit);
         padding: 0.75rem 1rem;
         border-radius: 0 6px 6px 0;
         margin-bottom: 1rem;
@@ -159,6 +191,79 @@ REPO_ROOT = Path(__file__).resolve().parent
 def get_engine():
     from food_engine.engine import FoodIntelligenceEngine
     return FoodIntelligenceEngine(repo_root=REPO_ROOT)
+
+
+@st.cache_resource(show_spinner="Running PaddleOCR self-test & dependency check...")
+def verify_ocr_health():
+    """Startup self-test verifying PaddleOCR can run an inference pass without throwing."""
+    try:
+        eng = get_engine()
+        if hasattr(eng, "ocr_engine"):
+            return eng.ocr_engine.self_test()
+    except Exception as exc:
+        return {
+            "status": "degraded",
+            "ready": False,
+            "message": f"⚠️ OCR Engine Error: Model weights or system dependencies unavailable ({type(exc).__name__}: {str(exc)})",
+        }
+    return {"status": "degraded", "ready": False, "message": "OCR Engine uninitialized"}
+
+
+@st.cache_resource(ttl=60, show_spinner=False)
+def get_system_health():
+    """System health check for PaddleOCR, local database, and Open Food Facts API."""
+    ocr_health = verify_ocr_health()
+
+    # Check local SQLite DB
+    db_p = REPO_ROOT / "datasets" / "processed" / "products" / "products.db"
+    db_records = 0
+    db_status = "Disconnected"
+    if db_p.exists():
+        try:
+            import sqlite3
+            c = sqlite3.connect(db_p)
+            db_records = c.cursor().execute("SELECT count(*) FROM off_products").fetchone()[0]
+            c.close()
+            db_status = f"Connected ({db_records:,} records indexed)"
+        except Exception as exc:
+            db_status = f"Error: {exc}"
+    else:
+        db_status = "Missing database file"
+
+    # Check Open Food Facts API reachability
+    api_reachable = False
+    try:
+        import urllib.request
+        req = urllib.request.Request(
+            "https://world.openfoodfacts.org/api/v2/product/8901030000003.json",
+            headers={"User-Agent": "PackagedFoodScanner - WebWorkbench - Version 1.0 - (contact: engineering@example.com)"},
+        )
+        with urllib.request.urlopen(req, timeout=3.0) as resp:
+            if resp.status in (200, 404):
+                api_reachable = True
+    except Exception:
+        api_reachable = False
+
+    # External APIs (Google Gemini & USDA FoodData Central)
+    gemini_active, gemini_msg = False, "Not Configured"
+    usda_active, usda_msg = False, "Not Configured"
+    try:
+        from food_engine.external_apis import GeminiNutritionAssistant, USDAFoodDataClient
+        gemini_active, gemini_msg = GeminiNutritionAssistant.test_connection()
+        usda_active, usda_msg = USDAFoodDataClient.test_connection()
+    except Exception as exc:
+        logger.warning(f"Error checking external APIs: {exc}")
+
+    return {
+        "ocr": ocr_health,
+        "db_status": db_status,
+        "db_records": db_records,
+        "api_reachable": api_reachable,
+        "gemini_active": gemini_active,
+        "gemini_msg": gemini_msg,
+        "usda_active": usda_active,
+        "usda_msg": usda_msg,
+    }
 
 
 # WebRTC Configuration with public Google STUN server for NAT traversal
@@ -404,12 +509,31 @@ def show_diagnosis_dialog(payload_data: Dict[str, Any]):
     pm = payload_data.get("product_match", {})
     p_name = pm.get("product_name") or "Packaged Food Item"
     brand = pm.get("brand") or "Brand Not Stated"
+    ocr_res = payload_data.get("ocr_result", {})
 
     st.markdown(f"### Product: **{p_name}** ({brand})")
 
-    if not alerts:
-        st.success("✅ **Fully Compliant**: No excessive sugar, sodium, saturated fat, or trans fat detected under WHO and FSSAI dietary limits.")
-    else:
+    if ocr_res.get("status") == "ocr_failed" or ocr_res.get("error"):
+        st.warning(f"⚠️ **OCR Engine Error**: {ocr_res.get('error', 'Model weights or system dependencies unavailable')}")
+
+    # Check compliance status
+    comp = payload_data.get("compliance", {})
+    comp_status = comp.get("status")
+    if not comp_status:
+        from food_engine.reporting.health_rules import EvidenceBasedHealthRules
+        comp = EvidenceBasedHealthRules.evaluate_compliance(
+            nutrients=payload_data.get("nutrition", {}).get("nutrients", {}),
+            declared_allergens=payload_data.get("ingredients", {}).get("declared_allergens", []),
+            potential_traces=payload_data.get("ingredients", {}).get("potential_traces", []),
+            basis=payload_data.get("nutrition", {}).get("basis", "per_100_g"),
+            ocr_lines_detected=ocr_res.get("line_count"),
+        )
+        comp_status = comp.get("status")
+
+    if comp_status in ("INCONCLUSIVE", "INSUFFICIENT_DATA") or not comp.get("is_sufficient", True):
+        msg = comp.get("message") or comp.get("diagnosis_message") or "Key macronutrients (Sugars, Saturated Fat, Sodium) were not detected on the label. Compliance with FSSAI/WHO standards cannot be verified."
+        st.warning(f"⚠️ **Inconclusive / Insufficient Nutritional Data**: {msg}")
+    elif comp_status == "NON_COMPLIANT" or any(a.get("severity") in ("critical", "warning") for a in alerts):
         st.markdown("**Compliance Alerts & Health Warnings:**")
         for alt in alerts:
             sev = alt.get("severity", "info").lower()
@@ -424,6 +548,10 @@ def show_diagnosis_dialog(payload_data: Dict[str, Any]):
                 st.warning(f"⚠️ **{title}**\n\n{reason}\n\n*Reference: {src} ({ref})*")
             else:
                 st.info(f"ℹ️ **{title}**\n\n{reason}\n\n*Reference: {src}*")
+    elif comp_status == "COMPLIANT" and comp.get("is_sufficient", True):
+        st.success("✅ **FSSAI & WHO Dietary Compliant**: No excessive sugar, sodium, saturated fat, or industrial trans fat detected.")
+    else:
+        st.warning("⚠️ **Inconclusive / Insufficient Nutritional Data**: Key nutritional values could not be extracted from the label. Cannot verify FSSAI or WHO dietary compliance.")
 
     st.markdown("---")
     ing = payload_data.get("ingredients", {})
@@ -463,7 +591,7 @@ PRESETS = {
         "description": "Complete nutrition table + ingredients list + declared allergens (Wheat, Milk, Soy).",
         "nutrition_img": REPO_ROOT / "tests" / "fixtures" / "sample_biscuit_packet.png",
         "ingredients_img": None,
-        "barcode": "8901030000001",
+        "barcode": "8901030000003",
         "package_weight_g": 120.0,
         "expected": {
             "energy_kcal": 460.0,
@@ -545,11 +673,11 @@ PRESETS = {
             "sodium_mg": 0.0,
         },
     },
-    "Preset 6: Barcode Only (Local DB Exact Match 8901030000001)": {
+    "Preset 6: Barcode Only (Local DB Exact Match 8901030000003)": {
         "description": "Tests Step 1 & 2 barcode-first flow with an exact match from local SQLite DB.",
         "nutrition_img": None,
         "ingredients_img": None,
-        "barcode": "8901030000001",
+        "barcode": "8901030000003",
         "package_weight_g": 120.0,
         "expected": {
             "energy_kcal": 460.0,
@@ -635,6 +763,7 @@ st.markdown(
     '<div class="sub-header">Interactive testing workbench for Barcode-First Ingestion, PaddleOCR Nutrition Extraction, Ingredient/Allergen Parsing, and Ground-Truth Evaluation.</div>',
     unsafe_allow_html=True,
 )
+st.caption("💡 Expand sidebar (top-left >>) to view System Health Diagnostics and Model Settings")
 
 # --- SIDEBAR CONFIGURATION ---
 st.sidebar.header("⚙️ Engine Configuration")
@@ -646,6 +775,44 @@ try:
 except Exception as e:
     st.sidebar.error(f"❌ Engine initialization failed: {e}")
     st.stop()
+
+# System Health & Engine Diagnostics Card
+with st.sidebar.expander("🩺 System Health & Engine Diagnostics", expanded=True):
+    health = get_system_health()
+    ocr_info = health.get("ocr", {})
+    if ocr_info.get("status") == "active":
+        st.markdown("🟢 **PaddleOCR Engine**: `Active (PP-OCRv4)`")
+    elif ocr_info.get("status") == "degraded":
+        st.markdown("🟡 **PaddleOCR Engine**: `Degraded`")
+        st.caption(f"⚠️ {ocr_info.get('message')}")
+    else:
+        st.markdown("🔴 **PaddleOCR Engine**: `Not Found`")
+        st.caption(f"⚠️ {ocr_info.get('message')}")
+
+    # Local Database
+    if "Connected" in health.get("db_status", ""):
+        st.markdown(f"🟢 **Local Database**: `{health['db_status']}`")
+    else:
+        st.markdown(f"🔴 **Local Database**: `{health.get('db_status')}`")
+
+    # Google Gemini AI Assistant
+    if health.get("gemini_active"):
+        st.markdown(f"🟢 **Google Gemini AI**: `{health.get('gemini_msg')}`")
+    else:
+        st.markdown("🟡 **Google Gemini AI**: `Not Configured`")
+
+    # USDA FoodData Central
+    if health.get("usda_active"):
+        st.markdown(f"🟢 **USDA FoodData Central**: `{health.get('usda_msg')}`")
+    else:
+        st.markdown("🟡 **USDA FoodData Central**: `Not Configured`")
+
+    # Open Food Facts API
+    if health.get("api_reachable"):
+        st.markdown("🟢 **Open Food Facts API**: `Reachable`")
+    else:
+        st.markdown("🟡 **Open Food Facts API**: `Unreachable / Offline`")
+        st.caption("ℹ️ Local database and offline caching remain fully functional.")
 
 st.sidebar.markdown("---")
 st.sidebar.subheader("📂 Select Test Preset")
@@ -806,7 +973,7 @@ with tab_scan:
             manual_barcode = st.text_input(
                 "Enter Barcode Digits (EAN-13, UPC-A, etc.):",
                 value=default_barcode,
-                placeholder="e.g. 8901030000001",
+                placeholder="e.g. 8901030000003",
                 help="Preserves significant leading zeros and verifies checksum.",
             )
 
@@ -978,23 +1145,147 @@ with tab_scan:
             dq = payload.get("data_quality", {})
             d4.metric("Manual Review Required", "Yes" if dq.get("manual_review_required") else "No")
 
+            # OCR Failure / Degradation UI Banner
+            if ocr_res.get("status") == "ocr_failed" or ocr_res.get("error"):
+                st.warning(f"⚠️ **OCR Engine Error**: {ocr_res.get('error', 'Model weights or system dependencies unavailable')}")
+
             # 2. Product Identity
             p_name = pm.get("product_name") or "Product Name Not Detected"
             p_brand = pm.get("brand") or "Brand Not Stated"
             p_barcode = pm.get("barcode") or "None"
             p_source = pm.get("source") or "Physical Packaging Label"
 
+            # Check compliance status for summary card badge
+            comp = payload.get("compliance", {})
+            comp_status = comp.get("status")
+            if not comp_status:
+                from food_engine.reporting.health_rules import EvidenceBasedHealthRules
+                comp = EvidenceBasedHealthRules.evaluate_compliance(
+                    nutrients=payload.get("nutrition", {}).get("nutrients", {}),
+                    declared_allergens=payload.get("ingredients", {}).get("declared_allergens", []),
+                    potential_traces=payload.get("ingredients", {}).get("potential_traces", []),
+                    basis=payload.get("nutrition", {}).get("basis", "per_100_g"),
+                    ocr_lines_detected=ocr_res.get("line_count"),
+                )
+                comp_status = comp.get("status")
+
+            if comp_status in ("INCONCLUSIVE", "INSUFFICIENT_DATA") or not comp.get("is_sufficient", True):
+                summary_badge_html = '<span style="background-color: rgba(245, 158, 11, 0.22); color: #d97706; border: 1px solid #f59e0b; padding: 0.2rem 0.55rem; border-radius: 9999px; font-weight: 700; margin-left: 0.5rem; font-size: 0.8rem;">⚠️ INCONCLUSIVE / INSUFFICIENT DATA</span>'
+            elif comp_status == "NON_COMPLIANT":
+                summary_badge_html = '<span style="background-color: rgba(239, 68, 68, 0.22); color: #dc2626; border: 1px solid #ef4444; padding: 0.2rem 0.55rem; border-radius: 9999px; font-weight: 700; margin-left: 0.5rem; font-size: 0.8rem;">🚨 THRESHOLD ALERT</span>'
+            elif comp_status == "COMPLIANT" and comp.get("is_sufficient", True):
+                summary_badge_html = '<span style="background-color: rgba(16, 185, 129, 0.22); color: #059669; border: 1px solid #10b981; padding: 0.2rem 0.55rem; border-radius: 9999px; font-weight: 700; margin-left: 0.5rem; font-size: 0.8rem;">✅ DIETARY COMPLIANT</span>'
+            else:
+                summary_badge_html = '<span style="background-color: rgba(245, 158, 11, 0.22); color: #d97706; border: 1px solid #f59e0b; padding: 0.2rem 0.55rem; border-radius: 9999px; font-weight: 700; margin-left: 0.5rem; font-size: 0.8rem;">⚠️ INCONCLUSIVE / INSUFFICIENT DATA</span>'
+
             st.markdown(
                 f"""
                 <div class="metric-card">
-                    <h3 style="margin:0 0 0.5rem 0;">📦 {p_name}</h3>
-                    <p style="margin:0 0 0.25rem 0;"><b>Brand:</b> {p_brand} &nbsp;|&nbsp; <b>Barcode:</b> {p_barcode}</p>
-                    <p style="margin:0;"><b>Source Authority:</b> {p_source} &nbsp; 
-                    <span class="badge-exact-db">{pm.get('match_type', 'none').upper()}</span></p>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+                        <div>
+                            <h3 style="margin:0 0 0.5rem 0; color: var(--text-color, inherit);">📦 {p_name}</h3>
+                            <p style="margin:0 0 0.25rem 0; color: var(--text-color, inherit);"><b>Brand:</b> {p_brand} &nbsp;|&nbsp; <b>Barcode:</b> {p_barcode}</p>
+                            <p style="margin:0; color: var(--text-color, inherit);"><b>Source Authority:</b> {p_source} &nbsp; 
+                            <span class="badge-exact-db">{pm.get('match_type', 'none').upper()}</span></p>
+                        </div>
+                        <div style="margin-top: 0.25rem;">
+                            {summary_badge_html}
+                        </div>
+                    </div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
+
+            # --- PHASE 2B: CLINICAL TRUTH-IN-LABELING & HEALTH VERDICT ---
+            from food_engine.reporting.clinical_health import ClinicalHealthEngine
+            nut_dict = payload.get("nutrition", {}).get("nutrients", {})
+            raw_ing_text = payload.get("ingredients", {}).get("raw_text", "")
+            if not raw_ing_text and payload.get("ingredients", {}).get("parsed_ingredients"):
+                raw_ing_text = ", ".join(payload.get("ingredients", {}).get("parsed_ingredients", []))
+
+            clinical_eval = ClinicalHealthEngine.evaluate_clinical_health(
+                product_name=p_name,
+                nutrients=nut_dict,
+                ingredients_text=raw_ing_text,
+                declared_allergens=payload.get("ingredients", {}).get("declared_allergens", []),
+            )
+
+            # Health Profile Switcher
+            st.markdown("### 🩺 Clinical Health Impact & Honest Verdict")
+            c_prof1, _ = st.columns([1.5, 1])
+            with c_prof1:
+                active_profile = st.selectbox(
+                    "Your Health Condition / Persona:",
+                    [
+                        "🩸 Diabetic / Pre-Diabetic",
+                        "🫀 Hypertension / High BP",
+                        "🌿 Clean Eating / Additive-Free",
+                        "👶 Child Safe / Family",
+                        "📋 View All Conditions",
+                    ],
+                    index=0,
+                    help="Customizes the clinical safety verdict based on your medical or dietary profile."
+                )
+
+            # Prominent Bottom-Line Verdict Banner
+            if active_profile == "🩸 Diabetic / Pre-Diabetic" or active_profile == "📋 View All Conditions":
+                diab = clinical_eval["diabetic"]
+                if diab["verdict"] == "DANGEROUS":
+                    st.error(f"🛑 **DIABETES VERDICT: AVOID / DANGEROUS**\n\n" + "\n\n".join(f"• {r}" for r in diab["reasons"]))
+                elif diab["verdict"] == "CAUTION":
+                    st.warning(f"⚠️ **DIABETES VERDICT: CAUTION / MODERATION ONLY**\n\n" + "\n\n".join(f"• {r}" for r in diab["reasons"]))
+                elif diab["verdict"] == "INCONCLUSIVE":
+                    st.warning(f"⚠️ **DIABETES VERDICT: INCONCLUSIVE / INSUFFICIENT DATA**\n\n" + "\n\n".join(f"• {r}" for r in diab["reasons"]))
+                else:
+                    st.success("✅ **DIABETES VERDICT: SAFE FOR BLOOD SUGAR**\n\n• Low sugar and low rapid-glycemic spike risk.")
+
+                if diab["hidden_sugars"]:
+                    st.markdown(f"🚨 **Disguised / Hidden Sugars Detected:** {', '.join(f'`{s}`' for s in diab['hidden_sugars'])}")
+
+            if active_profile == "🫀 Hypertension / High BP" or active_profile == "📋 View All Conditions":
+                heart = clinical_eval["heart"]
+                if heart["verdict"] == "DANGEROUS":
+                    st.error(f"🛑 **CARDIOVASCULAR VERDICT: HIGH BLOOD PRESSURE HAZARD**\n\n" + "\n\n".join(f"• {r}" for r in heart["reasons"]))
+                elif heart["verdict"] == "CAUTION":
+                    st.warning(f"⚠️ **CARDIOVASCULAR VERDICT: MODERATE RISK**\n\n" + "\n\n".join(f"• {r}" for r in heart["reasons"]))
+                elif heart["verdict"] == "INCONCLUSIVE":
+                    st.warning(f"⚠️ **CARDIOVASCULAR VERDICT: INCONCLUSIVE / INSUFFICIENT DATA**\n\n" + "\n\n".join(f"• {r}" for r in heart["reasons"]))
+                else:
+                    st.success("✅ **CARDIOVASCULAR VERDICT: HEART-HEALTHY PROFILE**\n\n• Low sodium, no industrial trans-fats detected.")
+
+            if active_profile in ("🌿 Clean Eating / Additive-Free", "👶 Child Safe / Family", "📋 View All Conditions"):
+                additives = clinical_eval["additives"]
+                high_risk_adds = [a for a in additives if a.get("risk_level") in ("HIGH_RISK", "CAUTION")]
+                if high_risk_adds:
+                    st.warning(f"⚠️ **CHEMICAL ADDITIVES & PRESERVATIVES DETECTED ({len(additives)} items):**\n\n" +
+                               "\n\n".join(f"• **{a['code']} ({a['name']})**: {a['description']} *[{a['risk_level']}]*" for a in high_risk_adds))
+                elif additives:
+                    st.info(f"ℹ️ **Food-Grade Processing Agents Present:** {', '.join(f'`{a['name']}`' for a in additives)}")
+                else:
+                    st.success("✅ **CLEAN LABEL**: No synthetic chemical preservatives or artificial dyes detected.")
+
+            # Additive Decoder Expander with Wikipedia Integration
+            if clinical_eval["additives"]:
+                with st.expander(f"🧪 Decoded Food Additives & E-Numbers ({len(clinical_eval['additives'])} detected)", expanded=False):
+                    for add in clinical_eval["additives"]:
+                        a_col1, a_col2 = st.columns([1, 2])
+                        with a_col1:
+                            st.markdown(f"**{add['code']}**")
+                            st.caption(f"Type: {add['type']}")
+                            if add['risk_level'] == 'HIGH_RISK':
+                                st.error(f"Risk: {add['risk_level']}")
+                            elif add['risk_level'] == 'CAUTION':
+                                st.warning(f"Risk: {add['risk_level']}")
+                            else:
+                                st.success(f"Status: {add['risk_level']}")
+                        with a_col2:
+                            st.markdown(f"**{add['name']}**")
+                            st.write(add['description'])
+                            if add.get("wiki_title"):
+                                wiki_text = ClinicalHealthEngine.fetch_wikipedia_summary(add["wiki_title"])
+                                if wiki_text:
+                                    st.caption(f"📖 *Wikipedia Clinical Summary:* {wiki_text[:250]}...")
 
             # --- PHASE 3: TOP-LEVEL COMPLIANCE DIAGNOSIS & MODAL ---
             col_modal_btn, _ = st.columns([1.5, 1])
@@ -1011,8 +1302,24 @@ with tab_scan:
             if decl_allergens:
                 st.error(f"🚨 **ALLERGEN SAFETY WARNING**: Packaging explicitly declares: **{', '.join(decl_allergens)}**")
 
-            # FSSAI & WHO threshold alerts
-            if alerts:
+            # Check compliance status
+            comp = payload.get("compliance", {})
+            comp_status = comp.get("status")
+            if not comp_status:
+                from food_engine.reporting.health_rules import EvidenceBasedHealthRules
+                comp = EvidenceBasedHealthRules.evaluate_compliance(
+                    nutrients=payload.get("nutrition", {}).get("nutrients", {}),
+                    declared_allergens=decl_allergens,
+                    potential_traces=ing.get("potential_traces", []),
+                    basis=payload.get("nutrition", {}).get("basis", "per_100_g"),
+                    ocr_lines_detected=ocr_res.get("line_count"),
+                )
+                comp_status = comp.get("status")
+
+            if comp_status in ("INCONCLUSIVE", "INSUFFICIENT_DATA") or not comp.get("is_sufficient", True):
+                msg = comp.get("message") or comp.get("diagnosis_message") or "Key macronutrients (Sugars, Saturated Fat, Sodium) were not detected on the label. Compliance with FSSAI/WHO standards cannot be verified."
+                st.warning(f"⚠️ **Inconclusive / Insufficient Nutritional Data**: {msg}")
+            elif comp_status == "NON_COMPLIANT" or any(a.get("severity") in ("critical", "warning") for a in alerts):
                 for alt in alerts:
                     sev = alt.get("severity", "info").lower()
                     t_title = alt.get("title", "Nutrient Alert")
@@ -1025,8 +1332,29 @@ with tab_scan:
                         st.error(f"⚠️ **{t_title}**\n\n{r_reason}\n\n*Reference: {s_source} ({t_ref})*")
                     else:
                         st.info(f"ℹ️ **{t_title}**\n\n{r_reason}\n\n*Reference: {s_source}*")
-            else:
+            elif comp_status == "COMPLIANT" and comp.get("is_sufficient", True):
                 st.success("✅ **FSSAI & WHO Dietary Compliant**: No excessive sugar, sodium, saturated fat, or industrial trans fat detected.")
+            else:
+                st.warning("⚠️ **Inconclusive / Insufficient Nutritional Data**: Key nutritional values could not be extracted from the label. Cannot verify FSSAI or WHO dietary compliance.")
+
+            # --- PHASE 3B: AI CLINICAL NUTRITIONIST & ADDITIVE AUDITOR ---
+            try:
+                from food_engine.external_apis import GeminiNutritionAssistant
+                if GeminiNutritionAssistant.is_configured():
+                    with st.expander("🤖 AI Clinical Nutritionist & Chemical Additive Audit (Powered by Google Gemini 1.5 Flash)", expanded=True):
+                        with st.spinner("Analyzing additives, E-numbers, and health implications with Gemini 1.5 Flash..."):
+                            gemini_report = GeminiNutritionAssistant.analyze_food_package(
+                                product_name=p_name,
+                                nutrients=payload.get("nutrition", {}).get("nutrients", {}),
+                                ingredients_text=payload.get("ingredients", {}).get("raw_text", ""),
+                                declared_allergens=decl_allergens,
+                            )
+                            if gemini_report.get("available"):
+                                st.markdown(gemini_report["analysis"])
+                            else:
+                                st.info(f"ℹ️ AI Assistant notice: {gemini_report.get('error', 'Temporarily unavailable')}")
+            except Exception as gem_exc:
+                logger.warning(f"Error invoking Gemini assistant: {gem_exc}")
 
             # --- PHASE 3: INTERACTIVE MANUAL OVERRIDE FOR MISSING DATA ---
             missing_fields = payload.get("missing_fields", [])
@@ -1064,13 +1392,14 @@ with tab_scan:
                                     nuts[k_f]["status"] = "declared"
                                     nuts[k_f]["source"] = "user_manual_override"
 
-                            recalced_alerts = EvidenceBasedHealthRules.evaluate(
+                            recalced_comp = EvidenceBasedHealthRules.evaluate_compliance(
                                 nutrients=nuts,
                                 declared_allergens=ing.get("declared_allergens", []),
                                 potential_traces=ing.get("potential_traces", []),
                                 basis=payload.get("nutrition", {}).get("basis", "per_100_g"),
                             )
-                            payload["evidence_based_alerts"] = recalced_alerts
+                            payload["compliance"] = recalced_comp
+                            payload["evidence_based_alerts"] = recalced_comp["alerts"]
                             st.session_state["last_scan_payload"] = payload
                             st.success("✅ Dietary compliance diagnosis recalculated!")
                             st.rerun()
@@ -1344,7 +1673,7 @@ with tab_guide:
     st.markdown(
         """
         ### 1. Verification of the Barcode-First Flow (Step 1 & 2)
-        - **Test Complete Match**: Select `Preset 6: Barcode Only (8901030000001)` and click **Scan Barcode Only**.
+        - **Test Complete Match**: Select `Preset 6: Barcode Only (8901030000003)` and click **Scan Barcode Only**.
           *Notice*: The product is found in the local Open Food Facts database with complete macros. Completeness policy recommends `proceed`.
         - **Test Unknown / Incomplete Barcode**: Select `Preset 7: Unknown Barcode (9999999999994)` and click **Scan Barcode Only**.
           *Notice*: The system confirms the barcode format is valid, detects that no record exists, and safely issues an action decision of `scan_label_required` with missing fields listed.

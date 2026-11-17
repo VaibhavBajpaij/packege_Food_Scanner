@@ -195,7 +195,7 @@ def test_scenario_24_cleanup_and_cli_entry_points():
 
     # 3. Formatted text report generation works with visual provenance badges
     sample_payload = {
-        "product_identity": {"product_name": "Whole Wheat Biscuit", "brand": "SampleBrand", "barcode": "8901030000001"},
+        "product_identity": {"product_name": "Whole Wheat Biscuit", "brand": "SampleBrand", "barcode": "8901030000003"},
         "nutrition": {
             "basis": "per_100_g",
             "serving_size_g": 30.0,

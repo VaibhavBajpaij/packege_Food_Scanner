@@ -18,7 +18,7 @@ def create_sample_label_images(output_dir: Path):
     # Header banner
     draw.rectangle([20, 20, 780, 90], fill=(230, 240, 255), outline=(180, 200, 230))
     draw.text((40, 35), "PREMIUM WHOLE WHEAT CRUNCH BISCUITS", fill=(0, 50, 150))
-    draw.text((40, 65), "Net Weight: 120g | Barcode: 8901030000001", fill=(60, 60, 60))
+    draw.text((40, 65), "Net Weight: 120g | Barcode: 8901030000003", fill=(60, 60, 60))
 
     biscuit_lines = [
         "INGREDIENTS: Whole Wheat Flour (62%), Vegetable Oil (Palm Oil, Antioxidant (E319)),",

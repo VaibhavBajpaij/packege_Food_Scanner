@@ -41,3 +41,35 @@ def test_unmatched_ocr_fallback():
     res = matcher.match(ocr_lines=["Random Nonexistent Brand X99", "Net Wt: 50g"])
     assert res["status"] == "ocr_inferred"
     assert res["product_name"] == "Random Nonexistent Brand X99"
+
+
+def test_preset_6_exact_barcode_match():
+    matcher = ProductMatcher()
+    res = matcher.match(barcode="8901030000003")
+    assert res["status"] == "exact_barcode_match"
+    assert res["barcode"] == "8901030000003"
+    assert "Premium Whole Wheat Crunch Biscuits" in res["product_name"]
+
+
+def test_online_lookup_user_agent_and_timeout():
+    import urllib.request
+    matcher = ProductMatcher()
+
+    captured_headers = {}
+    def mock_urlopen(req, timeout=None):
+        nonlocal captured_headers
+        captured_headers = req.headers
+        raise TimeoutError("Simulated socket timeout")
+
+    orig_urlopen = urllib.request.urlopen
+    urllib.request.urlopen = mock_urlopen
+    try:
+        data, err = matcher._lookup_barcode_online("9999999999994", timeout_sec=5.0)
+        assert data is None
+        assert err == "API_UNAVAILABLE"
+        ua = captured_headers.get("User-agent") or captured_headers.get("User-Agent")
+        assert "PackagedFoodScanner" in ua
+        assert "engineering@example.com" in ua
+    finally:
+        urllib.request.urlopen = orig_urlopen
+
