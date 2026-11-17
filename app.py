@@ -1241,7 +1241,8 @@ with tab_scan:
                     st.success("✅ **DIABETES VERDICT: SAFE FOR BLOOD SUGAR**\n\n• Low sugar and low rapid-glycemic spike risk.")
 
                 if diab["hidden_sugars"]:
-                    st.markdown(f"🚨 **Disguised / Hidden Sugars Detected:** {', '.join(f'`{s}`' for s in diab['hidden_sugars'])}")
+                    hidden_sugars_str = ", ".join("`" + str(s) + "`" for s in diab["hidden_sugars"])
+                    st.markdown(f"🚨 **Disguised / Hidden Sugars Detected:** {hidden_sugars_str}")
 
             if active_profile == "🫀 Hypertension / High BP" or active_profile == "📋 View All Conditions":
                 heart = clinical_eval["heart"]
@@ -1261,7 +1262,8 @@ with tab_scan:
                     st.warning(f"⚠️ **CHEMICAL ADDITIVES & PRESERVATIVES DETECTED ({len(additives)} items):**\n\n" +
                                "\n\n".join(f"• **{a['code']} ({a['name']})**: {a['description']} *[{a['risk_level']}]*" for a in high_risk_adds))
                 elif additives:
-                    st.info(f"ℹ️ **Food-Grade Processing Agents Present:** {', '.join(f'`{a['name']}`' for a in additives)}")
+                    additives_str = ", ".join("`" + str(a.get("name", "")) + "`" for a in additives)
+                    st.info(f"ℹ️ **Food-Grade Processing Agents Present:** {additives_str}")
                 else:
                     st.success("✅ **CLEAN LABEL**: No synthetic chemical preservatives or artificial dyes detected.")
 

@@ -190,9 +190,10 @@ class ClinicalHealthEngine:
 
         seen_codes = set()
         for prefix, code_raw in matches:
+            clean_sub = re.sub(r'\(.*?\)', '', code_raw).strip()
             clean_code = f"{prefix.upper()} {code_raw.strip()}".upper()
-            base_code = f"{prefix.upper()} {re.sub(r'\(.*?\)', '', code_raw).strip()}".upper()
-            e_code = f"E{re.sub(r'\(.*?\)', '', code_raw).strip()}".upper()
+            base_code = f"{prefix.upper()} {clean_sub}".upper()
+            e_code = f"E{clean_sub}".upper()
 
             matched_entry = (
                 ADDITIVE_REGISTRY.get(clean_code)
