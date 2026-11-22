@@ -178,6 +178,50 @@ st.markdown(
         border-radius: 0 6px 6px 0;
         margin-bottom: 1rem;
     }
+    .nt-glass-card {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
+    }
+    .nt-score-badge {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+    .nt-pill {
+        display: inline-block;
+        padding: 0.25rem 0.65rem;
+        border-radius: 9999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin: 0.2rem;
+    }
+    .nt-pill-danger {
+        background-color: rgba(239, 68, 68, 0.2);
+        color: #f87171;
+        border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+    .nt-pill-warning {
+        background-color: rgba(245, 158, 11, 0.2);
+        color: #fbbf24;
+        border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+    .nt-pill-success {
+        background-color: rgba(16, 185, 129, 0.2);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .nt-hero-header {
+        background: linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 2.4rem;
+        font-weight: 800;
+        margin-bottom: 0.3rem;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -758,9 +802,15 @@ ALL_PRESETS = {**PRESETS, **GLOBAL_PRESETS}
 
 
 # --- UI HEADER ---
-st.markdown('<div class="main-header">🛡️ NutriTruth (खाद्य) — Deceptive Label Buster & Scanner</div>', unsafe_allow_html=True)
+st.markdown('<div class="nt-hero-header">🛡️ NutriTruth (खाद्य)</div>', unsafe_allow_html=True)
 st.markdown(
-    '<div class="sub-header">Camera-first Indian FMCG transparency engine: 56 hidden sugar aliases, disguised palm oil detection, FSSAI Indian Nutrition Rating (INR), and ultra-processed food traps.</div>',
+    '<div style="font-size: 1.05rem; color: #94a3b8; margin-bottom: 0.8rem;"><b>Deceptive Food Label Buster & Consumer Health Scanner</b> &nbsp;•&nbsp; Grounded in FSSAI INR & WHO Guidelines</div>'
+    '<div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">'
+    '<span class="nt-pill nt-pill-success">● 16,593 Offline Cache + 3M+ Live Barcodes</span>'
+    '<span class="nt-pill nt-pill-warning">● 56 Hidden Sugar Aliases</span>'
+    '<span class="nt-pill nt-pill-danger">● Palm Oil Detector</span>'
+    '<span class="nt-pill" style="background: rgba(147, 51, 234, 0.2); color: #c084fc; border: 1px solid rgba(147, 51, 234, 0.4);">● FSSAI INR Stars</span>'
+    '</div>',
     unsafe_allow_html=True,
 )
 st.caption("💡 Expand sidebar (top-left >>) to view System Health Diagnostics and Model Settings")
@@ -831,17 +881,17 @@ comparison_tolerance = st.sidebar.slider("Evaluation Tolerance (± %)", min_valu
 
 # --- MAIN TABS ---
 tab_scan, tab_accuracy, tab_triage, tab_guide = st.tabs([
-    "📸 Image & Barcode Scanner",
-    "🎯 Accuracy & Ground Truth Evaluator",
-    "🗂️ Failure Triage Queue",
-    "📖 Testing Guide & Scenarios",
+    "🛡️ NutriTruth™ Deception Scanner",
+    "🎯 Model Accuracy & Ground Truth Lab",
+    "🗂️ Active Learning Failure Triage",
+    "📖 Regulatory Guidelines & FSSAI Standards",
 ])
 
 with tab_scan:
     col_input, col_output = st.columns([1, 1.25], gap="large")
 
     with col_input:
-        st.subheader("1. Food Package Ingestion & Scanner")
+        st.subheader("1. Package Barcode & Label Scanner")
 
         # Preset image resolution
         default_nut_img = active_preset["nutrition_img"]
@@ -1023,7 +1073,7 @@ with tab_scan:
         run_scan = st.button("🚀 Scan & Trace Food Package", type="primary", use_container_width=True)
 
     with col_output:
-        st.subheader("2. Real Engine Results & Diagnostics")
+        st.subheader("2. NutriTruth™ Deception Audit & Label Analysis")
 
         # Execute Unified Pipeline
         if run_scan:
@@ -1226,45 +1276,106 @@ with tab_scan:
                 )
 
                 st.markdown("### 🛡️ NutriTruth™ Deception Audit & Label Buster")
-                col_d1, col_d2, col_d3, col_d4 = st.columns(4)
-                col_d1.metric(
-                    "Deception Score",
-                    f"{dec_audit['deception_score']}/100",
-                    delta=dec_audit['deception_level'],
-                    delta_color="inverse",
-                )
-                col_d2.metric(
-                    "FSSAI Star Rating",
-                    f"⭐ {dec_audit['fssai_rating']['stars']:.1f} / 5.0",
-                    dec_audit['fssai_rating']['grade'],
-                )
-                col_d3.metric(
-                    "NOVA Processing",
-                    f"Tier {dec_audit['nova_classification']['tier']}",
-                    dec_audit['nova_classification']['category'],
-                )
-                _palm_label = "🚨 PALM OIL" if dec_audit['palm_oil']['detected'] else "✅ Palm Free"
-                col_d4.metric(
-                    "Palm Oil / Palmolein",
-                    _palm_label,
-                    dec_audit['palm_oil']['risk_level'],
-                    delta_color="inverse" if dec_audit['palm_oil']['detected'] else "normal",
+                
+                # Visual Metric Cards Grid
+                dec_level_color = "#ef4444" if dec_audit['deception_score'] >= 60 else ("#f59e0b" if dec_audit['deception_score'] >= 25 else "#10b981")
+                stars_val = dec_audit['fssai_rating']['stars']
+                stars_display = "⭐" * int(stars_val) + ("½" if (stars_val % 1) >= 0.5 else "")
+                
+                st.markdown(
+                    f"""
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
+                        <div class="nt-glass-card" style="border-left: 4px solid {dec_level_color}; padding: 0.9rem;">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 0.25rem;">Deception Score</div>
+                            <div class="nt-score-badge" style="color: {dec_level_color}; font-size: 1.6rem;">{dec_audit['deception_score']} <span style="font-size: 0.85rem; color: #64748b;">/ 100</span></div>
+                            <div style="margin-top: 0.25rem;"><span class="nt-pill {'nt-pill-danger' if dec_audit['deception_score']>=60 else ('nt-pill-warning' if dec_audit['deception_score']>=25 else 'nt-pill-success')}">{dec_audit['deception_level']}</span></div>
+                        </div>
+                        <div class="nt-glass-card" style="border-left: 4px solid #f59e0b; padding: 0.9rem;">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 0.25rem;">FSSAI Rating (INR)</div>
+                            <div class="nt-score-badge" style="color: #fbbf24; font-size: 1.35rem;">{stars_display} <span style="font-size: 0.95rem; color: #cbd5e1;">({stars_val:.1f})</span></div>
+                            <div style="margin-top: 0.25rem; color: #e2e8f0; font-size: 0.8rem; font-weight: 600;">{dec_audit['fssai_rating']['grade']}</div>
+                        </div>
+                        <div class="nt-glass-card" style="border-left: 4px solid {'#ef4444' if dec_audit['palm_oil']['detected'] else '#10b981'}; padding: 0.9rem;">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 0.25rem;">Palm Oil / Palmolein</div>
+                            <div class="nt-score-badge" style="color: {'#ef4444' if dec_audit['palm_oil']['detected'] else '#10b981'}; font-size: 1.3rem;">{'🚨 PALM OIL' if dec_audit['palm_oil']['detected'] else '✅ PALM FREE'}</div>
+                            <div style="margin-top: 0.25rem; color: #cbd5e1; font-size: 0.8rem;">{dec_audit['palm_oil']['oil_type'] if dec_audit['palm_oil']['detected'] else 'Zero tropical fats'}</div>
+                        </div>
+                        <div class="nt-glass-card" style="border-left: 4px solid #8b5cf6; padding: 0.9rem;">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 0.25rem;">NOVA Processing</div>
+                            <div class="nt-score-badge" style="color: #c084fc; font-size: 1.3rem;">Tier {dec_audit['nova_classification']['tier']}</div>
+                            <div style="margin-top: 0.25rem; color: #cbd5e1; font-size: 0.8rem;">{dec_audit['nova_classification']['category']}</div>
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
                 )
 
                 if dec_audit['palm_oil']['detected']:
-                    st.error(f"🌴 **Palm Oil Detected:** {dec_audit['palm_oil']['message']} *(Found as: {dec_audit['palm_oil']['oil_type']})*")
+                    st.markdown(
+                        f"""
+                        <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 10px; padding: 0.85rem; margin-bottom: 0.85rem;">
+                            <div style="color: #f87171; font-weight: 700; font-size: 0.95rem;">
+                                🌴 Disguised Palm Oil Alert: <span>{dec_audit['palm_oil']['oil_type']}</span>
+                            </div>
+                            <div style="color: #e2e8f0; font-size: 0.85rem; margin-top: 0.25rem;">{dec_audit['palm_oil']['message']}</div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
 
                 if dec_audit['sugar_analysis']['aliases_detected']:
-                    s_chips = "  ".join([f"`{a['alias']} (GI: {a['glycemic_index']}, {a['risk']})`" for a in dec_audit['sugar_analysis']['aliases_detected']])
-                    st.warning(f"🍬 **Hidden & Free Sugar Aliases Detected ({dec_audit['sugar_analysis']['total_aliases_count']} total):**\n\n{s_chips}")
+                    s_chips_html = "".join([
+                        f"""<span class="nt-pill nt-pill-danger" style="margin-right: 0.35rem; margin-bottom: 0.35rem;">
+                            <b>{a['alias']}</b> (GI: {a['glycemic_index']} • {a['risk']})
+                        </span>"""
+                        for a in dec_audit['sugar_analysis']['aliases_detected']
+                    ])
+                    st.markdown(
+                        f"""
+                        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 10px; padding: 0.85rem; margin-bottom: 0.85rem;">
+                            <div style="color: #fbbf24; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem;">
+                                🍬 {dec_audit['sugar_analysis']['total_aliases_count']} Disguised & Free Sugar Aliases Detected
+                            </div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.25rem;">
+                                {s_chips_html}
+                            </div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
 
                 if dec_audit['serving_size_trick']['is_trick_suspected']:
-                    st.info(f"⚖️ **Serving Size Illusion:** {dec_audit['serving_size_trick']['message']}")
+                    st.markdown(
+                        f"""
+                        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 10px; padding: 0.85rem; margin-bottom: 0.85rem;">
+                            <div style="color: #60a5fa; font-weight: 700; font-size: 0.95rem;">
+                                ⚖️ Serving Size Illusion Detected
+                            </div>
+                            <div style="color: #e2e8f0; font-size: 0.85rem; margin-top: 0.25rem;">
+                                {dec_audit['serving_size_trick']['message']}
+                            </div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
 
                 if dec_audit.get("alternatives"):
-                    with st.expander("🥗 Recommended Healthier / 0g Palm Oil Swaps", expanded=False):
-                        for alt in dec_audit["alternatives"]:
-                            st.markdown(f"• **{alt.get('product_name', 'Healthy Alternative')}** ({alt.get('brand', '')}) — Sugars: {alt.get('sugars', 0)}g | Palm Oil: 0g")
+                    with st.expander("🥗 Recommended Healthier / 0g Palm Oil Swaps", expanded=True):
+                        alt_cols = st.columns(min(len(dec_audit["alternatives"]), 3))
+                        for idx, alt in enumerate(dec_audit["alternatives"][:3]):
+                            with alt_cols[idx]:
+                                st.markdown(
+                                    f"""
+                                    <div class="nt-glass-card" style="border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.75rem;">
+                                        <div style="color: #34d399; font-weight: 700; font-size: 0.9rem;">{alt.get('product_name', 'Alternative')}</div>
+                                        <div style="color: #94a3b8; font-size: 0.75rem;">{alt.get('brand', 'Verified Brand')}</div>
+                                        <div style="color: #e2e8f0; font-size: 0.8rem; margin-top: 0.25rem;">
+                                            Sugars: <b>{alt.get('sugars', 0)}g</b> &nbsp;|&nbsp; Palm Oil: <b style="color: #34d399;">0g</b>
+                                        </div>
+                                    </div>
+                                    """,
+                                    unsafe_allow_html=True,
+                                )
             except Exception as _dec_err:
                 logger.warning(f"NutriTruth deception audit in app.py error: {_dec_err}")
 
