@@ -20,7 +20,8 @@ def test_api_health():
     assert data["status"] == "UP"
     assert "NutriTruth" in data["service"]
     assert data["database"]["connected"] is True
-    assert data["database"]["verified_products_count"] > 10000
+    assert data["database"]["offline_products_count"] > 10000
+    assert "Live Camera Barcode Scanner" in data["modules"][0]
 
 
 def test_api_demo_bournvita():
@@ -63,9 +64,23 @@ def test_api_custom_analyze():
     assert data["palm_oil_analysis"]["contains_palm_oil"] is True
 
 
+def test_api_image_barcode_scan():
+    """Tests the server-side image scanning on real sample image with barcode."""
+    sample_img = repo_root / "datasets" / "triage" / "images" / "global_15.jpg"
+    if sample_img.exists():
+        with open(sample_img, "rb") as f:
+            res = client.post("/api/v1/scan/image", files={"file": ("global_15.jpg", f, "image/jpeg")})
+            assert res.status_code == 200
+            data = res.json()
+            assert "scan_result" in data
+            assert data["scan_result"]["barcode"] == "8901058017687"
+            assert "maggi" in data["product_name"].lower()
+
+
 def test_api_index_html():
     res = client.get("/")
     assert res.status_code == 200
     assert "text/html" in res.headers["content-type"]
     assert "NutriTruth" in res.text
-    assert "FSSAI" in res.text
+    assert "html5-qrcode" in res.text
+    assert "Camera Active" in res.text or "Live Camera Barcode Scanner" in res.text
