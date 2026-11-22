@@ -34,3 +34,6 @@ paddlepaddle>=3.0.0,<=3.3.1
 paddleocr>=2.9.0,<=3.7.0
 zxing-cpp>=3.1.0
 streamlit-webrtc>=0.47.0
+fastapi>=0.110.0
+uvicorn>=0.28.0
+python-multipart>=0.0.9
