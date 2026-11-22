@@ -893,6 +893,33 @@ with tab_scan:
     with col_input:
         st.subheader("1. Package Barcode & Label Scanner")
 
+        # 1-Click Instant Demo Busters
+        st.markdown("**⚡ 1-Click Verification Demos:**")
+        d_col1, d_col2 = st.columns(2)
+        demo_clicked = None
+        if d_col1.button("🍫 Bournvita", help="Expose 8 disguised sugar aliases & serving size trick", use_container_width=True, key="btn_demo_bourn"):
+            demo_clicked = ("8901233024016", "Cadbury Bournvita", 20.0, 500.0)
+        if d_col2.button("🍪 Parle-G", help="Expose Palm Oil & High Sugar in India's #1 biscuit", use_container_width=True, key="btn_demo_parle"):
+            demo_clicked = ("8901719101037", "Parle-G", 25.0, 80.0)
+
+        d_col3, d_col4 = st.columns(2)
+        if d_col3.button("🍜 Maggi Noodles", help="Expose Palmolein & 1000mg sodium per 100g", use_container_width=True, key="btn_demo_maggi"):
+            demo_clicked = ("8901058017687", "Maggi 2-Minute Noodles", 70.0, 70.0)
+        if d_col4.button("🥛 Amul Milk", help="Clean, unadulterated baseline control", use_container_width=True, key="btn_demo_amul"):
+            demo_clicked = ("8901262010059", "Amul Taaza Milk", 100.0, 500.0)
+
+        if demo_clicked:
+            bc, name, srv, pack = demo_clicked
+            with st.spinner(f"Auditing {name}..."):
+                p_load = engine.scan_barcode(bc, allow_online=True)
+                st.session_state["last_scan_payload"] = p_load
+                st.session_state["last_scan_time"] = 0.05
+                st.session_state["last_scanned_barcode"] = bc
+                st.session_state["last_package_weight"] = pack
+                st.rerun()
+
+        st.markdown("---")
+
         # Preset image resolution
         default_nut_img = active_preset["nutrition_img"]
         default_ing_img = active_preset["ingredients_img"]
@@ -1074,6 +1101,17 @@ with tab_scan:
 
     with col_output:
         st.subheader("2. NutriTruth™ Deception Audit & Label Analysis")
+
+        # Auto-load flagship Bournvita deception audit on initial visit so right panel is immediately populated
+        if "last_scan_payload" not in st.session_state and not run_scan:
+            try:
+                demo_init = engine.scan_barcode("8901233024016", allow_online=True)
+                st.session_state["last_scan_payload"] = demo_init
+                st.session_state["last_scan_time"] = 0.05
+                st.session_state["last_scanned_barcode"] = "8901233024016"
+                st.session_state["last_package_weight"] = 500.0
+            except Exception:
+                pass
 
         # Execute Unified Pipeline
         if run_scan:
@@ -1264,7 +1302,7 @@ with tab_scan:
                         _srv_g = float(payload["nutrition"]["serving_size_g"])
                     except Exception:
                         pass
-                _pack_g = float(package_weight) if package_weight and package_weight > 0 else None
+                _pack_g = float(package_weight) if package_weight and package_weight > 0 else st.session_state.get("last_package_weight")
 
                 dec_audit = _dec_detector.analyze_label(
                     product_name=p_name,
