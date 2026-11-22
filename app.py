@@ -63,8 +63,8 @@ logger = logging.getLogger("food_intelligence_scanner")
 
 # Configure page layout
 st.set_page_config(
-    page_title="Food Packet Scanner - Testing UI",
-    page_icon="🥗",
+    page_title="NutriTruth (खाद्य) - Deceptive Food Label Buster",
+    page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -224,7 +224,7 @@ def get_system_health():
             c = sqlite3.connect(db_p)
             db_records = c.cursor().execute("SELECT count(*) FROM off_products").fetchone()[0]
             c.close()
-            db_status = f"Connected ({db_records:,} records indexed)"
+            db_status = f"Connected ({db_records:,} Offline Cache + 3M+ Live Barcodes)"
         except Exception as exc:
             db_status = f"Error: {exc}"
     else:
@@ -758,9 +758,9 @@ ALL_PRESETS = {**PRESETS, **GLOBAL_PRESETS}
 
 
 # --- UI HEADER ---
-st.markdown('<div class="main-header">🥗 Food Packet Scanner & Label OCR Testing Interface</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">🛡️ NutriTruth (खाद्य) — Deceptive Label Buster & Scanner</div>', unsafe_allow_html=True)
 st.markdown(
-    '<div class="sub-header">Interactive testing workbench for Barcode-First Ingestion, PaddleOCR Nutrition Extraction, Ingredient/Allergen Parsing, and Ground-Truth Evaluation.</div>',
+    '<div class="sub-header">Camera-first Indian FMCG transparency engine: 56 hidden sugar aliases, disguised palm oil detection, FSSAI Indian Nutrition Rating (INR), and ultra-processed food traps.</div>',
     unsafe_allow_html=True,
 )
 st.caption("💡 Expand sidebar (top-left >>) to view System Health Diagnostics and Model Settings")
@@ -1196,6 +1196,77 @@ with tab_scan:
                 """,
                 unsafe_allow_html=True,
             )
+
+            # --- PHASE 2A: NUTRITRUTH™ DECEPTION & PALM OIL AUDIT ---
+            try:
+                from food_engine.deception_detector import DeceptionDetector
+                _dec_db = REPO_ROOT / "datasets" / "processed" / "products" / "products.db"
+                _dec_detector = DeceptionDetector(db_path=_dec_db if _dec_db.exists() else None)
+
+                _nut_dict = payload.get("nutrition", {}).get("nutrients", {})
+                _raw_ing = payload.get("ingredients", {}).get("raw_text", "")
+                if not _raw_ing and payload.get("ingredients", {}).get("parsed_ingredients"):
+                    _raw_ing = ", ".join(payload.get("ingredients", {}).get("parsed_ingredients", []))
+
+                _srv_g = None
+                if payload.get("nutrition", {}).get("serving_size_g"):
+                    try:
+                        _srv_g = float(payload["nutrition"]["serving_size_g"])
+                    except Exception:
+                        pass
+                _pack_g = float(package_weight) if package_weight and package_weight > 0 else None
+
+                dec_audit = _dec_detector.analyze_label(
+                    product_name=p_name,
+                    ingredients_text=_raw_ing,
+                    nutrients=_nut_dict,
+                    serving_size_g=_srv_g,
+                    pack_weight_g=_pack_g,
+                    brand=p_brand,
+                )
+
+                st.markdown("### 🛡️ NutriTruth™ Deception Audit & Label Buster")
+                col_d1, col_d2, col_d3, col_d4 = st.columns(4)
+                col_d1.metric(
+                    "Deception Score",
+                    f"{dec_audit['deception_score']}/100",
+                    delta=dec_audit['deception_level'],
+                    delta_color="inverse",
+                )
+                col_d2.metric(
+                    "FSSAI Star Rating",
+                    f"⭐ {dec_audit['fssai_rating']['stars']:.1f} / 5.0",
+                    dec_audit['fssai_rating']['grade'],
+                )
+                col_d3.metric(
+                    "NOVA Processing",
+                    f"Tier {dec_audit['nova_classification']['tier']}",
+                    dec_audit['nova_classification']['category'],
+                )
+                _palm_label = "🚨 PALM OIL" if dec_audit['palm_oil']['detected'] else "✅ Palm Free"
+                col_d4.metric(
+                    "Palm Oil / Palmolein",
+                    _palm_label,
+                    dec_audit['palm_oil']['risk_level'],
+                    delta_color="inverse" if dec_audit['palm_oil']['detected'] else "normal",
+                )
+
+                if dec_audit['palm_oil']['detected']:
+                    st.error(f"🌴 **Palm Oil Detected:** {dec_audit['palm_oil']['message']} *(Found as: {dec_audit['palm_oil']['oil_type']})*")
+
+                if dec_audit['sugar_analysis']['aliases_detected']:
+                    s_chips = "  ".join([f"`{a['alias']} (GI: {a['glycemic_index']}, {a['risk']})`" for a in dec_audit['sugar_analysis']['aliases_detected']])
+                    st.warning(f"🍬 **Hidden & Free Sugar Aliases Detected ({dec_audit['sugar_analysis']['total_aliases_count']} total):**\n\n{s_chips}")
+
+                if dec_audit['serving_size_trick']['is_trick_suspected']:
+                    st.info(f"⚖️ **Serving Size Illusion:** {dec_audit['serving_size_trick']['message']}")
+
+                if dec_audit.get("alternatives"):
+                    with st.expander("🥗 Recommended Healthier / 0g Palm Oil Swaps", expanded=False):
+                        for alt in dec_audit["alternatives"]:
+                            st.markdown(f"• **{alt.get('product_name', 'Healthy Alternative')}** ({alt.get('brand', '')}) — Sugars: {alt.get('sugars', 0)}g | Palm Oil: 0g")
+            except Exception as _dec_err:
+                logger.warning(f"NutriTruth deception audit in app.py error: {_dec_err}")
 
             # --- PHASE 2B: CLINICAL TRUTH-IN-LABELING & HEALTH VERDICT ---
             from food_engine.reporting.clinical_health import ClinicalHealthEngine
